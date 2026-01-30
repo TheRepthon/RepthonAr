@@ -13,7 +13,6 @@ class Config(object):
     LOGGER = True
     # don't play that🫵🏻
     PORT = os.environ.get("PORT", None)
-    BANNED_IDS = set()
     # MUST NEEDED VARS
     # set this value with your name
     ALIVE_NAME = os.environ.get("ALIVE_NAME", None)
@@ -33,7 +32,7 @@ class Config(object):
     TZ = os.environ.get("TZ", "Asia/Baghdad")
     # set this with required zed repo link
     UPSTREAM_REPO = os.environ.get(
-        "UPSTREAM_REPO", "https://github.com/RepthonAr/Repthon"
+        "UPSTREAM_REPO", "https://github.com/TheRepthon/RepthonAr"
     )
     # External plugins repo
     EXTERNAL_REPO = os.environ.get("EXTERNAL_REPO", None)
@@ -94,7 +93,7 @@ class Config(object):
     TELEGRAPH_SHORT_NAME = os.environ.get("TELEGRAPH_SHORT_NAME", "Repthon")
     # for custom thumb image set this with your required thumb telegraoh link
     THUMB_IMAGE = os.environ.get(
-        "THUMB_IMAGE", "https://telegra.ph/file/2be69528a8ae9eb43fc40.jpg"
+        "THUMB_IMAGE", "https://graph.org/file/2be69528a8ae9eb43fc40.jpg"
     )
     # specify NO_LOAD with plugin names for not loading in userbot
     NO_LOAD = list(os.environ.get("NO_LOAD", "").split())
@@ -182,14 +181,14 @@ class Config(object):
     COUNTRY = str(os.environ.get("COUNTRY", ""))
     TZ_NUMBER = int(os.environ.get("TZ_NUMBER", 1))
     # For updater plugin
-    UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH", "web")
+    UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH", "master")
     # dont touch this at all
     SUDO_USERS: Set[int] = set()
     ZQ_LOLOGO = None
     BOTLOG = False
     BOTLOG_CHATID = 0
     # extra plugins realted vars below  4
-    EXTERNAL_REPOBRANCH = os.environ.get("EXTERNAL_REPOBRANCH", "web")
+    EXTERNAL_REPOBRANCH = os.environ.get("EXTERNAL_REPOBRANCH", "master")
     OLDREP_REPO = os.environ.get("OLDREP_REPO", "https://github.com/RepthonArabic/RepthonAr")
     if OLDREP_REPO and not url(OLDREP_REPO):
         OLDREP_REPO = "https://github.com/RepthonArabic/RepthonAr"
