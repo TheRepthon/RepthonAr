@@ -181,14 +181,14 @@ class Config(object):
     COUNTRY = str(os.environ.get("COUNTRY", ""))
     TZ_NUMBER = int(os.environ.get("TZ_NUMBER", 1))
     # For updater plugin
-    UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH", "master")
+    UPSTREAM_REPO_BRANCH = os.environ.get("UPSTREAM_REPO_BRANCH", "web")
     # dont touch this at all
     SUDO_USERS: Set[int] = set()
     ZQ_LOLOGO = None
     BOTLOG = False
     BOTLOG_CHATID = 0
     # extra plugins realted vars below  4
-    EXTERNAL_REPOBRANCH = os.environ.get("EXTERNAL_REPOBRANCH", "master")
+    EXTERNAL_REPOBRANCH = os.environ.get("EXTERNAL_REPOBRANCH", "web")
     OLDREP_REPO = os.environ.get("OLDREP_REPO", "https://github.com/RepthonArabic/RepthonAr")
     if OLDREP_REPO and not url(OLDREP_REPO):
         OLDREP_REPO = "https://github.com/RepthonArabic/RepthonAr"
