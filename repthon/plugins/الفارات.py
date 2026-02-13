@@ -89,6 +89,7 @@ BaqirVP_cmd = (
     "⪼ `.اضف فار رمز الوقتي` بالـرد ع رمـز\n\n"
     "⪼ `.اضف فار زخرفة الوقتي` بالـرد ع ارقـام الزغـرفه\n\n"
     "⪼ `.اضف فار البايو الوقتي` بالـرد ع البـايـو\n\n"
+    "⪼ `.اضف فار لون الوقتي` بالـرد ع اللون\n\n"
     "⪼ `.اضف فار اسم المستخدم` بالـرد ع اسـم\n\n"
     "⪼ `.اضف فار كروب الرسائل` بالـرد ع ايدي الكـروب\n\n"
     "⪼ `.اضف فار كروب السجل` بالـرد ع ايدي الكـروب\n\n"
@@ -147,6 +148,14 @@ async def variable(event):
         else:
             await rep.edit("**⎉╎تم اضـافـة {} بنجـاح ☑️**\n**⎉╎الكليشـة المضـافه** \n {} \n\n**⎉╎الان قـم بـ ارسـال الامـر ↶** `.فحص` **لـ التحقـق مـن الكليشـة . .**".format(input_str, vinfo))
         addgvar("ALIVE_TEMPLATE", vinfo)
+    elif input_str == "لون الوقتي" or input_str == "لون وقتي":
+        variable = "DIGITAL_COLOR"
+        await asyncio.sleep(1.5)
+        if gvarstatus("DIGITAL_COLOR") is None:
+            await rep.edit("**⎉╎تم تغييـر {} بنجـاح ☑️**\n**⎉╎لون الوقتي** \n {} \n\n**⎉╎الان قـم بـ ارسـال الامـر ↶** `.البروفايل تلقائي` **لـ التحقـق مـن لـون الوقتي . .**".format(input_str, vinfo))
+        else:
+            await rep.edit("**⎉╎تم اضـافـة {} بنجـاح ☑️**\n**⎉╎لـون الـوقتي** \n {} \n\n**⎉╎الان قـم بـ ارسـال الامـر ↶** `.البروفايل تلقائي` **لـ التحقـق مـن لـون الوقتي. .**".format(input_str, vinfo))
+        addgvar("DIGITAL_COLOR", vinfo)
     elif input_str == "كليشة الحماية" or input_str == "كليشه الحمايه" or input_str == "كليشه الحماية" or input_str == "كليشة الحمايه":
         variable = "pmpermit_txt"
         await asyncio.sleep(1.5)
@@ -329,7 +338,7 @@ async def variable(event):
 
     elif input_str == "كود تيرمكس" or input_str == "كود السيشن" or input_str == "كود سيشن":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "STRING_SESSION"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -356,7 +365,7 @@ async def variable(event):
         addgvar("PRIVATE_GROUP_BOT_API_ID", vinfo)
     elif input_str == "السجل 2" or input_str == "كروب السجل 2":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "PRIVATE_GROUP_ID"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -366,7 +375,7 @@ async def variable(event):
         heroku_var[variable] = vinfo
     elif input_str == "قناة السجل" or input_str == "قناة السجلات":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "PRIVATE_CHANNEL_BOT_API_ID"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -376,7 +385,7 @@ async def variable(event):
         heroku_var[variable] = vinfo
     elif input_str == "قناة الملفات" or input_str == "قناة الاضافات":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "PLUGIN_CHANNEL"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -386,7 +395,7 @@ async def variable(event):
         heroku_var[variable] = vinfo
     elif input_str == "ايديي" or input_str == "ايدي الحساب":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "OWNER_ID"
         await asyncio.sleep(1.5)
         if vinfo.isdigit():
@@ -396,7 +405,7 @@ async def variable(event):
         heroku_var[variable] = vinfo
     elif input_str == "نقطة الاوامر" or input_str == "نقطه الاوامر":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "COMMAND_HAND_LER"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -416,7 +425,7 @@ async def variable(event):
         heroku_var[variable] = vinfo
     elif input_str == "معرف البوت" or input_str == "معرف بوت":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "TG_BOT_USERNAME"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -436,7 +445,7 @@ async def variable(event):
         heroku_var[variable] = vinfo
     elif input_str == "توكن المكافح" or input_str == "كود المكافح" or input_str == "مكافح التخريب" or input_str == "مكافح التفليش":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "SPAMWATCH_API"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -446,7 +455,7 @@ async def variable(event):
         heroku_var[variable] = vinfo
     elif input_str == "توكن الذكاء" or input_str == "مفتاح الذكاء" or input_str == "الذكاء":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "OPENAI_API_KEY"
         await asyncio.sleep(1.5)
         if variable in heroku_var:
@@ -499,6 +508,14 @@ async def variable(event):
         	return await rep.edit("**⎉╎عـذࢪاً عـزيـزي .. انت لـم تقـم باضـافـة فـار {} اصـلاً...**".format(input_str))
         await rep.edit("**⎉╎تم حـذف {} بنجـاح ☑️**\n**⎉╎المتغيـر المحـذوف : ↶**\n `{}` \n**⎉╎يتم الان اعـادة تشغيـل بـوت ريبـــثون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**".format(input_str, variable))
         delgvar("ALIVE_TEMPLATE")
+
+    elif input_str == "لون الوقتي" or input_str == "لون وقتي":
+        variable = gvarstatus("DIGITAL_COLOR")
+        await asyncio.sleep(1.5)
+        if gvarstatus("DIGITAL_COLOR") is None:
+        	return await rep.edit("**⎉╎عـذࢪاً عـزيـزي .. انت لـم تقـم باضـافـة فـار {} اصـلاً...**".format(input_str))
+        await rep.edit("**⎉╎تم حـذف {} بنجـاح ☑️**\n**⎉╎المتغيـر المحـذوف : ↶**\n `{}` \n**⎉╎يتم الان اعـادة تشغيـل بـوت ريبـــثون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**".format(input_str, variable))
+        delgvar("DIGITAL_COLOR")
         
     elif input_str == "كليشة الحماية" or input_str == "كليشه الحمايه" or input_str == "كليشه الحماية" or input_str == "كليشة الحمايه":
         variable = gvarstatus("pmpermit_txt")
@@ -673,7 +690,7 @@ async def variable(event):
 
     elif input_str == "قناة السجل" or input_str == "قناة السجلات":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "PRIVATE_CHANNEL_BOT_API_ID"
         await asyncio.sleep(1.5)
         if variable not in heroku_var:
@@ -683,7 +700,7 @@ async def variable(event):
 
     elif input_str == "قناة الملفات" or input_str == "قناة الاضافات":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "PLUGIN_CHANNEL"
         await asyncio.sleep(1.5)
         if variable not in heroku_var:
@@ -701,7 +718,7 @@ async def variable(event):
 
     elif input_str == "ايديي" or input_str == "ايدي الحساب":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "OWNER_ID"
         await asyncio.sleep(1.5)
         if variable not in heroku_var:
@@ -721,7 +738,7 @@ async def variable(event):
 
     elif input_str == "التوكن" or input_str == "توكن البوت":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "TG_BOT_TOKEN"
         await asyncio.sleep(1.5)
         if variable not in heroku_var:
@@ -731,7 +748,7 @@ async def variable(event):
 
     elif input_str == "معرف البوت" or input_str == "معرف بوت":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "TG_BOT_USERNAME"
         await asyncio.sleep(1.5)
         if variable not in heroku_var:
@@ -741,7 +758,7 @@ async def variable(event):
 
     elif input_str == "الريبو" or input_str == "السورس":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "UPSTREAM_REPO"
         await asyncio.sleep(1.5)
         if variable not in heroku_var:
@@ -751,7 +768,7 @@ async def variable(event):
 
     elif input_str == "اسمي التلقائي" or input_str == "الاسم التلقاائي":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "AUTONAME"
         await asyncio.sleep(1.5)
         if variable not in heroku_var:
@@ -825,6 +842,13 @@ async def custom_rep(event):
         else:
             await rep.edit("**⎉╎الفـار {} موجـود ☑️**\n**⎉╎قيمـة الفـار : ↶**\n `{}` \n\n**⎉╎قنـاة السـورس : @Repthon**".format(input_str, variable))
 
+    elif input_str == "لون الوقتي" or input_str == "لون وقتي":
+        variable = gvarstatus("DIGITAL_COLOR")
+        if variable is None:
+            await rep.edit("**⎉╎فـار كليشـة الفحص غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع الكليشـة استخـدم الامـر : ↶**\n `.اضف فار لون الوقتي` \n\n**⎉╎قنـاة السـورس : @Repthon**")
+        else:
+            await rep.edit("**⎉╎الفـار {} موجـود ☑️**\n**⎉╎قيمـة الفـار : ↶**\n `{}` \n\n**⎉╎قنـاة السـورس : @Repthon**".format(input_str, variable)) 
+
     elif input_str == "كليشة البوت" or input_str == "كليشه البوت":
         variable = gvarstatus("START_TEXT")
         if variable is None:
@@ -883,7 +907,7 @@ async def custom_rep(event):
 
     elif input_str == "كود تيرمكس" or input_str == "كود السيشن" or input_str == "كود سيشن":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "STRING_SESSION"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار اسـم المستخـدم غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع الاسم استخـدم الامـر : ↶**\n `.اضف فار اسم المستخدم` \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -892,7 +916,7 @@ async def custom_rep(event):
 
     elif input_str == "ايديي" or input_str == "ايدي الحساب":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "OWNER_ID"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار ايـدي الحسـاب غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع الايـدي فقـط استخـدم الامـر : ↶**\n `.اضف فار ايدي الحساب` \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -901,7 +925,7 @@ async def custom_rep(event):
 
     elif input_str == "نقطة الاوامر" or input_str == "نقطه الاوامر":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "COMMAND_HAND_LER"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار نقطـة الاوامـر غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع الرمـز فقـط استخـدم الامـر : ↶**\n `.اضف فار نقطة الاوامر` \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -910,7 +934,7 @@ async def custom_rep(event):
 
     elif input_str == "التوكن" or input_str == "توكن البوت":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "TG_BOT_TOKEN"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار توكـن البـوت غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع التوكـن فقـط استخـدم الامـر : ↶**\n `.اضف فار التوكن` \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -919,7 +943,7 @@ async def custom_rep(event):
 
     elif input_str == "معرف البوت" or input_str == "معرف بوت":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "TG_BOT_USERNAME"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار معرف البوت غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع المعرف استخـدم الامـر : ↶**\n `.اضف فار معرف البوت` \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -928,7 +952,7 @@ async def custom_rep(event):
 
     elif input_str == "الريبو" or input_str == "السورس":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "UPSTREAM_REPO"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار الريبـو غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع رابط السورس الرسمي استخـدم الامـر : ↶**\n `.اضف فار الريبو` \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -937,7 +961,7 @@ async def custom_rep(event):
 
     elif input_str == "اسمي التلقائي" or input_str == "الاسم التلقاائي":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "AUTONAME"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار الاسـم التلقائي غيـر موجـود ❌**\n**⎉╎لـ اضـافته بالـرد ع الاسم استخـدم الامـر : ↶**\n `.اضف فار اسمي التلقائي` \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -1030,7 +1054,7 @@ async def custom_rep(event):
 
     elif input_str == "الوقت" or input_str == "الساعه" or input_str == "المنطقه الزمنيه":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "TZ"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار المنطقـه الزمنيـه غيـر موجـود ❌**\n**⎉╎لـ اضـافته فقـط استخـدم الامـر : ↶**\n `.وقت` واسـم الدولـة \n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -1102,7 +1126,7 @@ async def custom_rep(event):
 
     elif input_str == "توكن المكافح" or input_str == "كود المكافح" or input_str == "مكافح التخريب" or input_str == "مكافح التفليش":
         if Config.HEROKU_API_KEY is None:
-            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه سكالينجو 🔄**")
+            return await ed(event, "**⎉╎عـذراً .. عـزيـزي ⚠️**\n**⎉╎هـذا الفـار لا يعمـل الان ✖️**\n**⎉╎سـوف يتم تحديثه لاحقاً ع منصه ريندر 🔄**")
         variable = "SPAMWATCH_API"
         if variable not in heroku_var:
             await rep.edit("**⎉╎فـار توكـن المكـافح غيـر موجـود ❌**\n\n**⎉╎قنـاة السـورس : @Repthon**")
@@ -1376,11 +1400,8 @@ async def _(arwa):
                 vinfo = uploader.upload_file(downloaded_file_name)
                 end = datetime.now()
                 ms_two = (end - start).seconds
-                
                 addgvar("ALIVE_PIC", vinfo)
-                
                 caption_text = f"**⎉╎تم تغييـر ميديا {input_str} بنجـاح ☑️**\n**⎉╎الرابط المرفوع:** `{vinfo}`\n**⎉╎قنـاة السـورس : @Repthon**"
-                
                 try:
                     await arwa.client.send_file(arwa.chat_id, vinfo, caption=caption_text)
                     await rep.delete()
