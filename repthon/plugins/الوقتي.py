@@ -11,20 +11,20 @@
 #هههههههههههههههههههههههههههههههههههههههههههههههههه
 
 import asyncio
+import random
+import user_agent
 import math
 import os
 import shutil
 import time
 import urllib3
-import base64
+import aiohttp
 import requests
 from datetime import datetime as dt
 from pytz import timezone
 
 from PIL import Image, ImageDraw, ImageFont
-from telegraph import Telegraph, exceptions, upload_file
 from urlextract import URLExtract
-from pySmartDL import SmartDL
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 from telethon.errors import FloodWaitError
@@ -32,7 +32,6 @@ from telethon.tl import functions
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 from telethon.errors.rpcerrorlist import AboutTooLongError
-from catbox import CatboxUploader
 
 from ..Config import Config
 from ..helpers.utils import _format
@@ -43,13 +42,13 @@ from . import edit_delete, zq_lo, logging, BOTLOG, BOTLOG_CHATID, mention
 plugin_category = "الادوات"
 LOGS = logging.getLogger(__name__)
 CHANGE_TIME = int(gvarstatus("CHANGE_TIME")) if gvarstatus("CHANGE_TIME") else 60
+CHANGE_TIME2 = int(gvarstatus("CHANGE_TIME2")) if gvarstatus("CHANGE_TIME2") else 120
 FONT_FILE_TO_USE = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
 
 normretext = "1234567890"
 
-autopic_path = os.path.join(os.getcwd(), "repthon", "original_pic.png")
-digitalpic_path = os.path.join(os.getcwd(), "repthon", "digital_pic.png")
-autophoto_path = os.path.join(os.getcwd(), "repthon", "photo_pfp.png")
+digitalpic_path = "repthon/baqir/autopic.jpg"
+autophoto_path = "repthon/baqir/photo_pfp.JPEG"
 
 
 NAUTO = gvarstatus("R_NAUTO") or "(الاسم تلقائي|الاسم الوقتي|اسم وقتي|اسم تلقائي)"
@@ -57,53 +56,83 @@ NAAUTO = gvarstatus("R_NAAUTO") or "(الاسم تلقائي2|الاسم الو�
 PAUTO = gvarstatus("R_PAUTO") or "(البروفايل تلقائي|الصوره الوقتيه|الصورة الوقتية|صوره وقتيه|البروفايل)"
 BAUTO = gvarstatus("R_BAUTO") or "(البايو تلقائي|البايو الوقتي|بايو وقتي|نبذه وقتيه|النبذه الوقتيه)"
 
+COLOR_MAP = {
+    "white": (255, 255, 255),
+    "red": (255, 0, 0),
+    "green": (0, 255, 0),
+    "blue": (0, 0, 255),
+    "gold": (255, 215, 0),
+    "عشوائي": "random",
+}
+
 extractor = URLExtract()
-telegraph = Telegraph()
-uploader = CatboxUploader()
-r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
-auth_url = r["auth_url"]
 
 if not os.path.isdir(Config.TMP_DOWNLOAD_DIRECTORY):
     os.makedirs(Config.TMP_DOWNLOAD_DIRECTORY)
 
+def anti_ban(draw):
+    for _ in range(random.randint(3, 7)):
+        draw.point(
+            (
+                random.randint(0, 639),
+                random.randint(0, 639)
+            ),
+            fill=(255, 255, 255)
+        )
+
 async def digitalpicloop():
-    DIGITALPICSTART = gvarstatus("digitalpic") == "true"
-    i = 0
-    while DIGITALPICSTART:
-        if not os.path.exists(digitalpic_path):
-            digitalpfp = gvarstatus("DIGITAL_PIC") #Code by T.me/RR0RT
-            downloader = SmartDL(digitalpfp, digitalpic_path, progress_bar=False)
-            downloader.start(blocking=False)
-            while not downloader.isFinished():
-                pass
-        repfont = gvarstatus("DEFAULT_PIC") if gvarstatus("DEFAULT_PIC") else "repthon/helpers/styles/Papernotes.ttf" #Code by T.me/RR0RT
-        shutil.copy(digitalpic_path, autophoto_path)
-        Image.open(autophoto_path)
-        TIME_ZONE = gvarstatus("T_Z") if gvarstatus("T_Z") else Config.TZ
-        RTZone = dt.now(timezone(TIME_ZONE))
-        RTime = RTZone.strftime('%H:%M')
-        RT = dt.strptime(RTime, "%H:%M").strftime("%I:%M")
-        #current_time = dt.now().strftime("%I:%M")
-        img = Image.open(autophoto_path)
-        drawn_text = ImageDraw.Draw(img)
-        fnt = ImageFont.truetype(f"{repfont}", 35) #Code by T.me/RR0RT
-        drawn_text.text((140, 70), RT, font=fnt, fill=(280, 280, 280)) #Code by T.me/RR0RT
-        img.save(autophoto_path)
-        file = await zq_lo.upload_file(autophoto_path)
-        try:
-            if i > 0:
-                await zq_lo(
-                    functions.photos.DeletePhotosRequest(
-                        await zq_lo.get_profile_photos("me", limit=1)
+    await asyncio.sleep(5)
+    last_url = None
+    headers = {"User-Agent": "Mozilla/5.0 (Android 13)"}
+    async with aiohttp.ClientSession(headers=headers) as session:
+        while gvarstatus("digitalpic") == "true":
+            try:
+                link = gvarstatus("DIGITAL_PIC")
+                if link and link != last_url:
+                    async with session.get(link, timeout=25) as r:
+                        if r.status == 200:
+                            with open(digitalpic_path, "wb") as f:
+                                f.write(await r.read())
+                            last_url = link
+
+                if not os.path.exists(digitalpic_path):
+                    await asyncio.sleep(10)
+                    continue
+                TIME_ZONE = gvarstatus("T_Z") if gvarstatus("T_Z") else Config.TZ
+                RTZone = dt.now(timezone(TIME_ZONE))
+                RTime = RTZone.strftime('%H:%M')
+                RT = dt.strptime(RTime, "%H:%M").strftime("%I:%M")
+                with Image.open(digitalpic_path) as img:
+                    img = img.convert("RGB").resize((640, 640))
+                    draw = ImageDraw.Draw(img)
+                    repfont = gvarstatus("DEFAULT_PIC") or "repthon/helpers/styles/REPTHONEMOGE.ttf"
+                    try:
+                        fnt = ImageFont.truetype(repfont, 35)
+                    except:
+                        fnt = ImageFont.load_default()
+                    color_name = (gvarstatus("DIGITAL_COLOR") or "white").lower().strip()
+                    color_value = COLOR_MAP.get(color_name, COLOR_MAP["white"])
+                    if color_value == "random":
+                        color = random.choice(
+                            [v for v in COLOR_MAP.values() if isinstance(v, tuple)]
+                        )
+                    else:
+                        color = color_value
+                    draw.text((140, 70), RT, font=fnt, fill=color)
+                    anti_ban(draw)
+                    img.save(autophoto_path, "JPEG", quality=90)
+                if not zq_lo.is_connected():
+                    await zq_lo.connect()
+                file = await zq_lo.upload_file(autophoto_path)
+                await zq_lo(functions.photos.UploadProfilePhotoRequest(file=file))
+                photos = await zq_lo.get_profile_photos("me", limit=2)
+                if len(photos) > 1:
+                    await zq_lo(
+                        functions.photos.DeletePhotosRequest([photos[1]])
                     )
-                )
-            i += 1
-            await zq_lo(functions.photos.UploadProfilePhotoRequest(file))
-            os.remove(autophoto_path)
-            await asyncio.sleep(CHANGE_TIME)
-        except BaseException:
-            return
-        DIGITALPICSTART = gvarstatus("digitalpic") == "true"
+            except Exception as e:
+                print(f"⚠️ خطأ : {e}")
+            await asyncio.sleep(CHANGE_TIME2)
 
 
 async def autoname_loop():
@@ -188,48 +217,16 @@ async def autobio_loop():
         await asyncio.sleep(CHANGE_TIME)
         AUTOBIOSTART = gvarstatus("autobio") == "true"
 
-
 @zq_lo.rep_cmd(pattern=f"{PAUTO}$")
 async def _(event):
-    digitalpfp = gvarstatus("DIGITAL_PIC")
-    if digitalpfp:
-        await edit_or_reply(event, "**• جـارِ تفعيـل البروفايـل الوقتـي ⅏. . .**")
-    else:
-        rep = await edit_or_reply(event, "**• لـم يتم العثور على صورة، جـارِ الرفع ⅏. . .**")
-        downloaded_file_name = await event.client.download_profile_photo(
-            zq_lo.uid,
-            Config.TMP_DOWNLOAD_DIRECTORY + str(zq_lo.uid) + ".jpg",
-            download_big=True,
-        )
-        
-        if not downloaded_file_name:
-            return await edit_delete(event, "**- عذراً، قم بالرد على صورة لكي استطيع الرفع !**")
-
-        try:
-            file_url = uploader.upload_file(downloaded_file_name)
-            addgvar("DIGITAL_PIC", file_url)
-            digitalpfp = file_url
-            os.remove(downloaded_file_name)
-        except Exception as e:
-            if os.path.exists(downloaded_file_name):
-                os.remove(downloaded_file_name)
-            return await edit_delete(event, f"**⎉╎فشل الرفع:**\n`{str(e)}`")
-
+    rep = await edit_or_reply(event, "**• جـارِ تفعيـل البروفايـل الوقتـي ⅏. . .**")
     if gvarstatus("digitalpic") == "true":
-        return await edit_delete(event, "**⎉╎البروفـايل الوقتـي .. تم تفعيلهـا سابقـاً**")
-
-    try:
-        downloader = SmartDL(digitalpfp, digitalpic_path, progress_bar=False)
-        downloader.start(blocking=False)
-        while not downloader.isFinished():
-            pass
-    except Exception as e:
-        return await edit_delete(event, f"**- حدث خطأ أثناء تحميل الصورة:**\n`{str(e)}`")
-        
+        return await edit_delete(event, "**⎉╎البروفـايل الوقتـي .. مفعـل بالفعـل**")
+    if not os.path.exists(digitalpic_path) and not gvarstatus("DIGITAL_PIC"):
+        return await rep.edit(f"**❌ خطأ: لا يوجد صورة محلية في المسار:**\n`{digitalpic_path}`\n**ولم يتم إضافة رابط صورة عبر الفارات أيضاً!**")
     addgvar("digitalpic", "true")
-    await edit_or_reply(event, "<b>⎉╎تـم بـدء البروفايـل الوقتـي🝛 .. بنجـاح ✓</b>\n<b>⎉╎زخـارف البروفايـل الوقتـي ↶ <a href = https://t.me/Repthon_vars/20>⦇  اضـغـط هنــا  ⦈</a> </b>", parse_mode="html")
+    await rep.edit("<b>⎉╎تـم بـدء البروفايـل الوقتـي🝛 .. بنجـاح ✓</b>\n<b>⎉╎زخـارف البروفايـل الوقتـي ↶ <a href = https://t.me/Repthon_vars/20>⦇  اضـغـط هنــا  ⦈</a> </b>", parse_mode="html", link_preview=False)
     await digitalpicloop()
-
 
 @zq_lo.rep_cmd(pattern=f"{NAUTO}$")
 async def _(event):
@@ -260,9 +257,9 @@ async def _(event): #Code by T.me/@RR0RT
         delgvar("autoname")
     if gvarstatus("auto2name") is not None and gvarstatus("auto2name") == "true":
         return await edit_delete(event, "**⎉╎الاسـم الوقتـي² .. تم تفعيلـه سابقـاً**")
-    zzz = await edit_or_reply(event, "**• جـارِ تفعيـل الاسـم الوقتـي² ⅏. . .**")
+    rrr = await edit_or_reply(event, "**• جـارِ تفعيـل الاسـم الوقتـي² ⅏. . .**")
     addgvar("auto2name", True)
-    await zzz.edit("<b>⎉╎تـم بـدء الاسـم الوقتـي²🝛 .. بنجـاح ✓</b>\n<b>⎉╎زخـارف الاسـم الوقتـي ↶ <a href = https://t.me/Repthon_vars/24>⦇  اضـغـط هنــا  ⦈</a> </b>", parse_mode="html", link_preview=False)
+    await rrr.edit("<b>⎉╎تـم بـدء الاسـم الوقتـي²🝛 .. بنجـاح ✓</b>\n<b>⎉╎زخـارف الاسـم الوقتـي ↶ <a href = https://t.me/Repthon_vars/24>⦇  اضـغـط هنــا  ⦈</a> </b>", parse_mode="html", link_preview=False)
     await auto2name_loop()
 
 
@@ -313,7 +310,7 @@ async def _(event):  # sourcery no-metrics
                 functions.account.UpdateProfileRequest(first_name=DEFAULTUSER, last_name='.')
             )
             return await edit_delete(event, "**⎉╎تم إيقـاف الاسـم الوقتـي .. بنجـاح ✓**")
-        if gvarstatus("auto2name") is not None and gvarstatus("auto2name") == "true": #Code by T.me/zzzzl1l
+        if gvarstatus("auto2name") is not None and gvarstatus("auto2name") == "true": #Code by T.me/RR0RT
             delgvar("auto2name")
             await event.client(
                 functions.account.UpdateProfileRequest(last_name='.')
@@ -323,67 +320,12 @@ async def _(event):  # sourcery no-metrics
     if input_str == "البايو تلقائي" or input_str == "البايو" or input_str == "البايو التلقائي" or input_str == "البايو الوقتي" or input_str == "النبذه الوقتيه" or input_str == "النبذة الوقتية" or input_str == "بايو الوقتي" or input_str == "نبذه الوقتي":
         if gvarstatus("autobio") is not None and gvarstatus("autobio") == "true":
             delgvar("autobio")
-            DEFAULTUSERBIO = gvarstatus("DEFAULT_BIO") or "الحمد الله على كل شئ - @ZedThon"
+            DEFAULTUSERBIO = gvarstatus("DEFAULT_BIO") or "الحمد الله على كل شئ - @Repthon"
             await event.client(
                 functions.account.UpdateProfileRequest(about=DEFAULTUSERBIO)
             )
             return await edit_delete(event, "**⎉╎تم إيقـاف النبـذه الوقتيـه .. بنجـاح ✓**")
         return await edit_delete(event, "**⎉╎النبـذه الوقتيـه .. غيـر مفعـله اصـلاً ؟!**")
-
-
-@zq_lo.rep_cmd(
-    pattern="ايقاف(?: |$)(.*)",
-    command=("ايقاف", plugin_category),
-    info={
-        "header": "To stop the functions of autoprofile",
-        "description": "If you want to stop autoprofile functions then use this cmd.",
-        "options": {
-            "digitalpfp": "To stop difitalpfp",
-            "autoname": "To stop autoname",
-            "autobio": "To stop autobio",
-        },
-        "usage": "{tr}end <option>",
-        "examples": ["{tr}end autopic"],
-    },
-)
-async def _(event):  # sourcery no-metrics
-    "To stop the functions of autoprofile plugin"
-    input_str = event.pattern_match.group(1)
-    if input_str == "البروفايل تلقائي" or input_str == "البروفايل" or input_str == "البروفايل التلقائي" or input_str == "الصوره الوقتيه" or input_str == "الصورة الوقتية":
-        if gvarstatus("digitalpic") is not None and gvarstatus("digitalpic") == "true":
-            delgvar("digitalpic")
-            await event.client(
-                functions.photos.DeletePhotosRequest(
-                    await event.client.get_profile_photos("me", limit=1)
-                )
-            )
-            return await edit_delete(event, "**⎉╎تم إيقـاف البروفـايل الوقتـي .. بنجـاح ✓**")
-        return await edit_delete(event, "**⎉╎البروفـايل الوقتـي .. غيـر مفعـل اصـلاً ؟!**")
-    if input_str == "الاسم تلقائي" or input_str == "الاسم" or input_str == "الاسم التلقائي" or input_str == "الاسم الوقتي" or input_str == "اسم الوقتي" or input_str == "اسم وقتي" or input_str == "اسم تلقائي":
-        if gvarstatus("autoname") is not None and gvarstatus("autoname") == "true":
-            delgvar("autoname")
-            DEFAULTUSER = gvarstatus("ALIVE_NAME") if gvarstatus("ALIVE_NAME") else Config.ALIVE_NAME
-            await event.client(
-                functions.account.UpdateProfileRequest(first_name=DEFAULTUSER, last_name='.')
-            )
-            return await edit_delete(event, "**⎉╎تم إيقـاف الاسـم الوقتـي .. بنجـاح ✓**")
-        if gvarstatus("auto2name") is not None and gvarstatus("auto2name") == "true": #Code by T.me/zzzzl1l
-            delgvar("auto2name")
-            await event.client(
-                functions.account.UpdateProfileRequest(last_name='.')
-            )
-            return await edit_delete(event, "**⎉╎تم إيقـاف الاسـم الوقتـي² .. بنجـاح ✓**")
-        return await edit_delete(event, "**⎉╎الاسـم الوقتـي .. غيـر مفعـل اصـلاً ؟!**")
-    if input_str == "البايو تلقائي" or input_str == "البايو" or input_str == "البايو التلقائي" or input_str == "البايو الوقتي" or input_str == "النبذه الوقتيه" or input_str == "النبذة الوقتية" or input_str == "بايو الوقتي" or input_str == "نبذه الوقتي":
-        if gvarstatus("autobio") is not None and gvarstatus("autobio") == "true":
-            delgvar("autobio")
-            DEFAULTUSERBIO = gvarstatus("DEFAULT_BIO") or "الحمدلله دائماً وابداً"
-            await event.client(
-                functions.account.UpdateProfileRequest(about=DEFAULTUSERBIO)
-            )
-            return await edit_delete(event, "**⎉╎تم إيقـاف النبـذه الوقتيـه .. بنجـاح ✓**")
-        return await edit_delete(event, "**⎉╎النبـذه الوقتيـه .. غيـر مفعـله اصـلاً ؟!**")
-
 
 
 @zq_lo.rep_cmd(
@@ -414,7 +356,7 @@ async def _(event):  # sourcery no-metrics
             )
             return await edit_delete(event, "**⎉╎تم إيقـاف البروفـايل الوقتـي .. بنجـاح ✓**")
         return await edit_delete(event, "**⎉╎البروفـايل الوقتـي .. غيـر مفعـل اصـلاً ؟!**")
-    if input_str == "الاسم تلقائي" or input_str == "الاسم" or input_str == "الاسم التلقائي" or input_str == "الاسم الوقتي" or input_str == "اسم الوقتي" or input_str == "اسم وقتي" or input_str == "اسم تلقائي":
+    if input_str == "الاسم تلقائي" or input_str == "الاسم" or input_str == "الاسم التلقائي" or input_str == "الاسم الوقتي" or input_str == "اسم الوقتي":
         if gvarstatus("autoname") is not None and gvarstatus("autoname") == "true":
             delgvar("autoname")
             DEFAULTUSER = gvarstatus("ALIVE_NAME") if gvarstatus("ALIVE_NAME") else Config.ALIVE_NAME
@@ -429,8 +371,54 @@ async def _(event):  # sourcery no-metrics
             )
             return await edit_delete(event, "**⎉╎تم إيقـاف الاسـم الوقتـي² .. بنجـاح ✓**")
         return await edit_delete(event, "**⎉╎الاسـم الوقتـي .. غيـر مفعـل اصـلاً ؟!**")
-    if input_str == "الاسم تلقائي2" or input_str == "الاسم التلقائي2" or input_str == "الاسم الوقتي2" or input_str == "اسم الوقتي2" or input_str == "اسم وقتي2" or input_str == "اسم تلقائي2":
-        if gvarstatus("auto2name") is not None and gvarstatus("auto2name") == "true": #Code by T.me/zzzzl1l
+    if input_str == "البايو تلقائي" or input_str == "البايو" or input_str == "البايو التلقائي" or input_str == "البايو الوقتي" or input_str == "النبذه الوقتيه" or input_str == "النبذة الوقتية" or input_str == "بايو الوقتي" or input_str == "نبذه الوقتي":
+        if gvarstatus("autobio") is not None and gvarstatus("autobio") == "true":
+            delgvar("autobio")
+            DEFAULTUSERBIO = gvarstatus("DEFAULT_BIO") or "الحمد الله على كل شئ - @Repthon"
+            await event.client(
+                functions.account.UpdateProfileRequest(about=DEFAULTUSERBIO)
+            )
+            return await edit_delete(event, "**⎉╎تم إيقـاف النبـذه الوقتيـه .. بنجـاح ✓**")
+        return await edit_delete(event, "**⎉╎النبـذه الوقتيـه .. غيـر مفعـله اصـلاً ؟!**")
+
+ 
+@zq_lo.rep_cmd(
+    pattern="ايقاف(?: |$)(.*)",
+    command=("ايقاف", plugin_category),
+    info={
+        "header": "To stop the functions of autoprofile",
+        "description": "If you want to stop autoprofile functions then use this cmd.",
+        "options": {
+            "digitalpfp": "To stop difitalpfp",
+            "autoname": "To stop autoname",
+            "autobio": "To stop autobio",
+        },
+        "usage": "{tr}end <option>",
+        "examples": ["{tr}end autopic"],
+    },
+)
+async def _(event):  # sourcery no-metrics
+    "To stop the functions of autoprofile plugin"
+    input_str = event.pattern_match.group(1)
+    if input_str == "البروفايل تلقائي" or input_str == "البروفايل" or input_str == "البروفايل التلقائي" or input_str == "الصوره الوقتيه" or input_str == "الصورة الوقتية":
+        if gvarstatus("digitalpic") is not None and gvarstatus("digitalpic") == "true":
+            delgvar("digitalpic")
+            await event.client(
+                functions.photos.DeletePhotosRequest(
+                    await event.client.get_profile_photos("me", limit=1)
+                )
+            )
+            return await edit_delete(event, "**⎉╎تم إيقـاف البروفـايل الوقتـي .. بنجـاح ✓**")
+        return await edit_delete(event, "**⎉╎البروفـايل الوقتـي .. غيـر مفعـل اصـلاً ؟!**")
+    if input_str == "الاسم تلقائي" or input_str == "الاسم" or input_str == "الاسم التلقائي" or input_str == "الاسم الوقتي" or input_str == "اسم الوقتي":
+        if gvarstatus("autoname") is not None and gvarstatus("autoname") == "true":
+            delgvar("autoname")
+            DEFAULTUSER = gvarstatus("ALIVE_NAME") if gvarstatus("ALIVE_NAME") else Config.ALIVE_NAME
+            await event.client(
+                functions.account.UpdateProfileRequest(first_name=DEFAULTUSER, last_name='.')
+            )
+            return await edit_delete(event, "**⎉╎تم إيقـاف الاسـم الوقتـي .. بنجـاح ✓**")
+        if gvarstatus("auto2name") is not None and gvarstatus("auto2name") == "true": #Code by T.me/RR0RT
             delgvar("auto2name")
             await event.client(
                 functions.account.UpdateProfileRequest(last_name='.')
@@ -440,32 +428,13 @@ async def _(event):  # sourcery no-metrics
     if input_str == "البايو تلقائي" or input_str == "البايو" or input_str == "البايو التلقائي" or input_str == "البايو الوقتي" or input_str == "النبذه الوقتيه" or input_str == "النبذة الوقتية" or input_str == "بايو الوقتي" or input_str == "نبذه الوقتي":
         if gvarstatus("autobio") is not None and gvarstatus("autobio") == "true":
             delgvar("autobio")
-            DEFAULTUSERBIO = gvarstatus("DEFAULT_BIO") or "الحمدلله دائماً وابداً"
+            DEFAULTUSERBIO = gvarstatus("DEFAULT_BIO") or "الحمد الله على كل شئ - @Repthon"
             await event.client(
                 functions.account.UpdateProfileRequest(about=DEFAULTUSERBIO)
             )
             return await edit_delete(event, "**⎉╎تم إيقـاف النبـذه الوقتيـه .. بنجـاح ✓**")
         return await edit_delete(event, "**⎉╎النبـذه الوقتيـه .. غيـر مفعـله اصـلاً ؟!**")
-    END_CMDS = [
-        "البروفايل تلقائي",
-        "الصوره الوقتيه",
-        "الاسم تلقائي",
-        "الاسم الوقتي",
-        "اسم تلقائي",
-        "اسم وقتي",
-        "البايو تلقائي",
-        "البايو الوقتي",
-        "النبذه الوقتيه",
-        "البروفايل",
-        "الاسم",
-        "البايو",
-    ]
-    if input_str not in END_CMDS:
-        await edit_delete(
-            event,
-            f"{input_str} is invalid end command.Mention clearly what should i end.",
-            parse_mode=_format.parse_pre,
-        )
+
 
 
 zq_lo.loop.create_task(digitalpicloop())
@@ -477,10 +446,6 @@ zq_lo.loop.create_task(autobio_loop())
 # ================================================================================================ #
 # =========================================الوقتيه================================================= #
 # ================================================================================================ #
-
-telegraph = Telegraph()
-r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
-auth_url = r["auth_url"]
 
 
 BaqirVP_cmd = (
@@ -782,7 +747,7 @@ async def baqir(event):
             await rep.edit("**✾╎تم إضـافة زغـرفة الاسـم الوقتـي .. بنجـاح✓**\n**✾╎نـوع الزخـرفـه {} **\n**✾╎ارسـل الان ↶** `.الاسم تلقائي`".format(rinfo))
         addgvar("BA_FN", "𝟙𝟚𝟛𝟜𝟝𝟞𝟟𝟠𝟡𝟘")
     elif input_str == "14":
-        zinfo = "１２３４５６７８９０"
+        rinfo = "１２３４５６７８９０"
         await asyncio.sleep(1.5)
         if gvarstatus("BA_FN") is not None:
             await rep.edit("**✾╎تم تغييـر زغـرفة الاسـم الوقتـي .. بنجـاح✓**\n**✾╎نـوع الزخـرفـه {} **\n**✾╎الان ارسـل ↶** `.الاسم تلقائي`".format(rinfo))
