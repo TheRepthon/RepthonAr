@@ -11,7 +11,7 @@ from .utils import add_bot_to_logger_group, load_plugins, setup_bot, startupmess
 LOGS = logging.getLogger("𝐑𝐞𝐩𝐭𝐡𝐨𝐧")
 cmdhr = Config.COMMAND_HAND_LER
 
-if gvarstatus("ALIVE_NAME") is None:
+if not Config.ALIVE_NAME:
     try:
         LOGS.info("⌭ بـدء إضافة الاسـم التلقـائـي ⌭")
         zq_lo.loop.run_until_complete(autoname())
@@ -58,7 +58,37 @@ async def startup_process():
     await verifyLoggerGroup()
     await load_plugins("plugins")
     await load_plugins("assistant")
-    LOGS.info(f"⌔ تـم تنصيـب ريبـــثون . . بنجـاح ✓ \n⌔ لـ إظهـار الاوامـر ارسـل (.الاوامر)")
+    
+    B_BLUE  = "\033[1;34m"
+    G_GREEN = "\033[1;32m"
+    RESET   = "\033[0m"
+    
+    C1 = "\033[1;35m"
+    C2 = "\033[1;33m"
+    C3 = "\033[1;36m"
+    C4 = "\033[1;91m"
+    C5 = "\033[1;94m"
+    C6 = "\033[1;92m"
+    C7 = "\033[1;96m"
+
+    logo = rf"""
+{B_BLUE}╔───────────────────────────────────────╗
+│ {C1}____  {C2}          {C3}_   {C4}_                 {B_BLUE}│
+│{C1}|  _ \ {C2}___ _ __ {C3}| |_{C4}| |__   {C5}___  {C6}_ __  {B_BLUE}│
+│{C1}| |_) {C2}/ _ \ '_ \{C3}| __|{C4} '_ \ {C5}/ _ \{C6}| '_ \ {B_BLUE}│
+│{C1}|  _ <{C2}  __/ |_) {C3}| |_|{C4} | | |{C5} (_) {C6}| | | |{B_BLUE}│
+│{C1}|_| \_{C2}\___| .__/ {C3}\__|_{C4}| |_|{C5}\___/{C6}|_| |_|{B_BLUE}│
+│{C1}      {C2}    |_|   {C3}    {C4}     {C5}     {C6}     {B_BLUE}│
+╚───────────────────────────────────────╝{RESET}"""
+
+    done = f"""
+{B_BLUE}╔───────────────────────────────────────╗
+│ {G_GREEN}⌔ تـم تنصيـب ريبـــثون . . بنجـاح ✓       {B_BLUE}│
+│ {G_GREEN}⌔ لـ إظهـار الاوامـر ارسـل ({cmdhr}الاوامر)         {B_BLUE}│
+{B_BLUE}╚───────────────────────────────────────╝{RESET}"""
+    
+    LOGS.info(logo)
+    LOGS.info(done)
     await verifyLoggerGroup()
     await add_bot_to_logger_group(BOTLOG_CHATID)
     if PM_LOGGER_GROUP_ID != -100:
@@ -66,6 +96,7 @@ async def startup_process():
     await startupmessage()
     RPcheck.sucess = True
     return
+
 
 
 zq_lo.loop.run_until_complete(startup_process())
