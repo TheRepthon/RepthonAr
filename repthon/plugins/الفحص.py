@@ -1,5 +1,5 @@
 # بس ابن الزنة وابن الحرام الي يغير حقوق
-# ابن الكحبة الي يغير حقوقنا - @E_7_V
+# ابن الكحبة الي يغير حقوقنا - @RR0RT
 # خصيمة يوم القيامة تبقى ذمة غير مسامح بها يوم الدين
 
 import random
@@ -46,6 +46,7 @@ RANDOM_MEDIA = [
     "https://graph.org/file/4c6325935cb7e5494c77e.mp4",
     "https://graph.org/file/a6a25238f38a351da1e33.mp4",
     "https://graph.org/file/7aa8ce05fbcabdfd32090.mp4",
+    "https://graph.org/file/74066cb3ddb0bdba1c4b7.mp4",
     "https://graph.org/file/e765806fb50294079a58c.mp4"
 ]
 
