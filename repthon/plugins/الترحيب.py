@@ -3,7 +3,7 @@ from telethon import events
 from telethon.utils import get_display_name
 
 from repthon import zq_lo
-from repthon.core.logger import logging
+from ..core.logger import logging
 
 from ..core.managers import edit_delete, edit_or_reply
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
@@ -24,35 +24,46 @@ async def _(event):  # sourcery no-metrics
     cws = get_current_welcome_settings(event.chat_id)
     if (
         cws
-        and (event.user_joined or event.user_added)
+        and (
+            event.user_joined
+            or event.user_added
+            or getattr(event, "user_approved", False)
+        )
         and not (await event.get_user()).bot
     ):
         if gvarstatus("clean_welcome") is None:
             try:
-                await event.client.delete_messages(event.chat_id, cws.previous_welcome)
+                await event.client.delete_messages(
+                    event.chat_id, cws.previous_welcome
+                )
             except Exception as e:
-                LOGS.warn(str(e))
+                LOGS.warning(str(e))
+
         a_user = await event.get_user()
         chat = await event.get_chat()
         me = await event.client.get_me()
-        title = get_display_name(await event.get_chat()) or "لـ هـذه الدردشـة"
+        title = get_display_name(chat) or "لـ هـذه الدردشـة"
         participants = await event.client.get_participants(chat)
         count = len(participants)
-        mention = "<a href='tg://user?id={}'>{}</a>".format(
-            a_user.id, a_user.first_name
-        )
-        my_mention = "<a href='tg://user?id={}'>{}</a>".format(me.id, me.first_name)
+
+        mention = f"<a href='tg://user?id={a_user.id}'>{a_user.first_name}</a>"
+        my_mention = f"<a href='tg://user?id={me.id}'>{me.first_name}</a>"
+
         first = a_user.first_name
         last = a_user.last_name
         fullname = f"{first} {last}" if last else first
         username = f"@{a_user.username}" if a_user.username else mention
         userid = a_user.id
+
         my_first = me.first_name
         my_last = me.last_name
         my_fullname = f"{my_first} {my_last}" if my_last else my_first
         my_username = f"@{me.username}" if me.username else my_mention
+
         file_media = None
         current_saved_welcome_message = None
+        link_preview = False
+
         if cws:
             if cws.f_mesg_id:
                 msg_o = await event.client.get_messages(
@@ -63,7 +74,10 @@ async def _(event):  # sourcery no-metrics
                 link_preview = True
             elif cws.reply:
                 current_saved_welcome_message = cws.reply
-                link_preview = False
+
+        if not current_saved_welcome_message:
+            return
+
         current_message = await event.reply(
             current_saved_welcome_message.format(
                 mention=mention,
@@ -84,6 +98,7 @@ async def _(event):  # sourcery no-metrics
             parse_mode="html",
             link_preview=link_preview,
         )
+
         update_previous_welcome(event.chat_id, current_message.id)
 
 
