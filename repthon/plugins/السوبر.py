@@ -2258,13 +2258,13 @@ async def _(kst):
     elif cmd == "فكيو":
         art = """
 ㅤ
-⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⣴⠏⠁⠙ ⡄
-⠀⠀⠀⠀⠀⠀⠀⠀   ⡾     ⠀⠀ ⢷
-⠀⠀⠀⠀⠀⠀   ⠀⠀⣾  ⠀  ⠀  ⣿
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⠏⠁⠙ ⡄
+⠀⠀⠀⠀⠀⠀⠀⠀ ⡾      ⢷
+⠀⠀⠀⠀⠀⠀   ⣾  ⠀  ⠀ ⣿
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿  ⠀⠀⠀ ⣿
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿  ⠀⠀ ⠀⣿
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿  ⠀⠀⠀ ⣿
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿      ⠀⠀⣿
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿      ⣿
 ⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⠀⠀⠀⠀⣿⡇
 ⠀⠀⠀⠀⠀⠀⠀⣾⠏⣿⠀⠀⠀⠀⣿⣷⣦⣄⡀
 ⠀⠀⠀⠀⠀⠀⣼⡿⠀⣿⠀⠀⠀⠀⣿⠇⠀⠉⢷⡀
@@ -2384,7 +2384,7 @@ if gvarstatus("status_nasher") and gvarstatus("status_nasher") != "false":
     async def srr_nasher():
         seconds = int(gvarstatus("sec_nasher"))
         message = gvarstatus("msg_nasher")
-        await zzz_nasher(zq_lo, seconds, message)  # تمرير قيمة seconds هنا لكل مجموعة
+        await rrr_nasher(zq_lo, seconds, message)  # تمرير قيمة seconds هنا لكل مجموعة
 
     zq_lo.loop.create_task(srr_nasher())
 
