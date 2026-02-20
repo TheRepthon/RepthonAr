@@ -24,7 +24,7 @@ BaqirNSH_cmd = (
     "**⪼** `.ايقاف النشر` \n"
     "**- الامـر + ايـدي القنـاة تستخـدم الامـر بقنـاتـك** \n\n"
     "🛃 سيتـم اضـافة المزيـد من تخصيص الاوامـر بالتحديثـات الجـايه\n"
-    "\n𓆩 [𐇮  ✗ ¦ ↱𝐺𝑜𝑙 𝐷. 𝑅𝑜𝑔𝑒𝑟↲ ¦ ✗ 𐇮](t.me/E_7_V) 𓆪"
+    "\n𓆩 [𐇮  ✗ ¦ ↱𝐺𝑜𝑙 𝐷. 𝑅𝑜𝑔𝑒𝑟↲ ¦ ✗ 𐇮](t.me/RR0RT) 𓆪"
 )
 
 
@@ -62,14 +62,14 @@ async def _(event):
         return await edit_or_reply(event, "**✾╎عـذراً .. النشر التلقائي خـاص بالقنـوات فقـط**")
     trz_ = event.pattern_match.group(1)
     if str(trz_).startswith("-100"):
-        zed = str(trz_).replace("-100", "")
+        rep = str(trz_).replace("-100", "")
     else:
-        zed = trz_
-    if not zed.isdigit():
+        rep = trz_
+    if not rep.isdigit():
         return await edit_or_reply(event, "**✾╎عـذراً .. قـم بوضـع ايـدي القنـاة اولاً**")
-    if is_post(zed , event.chat_id):
+    if is_post(rep , event.chat_id):
         return await edit_or_reply(event, "**✾╎تم تفعيـل النشر التلقـائي لهـذه القنـاة هنـا .. بنجـاح ✓**")
-    add_post(zed, event.chat_id)
+    add_post(rep, event.chat_id)
     await edit_or_reply(event, f"**✾╎جـاري بدء النشـر التلقـائي من القنـاة ** `{trz_}`")
 
 
@@ -79,14 +79,14 @@ async def _(event):
         return await edit_or_reply(event, "**✾╎عـذراً .. النشر التلقائي خـاص بالقنـوات فقـط**")
     trz_ = event.pattern_match.group(1)
     if str(trz_).startswith("-100"):
-        zed = str(trz_).replace("-100", "")
+        rep = str(trz_).replace("-100", "")
     else:
-        zed = trz_
-    if not zed.isdigit():
+        rep = trz_
+    if not rep.isdigit():
         return await edit_or_reply(event, "**✾╎عـذراً .. قـم بوضـع ايـدي القنـاة اولاً**")
-    if not is_post(zed, event.chat_id):
+    if not is_post(rep, event.chat_id):
         return await edit_or_reply(event, "**✾╎تم تعطيـل النشر التلقـائي لهـذه القنـاة هنـا .. بنجـاح ✓**")
-    remove_post(zed, event.chat_id)
+    remove_post(rep, event.chat_id)
     await edit_or_reply(event, f"**✾╎تم ايقـاف النشـر التلقـائي من** `{trz_}`")
 
 
@@ -105,9 +105,6 @@ async def _(event):
             await zq_lo.send_message(int(chat), event.message)
 
 
-
-# Copyright (C) 2022 Zed-Thon . All Rights Reserved
 @zq_lo.rep_cmd(pattern="النشر")
 async def cmd(Baqir):
     await edit_or_reply(Baqir, BaairNSH_cmd)
-
