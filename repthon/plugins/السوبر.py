@@ -315,7 +315,7 @@ async def rrr_spnasher(zq_lo, sleeptimet, message):  # نشر عبر يوزرا�
                 #await asyncio.sleep(random.uniform(1, sleeptimet))  # تعني الأعداد الأصغر (أسرع إرسالًا) (ولكن مخاطرة أعلى للحظر)
                 
                 #chat_iiid = chat_iid if chat_iid.startswith("-100") else f"-100{chat_iid}" 
-                #chat = await zedub.get_entity(chat_iiid)
+                #chat = await zq_lo.get_entity(chat_iiid)
                 ch_id = int(chat_iid)
                 if media_spnasher is not None:
                     REP_IMG = gvarstatus("med_spnasher")
@@ -335,7 +335,7 @@ async def rrr_spnasher(zq_lo, sleeptimet, message):  # نشر عبر يوزرا�
                 # Consider adding more sophisticated error handling, like retry mechanisms
                 #await asyncio.sleep(random.uniform(30, 60)) #Longer delay for errors
                 #await asyncio.sleep(random.uniform(5, 10)) #Longer delay for errors
-                #await zedub.send_message(BOTLOG_CHATID, f"**⌔ لا يمكن العثور على المجموعة أو الدردشة** {chat_iiid} :\n`{str(e)}`")
+                #await zq_lo.send_message(BOTLOG_CHATID, f"**⌔ لا يمكن العثور على المجموعة أو الدردشة** {chat_iiid} :\n`{str(e)}`")
                 pass
         
         # Wait for the specified sleeptimet before starting the next round
