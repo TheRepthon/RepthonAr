@@ -53,7 +53,7 @@ DELETE_TIMEOUT = 1
 USERID = bot.uid if Config.OWNER_ID == 0 else Config.OWNER_ID
 ALIVE_NAME = Config.ALIVE_NAME
 thumb_image_path = os.path.join(Config.TMP_DOWNLOAD_DIRECTORY, "thumb_image.jpg")
-Tiba = f"**🖥┊لـوحـة اوامـر 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 الشفـافـه **\n**🧑🏻‍💻┊المستخـدم ↶** {mention} \n\n•❶•** اوامــر الـبحـث والـتحميـل **\n•❷•** اوامــر الـبـوت **\n•❸•** اوامــر الـوقـتـي **\n•❹•** اوامــر المجمـوعـة¹ **\n•❺•** اوامــر المجمـوعـة² **\n•❻•** اوامــر الـحسـاب **\n•❼•** اوامــر الميـديـا والـصيــغ **\n•❽•** اوامــر الـفــارات **\n•❾•** اوامــر الخـدمــات العـامــه **\n•❿•** اوامــر الالعــاب **\n•⓫•** اوامــر الـتســليــه**\n•⓬•** اوامــر التحشيـش**\n•⓭•** اوامــر الستـوريات**\n•⓮•** اوامــر الآفتــارات**\n•⓯•** اوامــر الصيــد والتشيكــر **\n•⓰•** اوامــر النشــر التلقــائي **\n•⓱•** اوامــر تجميــع النقــاط **\n•⓲•** اوامــر الاشتـراك الإجبـاري **\n•⓳•** اوامــر الإضـافة والتفليــش**\n•⓴•** اوامــر النشـر العـام (الـسوبـرات)**\n\n**•❐• لعـرض الاوامـر مع الوصـف ارسـل** `.اوامري`\n**•❐• لعـرض شـروحـات الاوامـر ارسـل** `.مساعده` "
+Tiba = f"**🖥┊لـوحـة اوامـر 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 الشفـافـه **\n**🧑🏻‍💻┊المستخـدم ↶** {mention} \n\n•❶•** اوامــر الـبحـث والـتحميـل **\n•❷•** اوامــر الـبـوت **\n•❸•** اوامــر الـوقـتـي **\n•❹•** اوامــر المجمـوعـة¹ **\n•❺•** اوامــر المجمـوعـة² **\n•❻•** اوامــر الـحسـاب **\n•❼•** اوامــر الميـديـا والـصيــغ **\n•❽•** اوامــر الـفــارات **\n•❾•** اوامــر الخـدمــات العـامــه **\n•❿•** اوامــر الالعــاب **\n•⓫•** اوامــر الـتســليــه**\n•⓬•** اوامــر التحشيـش**\n•⓭•** اوامــر الستـوريات**\n•⓮•** اوامــر الآفتــارات**\n•⓯•** اوامــر الصيــد والتشيكــر **\n•⓰•** اوامــر النشــر التلقــائي **\n•⓱•** اوامــر تجميــع النقــاط **\n•⓲•** اوامــر الاشتـراك الإجبـاري **\n•⓳•** اوامــر الإضـافة والتفليــش**\n•⓴•** اوامــر النشـر العـام (الـسوبـرات)**\n•㉑•** اوامــر بـصمـات الـمـيـمـز**•❐• لعـرض الاوامـر مع الوصـف ارسـل** `.اوامري\n\n`\n**•❐• لعـرض شـروحـات الاوامـر ارسـل** `.مساعده` "
 TG = Config.TG_BOT_USERNAME
 TM = time.strftime("%I:%M")
 Channels = f"**•❐• مـرحبــاً عـزيـزي  {mention} **\n**•❐• اليـك مجمـوعــة قنـوات ريبـــثون ↵ 𝙍𝙀𝙋𝙏𝙃𝙊𝙉 ♥️🦾**\n\n**•❐• استـخـدم الازرار بالاسفــل↓**"
@@ -272,7 +272,7 @@ async def rep(event):
 @zq_lo.tgbot.on(CallbackQuery(data=re.compile("bbaqir")))
 @check_owner
 async def on_plug_in_callback_query_handler(event):
-    buttons = [[Button.inline("❶", data="baqir1"), Button.inline("❷", data="baqir2"), Button.inline("❸", data="baqir3"), Button.inline("❹", data="baqir4"),],[Button.inline("❺", data="baqir5"), Button.inline("❻", data="baqir6"), Button.inline("❼", data="baqir7"), Button.inline("❽", data="baqir8"),],[Button.inline("❾", data="baqir9"), Button.inline("❿", data="baqir10"), Button.inline("⓫", data="baqir11"),],[Button.inline("⓬", data="baqir12"), Button.inline("⓭", data="baqir13"), Button.inline("⓮", data="baqir14"), Button.inline("⓯", data="baqir15"),],[Button.inline("⓰", data="baqir16"), Button.inline("⓱", data="baqir17"),],[Button.inline("⓲", data="baqir18"), Button.inline("⓳", data="baqir19"), Button.inline("⓴", data="baqir20"),]]
+    buttons = [[Button.inline("❶", data="baqir1"), Button.inline("❷", data="baqir2"), Button.inline("❸", data="baqir3"), Button.inline("❹", data="baqir4"),],[Button.inline("❺", data="baqir5"), Button.inline("❻", data="baqir6"), Button.inline("❼", data="baqir7"), Button.inline("❽", data="baqir8"),],[Button.inline("❾", data="baqir9"), Button.inline("❿", data="baqir10"), Button.inline("⓫", data="baqir11"),],[Button.inline("⓬", data="baqir12"), Button.inline("⓭", data="baqir13"), Button.inline("⓮", data="baqir14"), Button.inline("⓯", data="baqir15"),],[Button.inline("⓰", data="baqir16"), Button.inline("⓱", data="baqir17"),],[Button.inline("⓲", data="baqir18"), Button.inline("⓳", data="baqir19"), Button.inline("⓴", data="baqir20"), Button.inline("㉑", data="baqir21"]]
     await event.edit(Tiba, buttons=buttons)
 
 @zq_lo.tgbot.on(CallbackQuery(data=re.compile(rb"baqir1")))
@@ -525,8 +525,8 @@ async def rep_handler(zq_lo):
         "⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n\n"
         "𓆩 [𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁](t.me/Repthon) 𓆪"
     )
-    buttons = [[Button.inline("رجــوع", data="bbaqir")]]
-    await zq_lo.edit(text, buttons=buttons, link_preview=False)
+    roger = [[Button.inline("رجــوع", data="bbaqir")]]
+    await zq_lo.edit(text, buttons=roger, link_preview=False)
 
 
 #لوحـة قنــوات الســورس
