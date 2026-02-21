@@ -472,7 +472,7 @@ async def spammer(event):
             link_preview=False,
         )
 
-    global z_spnasher
+    global r_spnasher
     r_spnasher = True
     #chat_id = addgvar("chat_spnasher", event.chat_id)
     await rr_spnasher()
@@ -1046,13 +1046,13 @@ async def rrr_sp3nasher(zq_lo, sleeptimet, message):  # نشر عبر يوزرا
         await asyncio.sleep(sleeptimet)
 
 
-async def zz_sp3nasher():
+async def rr_sp3nasher():
     sleeptimet = int(gvarstatus("sec_sp3nasher"))
     message = gvarstatus("msg_sp3nasher")
     await rrr_sp3nasher(zq_lo, sleeptimet, message)
 
 
-@zq_lo.rep_cmd(pattern=f"{SP3AM} ([\s\S]*)")
+@zq_lo.rep_cmd(pattern=f"{SP3AM} ([\\s\\S]*)")
 async def sp3ammer(event):
     if gvarstatus("status_sp3nasher"):
         if BOTLOG:
@@ -1393,7 +1393,7 @@ async def rrr_nasher(zq_lo, sleeptimet, message):  # نشر عبر يوزرات 
         await asyncio.sleep(sleeptimet)
 
 
-async def zz_nasher():
+async def rr_nasher():
     sleeptimet = int(gvarstatus("sec_nasher"))
     message = gvarstatus("msg_nasher")
     await rrr_nasher(zq_lo, sleeptimet, message)
@@ -1418,7 +1418,7 @@ async def _(event): # .نشر + عدد الثواني الفاصله + يوزر�
     if all(var_status[0:2]) and all(status is None for status in var_status[2:]):
         return await edit_or_reply(event, "**✧ عـذراً .. عـزيـزي**\n**✧ لايوجد سوبرات مضافه لقائمـة النشر ؟!**\n**✧ قم بالذهاب اولاً لمجموعات السوبر التي تريد النشر فيها**\n**✧ ثم ارسل الامر** (.اضف سوبر)\n**✧ وهكذا قم بتكرار الامر لبقية السوبرات**")
 
-    parameters = re.split(r'\s+', event.text.strip(), maxsplit=2)
+    parameters = re.split(r'\\s+', event.text.strip(), maxsplit=2)
     #if len(parameters) != 2:
         #return await edit_or_reply(event, "**- امـر خاطـىء .. ارسـل ( .النشر ) لـ تصفح اوامـر النشـر التلقائي**")
     #rrr = await edit_or_reply(event, "**✧ جـاري بـدء النشـر في المجموعـات ...الرجـاء الانتظـار**")
