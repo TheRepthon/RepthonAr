@@ -7,11 +7,8 @@ import requests
 
 from pytgcalls import PyTgCalls
 from pytgcalls.exceptions import (
-    AlreadyJoinedError,
     NoActiveGroupCall,
-    NodeJSNotInstalled,
-    NotInGroupCallError,
-    TooOldNodeJSVersion,
+    NotInCallError,
 )
 from pytgcalls.types import AudioPiped, AudioVideoPiped
 from pytgcalls.types.stream import StreamAudioEnded
@@ -59,7 +56,7 @@ class RepVC:
         if self.CHAT_ID:
             try:
                 await self.app.leave_group_call(self.CHAT_ID)
-            except (NotInGroupCallError, NoActiveGroupCall):
+            except (NotInCallError, NoActiveGroupCall):
                 pass
             self.CHAT_NAME = None
             self.CHAT_ID = None
@@ -97,9 +94,9 @@ class RepVC:
             except ChannelInvalidError:
                 return "⚉ **لديك حساب مساعد للميوزك قمت بتعيينه سابقاً**\n⚉ قم باضافة الحساب المساعد اولاً للمجموعة"
 
-        except (NodeJSNotInstalled, TooOldNodeJSVersion):
+        except (TooOldTelethonVersion):
             return "- آخـر اصـدار من NodeJs لم يتـم تحميلـه ...؟!"
-        except AlreadyJoinedError:
+        except NoActiveGroupCall:
             await self.app.leave_group_call(chat.id)
             await asyncio.sleep(3)
             await self.join_vc(chat=chat, join_as=join_as)
