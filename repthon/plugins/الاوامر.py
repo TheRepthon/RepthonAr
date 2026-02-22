@@ -53,7 +53,7 @@ DELETE_TIMEOUT = 1
 USERID = bot.uid if Config.OWNER_ID == 0 else Config.OWNER_ID
 ALIVE_NAME = Config.ALIVE_NAME
 thumb_image_path = os.path.join(Config.TMP_DOWNLOAD_DIRECTORY, "thumb_image.jpg")
-Tiba = f"**🖥┊لـوحـة اوامـر 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 الشفـافـه **\n**🧑🏻‍💻┊المستخـدم ↶** {mention} \n\n•❶•** اوامــر الـبحـث والـتحميـل **\n•❷•** اوامــر الـبـوت **\n•❸•** اوامــر الـوقـتـي **\n•❹•** اوامــر المجمـوعـة¹ **\n•❺•** اوامــر المجمـوعـة² **\n•❻•** اوامــر الـحسـاب **\n•❼•** اوامــر الميـديـا والـصيــغ **\n•❽•** اوامــر الـفــارات **\n•❾•** اوامــر الخـدمــات العـامــه **\n•❿•** اوامــر الالعــاب **\n•⓫•** اوامــر الـتســليــه**\n•⓬•** اوامــر التحشيـش**\n•⓭•** اوامــر الستـوريات**\n•⓮•** اوامــر الآفتــارات**\n•⓯•** اوامــر الصيــد والتشيكــر **\n•⓰•** اوامــر النشــر التلقــائي **\n•⓱•** اوامــر تجميــع النقــاط **\n•⓲•** اوامــر الاشتـراك الإجبـاري **\n•⓳•** اوامــر الإضـافة والتفليــش**\n•⓴•** اوامــر النشـر العـام (الـسوبـرات)**\n\n**•❐• لعـرض الاوامـر مع الوصـف ارسـل** `.اوامري`\n**•❐• لعـرض شـروحـات الاوامـر ارسـل** `.مساعده` "
+Tiba = f"**🖥┊لـوحـة اوامـر 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 الشفـافـه **\n**🧑🏻‍💻┊المستخـدم ↶** {mention} \n\n•❶•** اوامــر الـبحـث والـتحميـل **\n•❷•** اوامــر الـبـوت **\n•❸•** اوامــر الـوقـتـي **\n•❹•** اوامــر المجمـوعـة¹ **\n•❺•** اوامــر المجمـوعـة² **\n•❻•** اوامــر الـحسـاب **\n•❼•** اوامــر الميـديـا والـصيــغ **\n•❽•** اوامــر الـفــارات **\n•❾•** اوامــر الخـدمــات العـامــه **\n•❿•** اوامــر الالعــاب **\n•⓫•** اوامــر الـتســليــه **\n•⓬•** اوامــر التحشيـش **\n•⓭•** اوامــر الستـوريات **\n•⓮•** اوامــر الآفتــارات **\n•⓯•** اوامــر الصيــد والتشيكــر **\n•⓰•** اوامــر النشــر التلقــائي **\n•⓱•** اوامــر تجميــع النقــاط **\n•⓲•** اوامــر الاشتـراك الإجبـاري **\n•⓳•** اوامــر الإضـافة والتفليــش **\n•⓴•** اوامــر النشـر العـام (الـسوبـرات) **\n•㉑•** اوامــر بصمـات الميـمـز **\n\n**•❐• لعـرض الاوامـر مع الوصـف ارسـل** `.اوامري`\n**•❐• لعـرض شـروحـات الاوامـر ارسـل** `.مساعده` "
 TG = Config.TG_BOT_USERNAME
 TM = time.strftime("%I:%M")
 Channels = f"**•❐• مـرحبــاً عـزيـزي  {mention} **\n**•❐• اليـك مجمـوعــة قنـوات ريبـــثون ↵ 𝙍𝙀𝙋𝙏𝙃𝙊𝙉 ♥️🦾**\n\n**•❐• استـخـدم الازرار بالاسفــل↓**"
@@ -73,7 +73,7 @@ async def rep_handler(event):
     query = event.text
     await zq_lo.get_me()
     if query.startswith("الاوامر") and event.query.user_id == zq_lo.uid:
-        buttons = [[Button.inline("❶", data="baqir1"), Button.inline("❷", data="baqir2"), Button.inline("❸", data="baqir3"), Button.inline("❹", data="baqir4"),],[Button.inline("❺", data="baqir5"), Button.inline("❻", data="baqir6"), Button.inline("❼", data="baqir7"), Button.inline("❽", data="baqir8"),],[Button.inline("❾", data="baqir9"), Button.inline("❿", data="baqir10"), Button.inline("⓫", data="baqir11"),],[Button.inline("⓬", data="baqir12"), Button.inline("⓭", data="baqir13"), Button.inline("⓮", data="baqir14"), Button.inline("⓯", data="baqir15"),],[Button.inline("⓰", data="baqir16"), Button.inline("⓱", data="baqir17"),],[Button.inline("⓲", data="baqir18"), Button.inline("⓳", data="baqir19"), Button.inline("⓴", data="baqir20"),]]
+        buttons = [[Button.inline("❶", data="baqir1"), Button.inline("❷", data="baqir2"), Button.inline("❸", data="baqir3"), Button.inline("❹", data="baqir4"),],[Button.inline("❺", data="baqir5"), Button.inline("❻", data="baqir6"), Button.inline("❼", data="baqir7"), Button.inline("❽", data="baqir8"),],[Button.inline("❾", data="baqir9"), Button.inline("❿", data="baqir10"), Button.inline("⓫", data="baqir11"),],[Button.inline("⓬", data="baqir12"), Button.inline("⓭", data="baqir13"), Button.inline("⓮", data="baqir14"), Button.inline("⓯", data="baqir15"),],[Button.inline("⓰", data="baqir16"), Button.inline("⓱", data="baqir17"),],[Button.inline("⓲", data="baqir18"), Button.inline("⓳", data="baqir19"), Button.inline("⓴", data="baqir20"), Button.inline("㉑", data="baqir21")],]
         result = builder.article(title="zq_lo",text=Tiba,buttons=buttons,link_preview=False)
         await event.answer([result] if result else None)
 @zq_lo.rep_cmd(pattern="الاوامر(?: |$)(.*)")
@@ -168,110 +168,13 @@ async def rep(event):
     await edit_or_reply(event, "[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - قـائمــة الاوامــر الـذاتيــة](t.me/Repthon) .\n⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n**⪼** `.تفعيل الذاتيه`\n**لـ تفعيـل الحفظ التلقائي للذاتيـه**\n**سوف يقوم حسابك بحفظ الذاتيه تلقائياً في حافظة حسابك عندما يرسل لك اي شخص ميديـا ذاتيـه**\n\n**⪼** `.تعطيل الذاتيه`\n**لـ تعطيـل الحفظ التلقائي للذاتيـه**\n\n**⪼** `.ذاتيه`\n**بالـرد ؏ــلى صـوره ذاتيـه لحفظهـا في حال كان امر الحفظ التلقائي معطـل**\n\n\n**⪼** `.اعلان`\n**الامـر + الوقت بالدقائق + الرسـاله**\n**امـر مفيـد لجماعـة التمويـل لـ عمـل إعـلان مـؤقت بالقنـوات**\n\n𓆩 [𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁](t.me/Repthon) 𓆪")
 @zq_lo.rep_cmd(pattern="م25(?: |$)(.*)")
 async def rep(event):
-    await edit_or_reply(event,
-"[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - بصـمات مـيـمـز تـحشـيش](t.me/Repthon)\n"
-"⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n\n"
-"⪼ `.ص1`  ⦙ ابو عباس لو تاكل خره\n"
-"⪼ `.ص2`  ⦙ استمر نحن معك\n"
-"⪼ `.ص3`  ⦙ افحط بوجه\n"
-"⪼ `.ص4`  ⦙ اكعد لا اسطرك سطره العباس\n"
-"⪼ `.ص5`  ⦙ اللهم لا شماته\n"
-"⪼ `.ص6`  ⦙ امرع دينه\n"
-"⪼ `.ص7`  ⦙ امشي بربوك\n"
-"⪼ `.ص8`  ⦙ انت اسكت انت اسكت\n"
-"⪼ `.ص9`  ⦙ انت سايق زربه\n"
-"⪼ `.ص10` ⦙ اوني تشان\n"
-"⪼ `.ص11` ⦙ برافو عليك استادي\n"
-"⪼ `.ص12` ⦙ بلوك محترم\n"
-"⪼ `.ص13` ⦙ بووم في منتصف الجبهة\n"
-"⪼ `.ص14` ⦙ بيتش\n"
-"⪼ `.ص15` ⦙ تره متكدرلي\n"
-"⪼ `.ص16` ⦙ تعبان اوي\n"
-"⪼ `.ص17` ⦙ تكذب\n"
-"⪼ `.ص18` ⦙ حسبي الله\n"
-"⪼ `.ص19` ⦙ حشاش\n"
-"⪼ `.ص20` ⦙ حقير\n"
-"⪼ `.ص21` ⦙ خاص\n"
-"⪼ `.ص22` ⦙ خاله ما تنامون\n"
-"⪼ `.ص23` ⦙ خرب شرفي اذا ابقى بالعراق\n"
-"⪼ `.ص24` ⦙ دكات الوكت الاغبر\n"
-"⪼ `.ص25` ⦙ ررردح\n"
-"⪼ `.ص26` ⦙ سلامن عليكم\n"
-"⪼ `.ص27` ⦙ شعليك\n"
-"⪼ `.ص28` ⦙ شكد شفت ناس مدودة\n"
-"⪼ `.ص29` ⦙ شلون ،\n"
-"⪼ `.ص30` ⦙ صح لنوم\n"
-"⪼ `.ص31` ⦙ صمت\n"
-"⪼ `.ص32` ⦙ ضحكة مصطفى الحجي\n"
-"⪼ `.ص33` ⦙ طماطه\n"
-"⪼ `.ص34` ⦙ طيح الله حضك\n"
-"⪼ `.ص35` ⦙ فاك يوو\n"
-"⪼ `.ص36` ⦙ فرحان\n"
-"⪼ `.ص37` ⦙ لا تضل تضرط\n"
-"⪼ `.ص38` ⦙ لا تقتل المتعه يا مسلم\n"
-"⪼ `.ص39` ⦙ لا مستحيل\n"
-"⪼ `.ص40` ⦙ لا والله شو عصبي\n"
-"⪼ `.ص41` ⦙ لش\n"
-"⪼ `.ص42` ⦙ لك اني شعليه\n"
-"⪼ `.ص43` ⦙ ما اشرب\n"
-"⪼ `.ص44` ⦙ مع الاسف\n"
-"⪼ `.ص45` ⦙ مقتدى\n"
-"⪼ `.ص46` ⦙ من رخصتكم\n"
-"⪼ `.ص47` ⦙ منو انت\n"
-"⪼ `.ص48` ⦙ منورني\n"
-"⪼ `.ص49` ⦙ نتلاكه بالدور الثاني\n"
-"⪼ `.ص50` ⦙ نستودعكم الله\n"
-"⪼ `.ص51` ⦙ ها شنهي\n"
-"⪼ `.ص52` ⦙ ههاي الافكار حطها\n"
-"⪼ `.ص53` ⦙ وينهم\n"
-"⪼ `.ص54` ⦙ يموتون جهالي\n"
-"⪼ `.ص55` ⦙ اريد انام\n"
-"⪼ `.ص56` ⦙ افتحك فتح\n"
-"⪼ `.ص57` ⦙ اكل خره لدوخني\n"
-"⪼ `.ص58` ⦙ السيد شنهو السيد\n"
-"⪼ `.ص59` ⦙ زيج2\n"
-"⪼ `.ص60` ⦙ زيج لهارون\n"
-"⪼ `.ص61` ⦙ زيج الناصرية\n"
-"⪼ `.ص62` ⦙ راقبو اطفالكم\n"
-"⪼ `.ص63` ⦙ راح اموتن\n"
-"⪼ `.ص64` ⦙ ذس اس مضرطة\n"
-"⪼ `.ص65` ⦙ دروح سرسح منا\n"
-"⪼ `.ص66` ⦙ خويه ما دكوم بيه\n"
-"⪼ `.ص67` ⦙ خلصت تمسلت ديلة كافي انجب\n"
-"⪼ `.ص68` ⦙ بعدك تخاف\n"
-"⪼ `.ص69` ⦙ بسبوس\n"
-"⪼ `.ص70` ⦙ اني بتيتة كحبة\n"
-"⪼ `.ص71` ⦙ انعل ابوكم لابو اليلعب وياكم طوبة\n"
-"⪼ `.ص72` ⦙ انت شدخلك\n"
-"⪼ `.ص73` ⦙ انا ماشي بطلع\n"
-"⪼ `.ص74` ⦙ امداك وامده الخلفتك\n"
-"⪼ `.ص75` ⦙ امبيههههه\n"
-"⪼ `.ص76` ⦙ هدي بيبي\n"
-"⪼ `.ص77` ⦙ هاه صدك تحجي\n"
-"⪼ `.ص78` ⦙ مو كتلك رجعني\n"
-"⪼ `.ص79` ⦙ مامرجية منك هاية\n"
-"⪼ `.ص80` ⦙ ليش هيجي\n"
-"⪼ `.ص81` ⦙ كـــافـي\n"
-"⪼ `.ص82` ⦙ كس اخت السيد\n"
-"⪼ `.ص83` ⦙ شنو كواد ولك اني هنا\n"
-"⪼ `.ص84` ⦙ شجلبت\n"
-"⪼ `.ص85` ⦙ شبيك وجه الدبس\n"
-"⪼ `.ص86` ⦙ سييييي\n"
-"⪼ `.ص87` ⦙ زيجج1\n"
-"⪼ `.ص88` ⦙ يموتون جهالي\n"
-"⪼ `.ص89` ⦙ ياخي اسكت اسكت\n"
-"⪼ `.ص90` ⦙ وينهم\n"
-"⪼ `.ص91` ⦙ هيلو سامر وحود\n"
-"⪼ `.ص92` ⦙ هو\n"
-"⪼ `.ص93` ⦙ ههاي الافكار حطها\n\n"
-"𓆩 [𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁](t.me/Repthon) 𓆪"
-                       )
+    await edit_or_reply(event, "[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - بصـمات مـيـمـز تـحشـيش](t.me/Repthon)\n⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n\n⪼ `.ص1`  ⦙ ابو عباس لو تاكل خره\n⪼ `.ص2`  ⦙ استمر نحن معك\n⪼ `.ص3`  ⦙ افحط بوجه\n⪼ `.ص4`  ⦙ اكعد لا اسطرك سطره العباس\n⪼ `.ص5`  ⦙ اللهم لا شماته\n⪼ `.ص6`  ⦙ امرع دينه\n⪼ `.ص7`  ⦙ امشي بربوك\n⪼ `.ص8`  ⦙ انت اسكت انت اسكت\n⪼ `.ص9`  ⦙ انت سايق زربه\n⪼ `.ص10` ⦙ اوني تشان\n⪼ `.ص11` ⦙ برافو عليك استادي\n⪼ `.ص12` ⦙ بلوك محترم\n⪼ `.ص13` ⦙ بووم في منتصف الجبهة\n⪼ `.ص14` ⦙ بيتش\n⪼ `.ص15` ⦙ تره متكدرلي\n⪼ `.ص16` ⦙ تعبان اوي\n⪼ `.ص17` ⦙ تكذب\n⪼ `.ص18` ⦙ حسبي الله\n⪼ `.ص19` ⦙ حشاش\n⪼ `.ص20` ⦙ حقير\n⪼ `.ص21` ⦙ خاص\n⪼ `.ص22` ⦙ خاله ما تنامون\n⪼ `.ص23` ⦙ خرب شرفي اذا ابقى بالعراق\n⪼ `.ص24` ⦙ دكات الوكت الاغبر\n⪼ `.ص25` ⦙ ررردح\n⪼ `.ص26` ⦙ سلامن عليكم\n⪼ `.ص27` ⦙ شعليك\n⪼ `.ص28` ⦙ شكد شفت ناس مدودة\n⪼ `.ص29` ⦙ شلون\n⪼ `.ص30` ⦙ صح لنوم\n⪼ `.ص31` ⦙ صمت\n⪼ `.ص32` ⦙ ضحكة مصطفى الحجي\n⪼ `.ص33` ⦙ طماطه\n⪼ `.ص34` ⦙ طيح الله حضك\n⪼ `.ص35` ⦙ فاك يوو\n⪼ `.ص36` ⦙ فرحان\n⪼ `.ص37` ⦙ لا تضل تضرط\n⪼ `.ص38` ⦙ لا تقتل المتعه يا مسلم\n⪼ `.ص39` ⦙ لا مستحيل\n⪼ `.ص40` ⦙ لا والله شو عصبي\n⪼ `.ص41` ⦙ لش\n⪼ `.ص42` ⦙ لك اني شعليه\n⪼ `.ص43` ⦙ ما اشرب\n⪼ `.ص44` ⦙ مع الاسف\n⪼ `.ص45` ⦙ مقتدى\n⪼ `.ص46` ⦙ من رخصتكم\n⪼ `.ص47` ⦙ منو انت\n⪼ `.ص48` ⦙ منورني\n⪼ `.ص49` ⦙ نتلاكه بالدور الثاني\n⪼ `.ص50` ⦙ نستودعكم الله\n⪼ `.ص51` ⦙ ها شنهي\n⪼ `.ص52` ⦙ ههاي الافكار حطها\n⪼ `.ص53` ⦙ وينهم\n⪼ `.ص54` ⦙ يموتون جهالي\n⪼ `.ص55` ⦙ اريد انام\n⪼ `.ص56` ⦙ افتحك فتح\n⪼ `.ص57` ⦙ اكل خره لدوخني\n⪼ `.ص58` ⦙ السيد شنهو السيد\n⪼ `.ص59` ⦙ زيج2\n⪼ `.ص60` ⦙ زيج لهارون\n⪼ `.ص61` ⦙ زيج الناصرية\n⪼ `.ص62` ⦙ راقبو اطفالكم\n⪼ `.ص63` ⦙ راح اموتن\n⪼ `.ص64` ⦙ ذس اس مضرطة\n⪼ `.ص65` ⦙ دروح سرسح منا\n⪼ `.ص66` ⦙ خويه ما دكوم بيه\n⪼ `.ص67` ⦙ خلصت تمسلت ديلة كافي انجب\n⪼ `.ص68` ⦙ بعدك تخاف\n⪼ `.ص69` ⦙ بسبوس\n⪼ `.ص70` ⦙ اني بتيتة كحبة\n⪼ `.ص71` ⦙ انعل ابوكم لابو اليلعب وياكم طوبة\n⪼ `.ص72` ⦙ انت شدخلك\n⪼ `.ص73` ⦙ انا ماشي بطلع\n⪼ `.ص74` ⦙ امداك وامده الخلفتك\n⪼ `.ص75` ⦙ امبيههههه\n⪼ `.ص76` ⦙ هدي بيبي\n⪼ `.ص77` ⦙ هاه صدك تحجي\n⪼ `.ص78` ⦙ مو كتلك رجعني\n⪼ `.ص79` ⦙ مامرجية منك هاية\n⪼ `.ص80` ⦙ ليش هيجي\n⪼ `.ص81` ⦙ كـــافـي\n⪼ `.ص82` ⦙ كس اخت السيد\n⪼ `.ص83` ⦙ شنو كواد ولك اني هنا\n⪼ `.ص84` ⦙ شجلبت\n⪼ `.ص85` ⦙ شبيك وجه الدبس\n⪼ `.ص86` ⦙ سييييي\n⪼ `.ص87` ⦙ زيجج1\n⪼ `.ص88` ⦙ يموتون جهالي\n⪼ `.ص89` ⦙ ياخي اسكت اسكت\n⪼ `.ص90` ⦙ وينهم\n⪼ `.ص91` ⦙ هيلو سامر وحود\n⪼ `.ص92` ⦙ هو\n⪼ `.ص93` ⦙ ههاي الافكار حطها\n⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n\n[𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁](t.me/Repthon) 𓆪")
 
 #الكـالبـاك ابديـت - ريبـــثون
 @zq_lo.tgbot.on(CallbackQuery(data=re.compile("bbaqir")))
 @check_owner
 async def on_plug_in_callback_query_handler(event):
-    buttons = [[Button.inline("❶", data="baqir1"), Button.inline("❷", data="baqir2"), Button.inline("❸", data="baqir3"), Button.inline("❹", data="baqir4"),],[Button.inline("❺", data="baqir5"), Button.inline("❻", data="baqir6"), Button.inline("❼", data="baqir7"), Button.inline("❽", data="baqir8"),],[Button.inline("❾", data="baqir9"), Button.inline("❿", data="baqir10"), Button.inline("⓫", data="baqir11"),],[Button.inline("⓬", data="baqir12"), Button.inline("⓭", data="baqir13"), Button.inline("⓮", data="baqir14"), Button.inline("⓯", data="baqir15"),],[Button.inline("⓰", data="baqir16"), Button.inline("⓱", data="baqir17"),],[Button.inline("⓲", data="baqir18"), Button.inline("⓳", data="baqir19"), Button.inline("⓴", data="baqir20"),]]
+    buttons = [[Button.inline("❶", data="baqir1"), Button.inline("❷", data="baqir2"), Button.inline("❸", data="baqir3"), Button.inline("❹", data="baqir4"),],[Button.inline("❺", data="baqir5"), Button.inline("❻", data="baqir6"), Button.inline("❼", data="baqir7"), Button.inline("❽", data="baqir8"),],[Button.inline("❾", data="baqir9"), Button.inline("❿", data="baqir10"), Button.inline("⓫", data="baqir11"),],[Button.inline("⓬", data="baqir12"), Button.inline("⓭", data="baqir13"), Button.inline("⓮", data="baqir14"), Button.inline("⓯", data="baqir15"),],[Button.inline("⓰", data="baqir16"), Button.inline("⓱", data="baqir17"),],[Button.inline("⓲", data="baqir18"), Button.inline("⓳", data="baqir19"), Button.inline("⓴", data="baqir20"), Button.inline("㉑", data="baqir21")],]
     await event.edit(Tiba, buttons=buttons)
 
 @zq_lo.tgbot.on(CallbackQuery(data=re.compile(rb"baqir1")))
@@ -422,7 +325,12 @@ async def rep_handler(zq_lo):
     text = "[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - (اوامــر النشــر العـام (السـوبــرات 🎡](t.me/Repthon) .\n⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n**⎉╎قـائمـة اوامـر السـوبـر (النشـر العـام) الخاصـه بـ سـورس ريبـــثون ♾ :**\n\n`.سوبر`\n**⪼ الامـر + عـدد الثـوانـي + عـدد مـرات التكـرار (بالـرد ع رسـالة او ميديـا)**\n**⪼ لـ النشـر التكـراري العـام بكـل مجموعـات قائمـة السـوبـر ( خـاص بجماعـة بالسـوبـرات ) ...✓**\n\nٴ┄─┄─┄─┄┄─┄─┄─┄─┄┄\n\n`.ايقاف سوبر`\n**⪼ استخـدم الامـر داخـل المجموعـة المحـدده ...**\n**⪼ لـ إيقـاف النشـر العـام عـن مجموعـة معينـه ...✓**\n\nٴ┄─┄─┄─┄┄─┄─┄─┄─┄┄\n\n`.ايقاف السوبرات`\n**⪼ لـ إيقـاف النشـر التكـراري العـام عـن جميـع المجموعـات ...✓**\n\nٴ┄─┄─┄─┄┄─┄─┄─┄─┄┄\n\n`.اضف سوبر`\n**⪼ استخـدم الامـر داخـل المجموعـة المحـدده ...**\n**⪼ لـ اضافة مجموعـة محـددة لـ قائمـة مجموعـات السوبـر ...✓**\n\nٴ┄─┄─┄─┄┄─┄─┄─┄─┄┄\n\n`.حذف سوبر`\n**⪼ استخـدم الامـر داخـل المجموعـة المحـدده ...**\n**⪼ لـ حـذف مجموعـة محـددة مـن قائمـة مجموعـات السوبـر ...✓**\n\nٴ┄─┄─┄─┄┄─┄─┄─┄─┄┄\n\n`.السوبرات`\n**⪼ لـ جلب قائمـة مجموعـات السوبـر الخاصـه بك ...✓**\n\nٴ┄─┄─┄─┄┄─┄─┄─┄─┄┄\n\n`.حذف السوبرات`\n**⪼ لـ حـذف وتصفيـر قائمـة مجموعـات السوبـر الخاصـه بك ...✓**\n\nٴ┄─┄─┄─┄┄─┄─┄─┄─┄┄\n\n**⪼ مـلاحظــات هـامــه :**\n- اوامـر السوبـرات إضـافة جديـدة خاصـه وحصريـه بسـورس ريبـــثون¹ فقـط ...\n- تحديثات السوبـر متواصـلة لـ إضـافة كـل ماهـو جديـد بالتحديثـات الجايـه ...\n- نسعـى جاهـدين لـ جعـل اوامـر السوبـر سهـله وسلسـه لـكي توفـر لكـم الجهـد والتعب ...\n- شكـر خـاص لـ منصبيـن السـورس علـى افكـارهم الرائعـه والمفيـده ...\n\n𓆩 [𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁](t.me/Repthon) 𓆪"
     roger = [[Button.inline("رجــوع", data="bbaqir")]]
     await zq_lo.edit(text, buttons=roger, link_preview=False)
-
+@zq_lo.tgbot.on(CallbackQuery(data=re.compile(rb"baqir21")))
+@check_owner
+async def rep_handler(zq_lo):
+    text = "[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - بصـمات مـيـمـز تـحشـيش](t.me/Repthon)\n⋆┄─┄─┄─┄┄─┄─┄─┄─┄┄⋆\n\n⪼ `.ص1`  ⦙ ابو عباس لو تاكل خره\n⪼ `.ص2`  ⦙ استمر نحن معك\n⪼ `.ص3`  ⦙ افحط بوجه\n⪼ `.ص4`  ⦙ اكعد لا اسطرك سطره العباس\n⪼ `.ص5`  ⦙ اللهم لا شماته\n⪼ `.ص6`  ⦙ امرع دينه\n⪼ `.ص7`  ⦙ امشي بربوك\n⪼ `.ص8`  ⦙ انت اسكت انت اسكت\n⪼ `.ص9`  ⦙ انت سايق زربه\n⪼ `.ص10` ⦙ اوني تشان\n⪼ `.ص11` ⦙ برافو عليك استادي\n⪼ `.ص12` ⦙ بلوك محترم\n⪼ `.ص13` ⦙ بووم في منتصف الجبهة\n⪼ `.ص14` ⦙ بيتش\n⪼ `.ص15` ⦙ تره متكدرلي\n⪼ `.ص16` ⦙ تعبان اوي\n⪼ `.ص17` ⦙ تكذب\n⪼ `.ص18` ⦙ حسبي الله\n⪼ `.ص19` ⦙ حشاش\n⪼ `.ص20` ⦙ حقير\n⪼ `.ص21` ⦙ خاص\n⪼ `.ص22` ⦙ خاله ما تنامون\n⪼ `.ص23` ⦙ خرب شرفي اذا ابقى بالعراق\n⪼ `.ص24` ⦙ دكات الوكت الاغبر\n⪼ `.ص25` ⦙ ررردح\n⪼ `.ص26` ⦙ سلامن عليكم\n⪼ `.ص27` ⦙ شعليك\n⪼ `.ص28` ⦙ شكد شفت ناس مدودة\n⪼ `.ص29` ⦙ شلون\n⪼ `.ص30` ⦙ صح لنوم\n⪼ `.ص31` ⦙ صمت\n⪼ `.ص32` ⦙ ضحكة مصطفى الحجي\n⪼ `.ص33` ⦙ طماطه\n⪼ `.ص34` ⦙ طيح الله حضك\n⪼ `.ص35` ⦙ فاك يوو\n⪼ `.ص36` ⦙ فرحان\n⪼ `.ص37` ⦙ لا تضل تضرط\n⪼ `.ص38` ⦙ لا تقتل المتعه يا مسلم\n⪼ `.ص39` ⦙ لا مستحيل\n⪼ `.ص40` ⦙ لا والله شو عصبي\n⪼ `.ص41` ⦙ لش\n⪼ `.ص42` ⦙ لك اني شعليه\n⪼ `.ص43` ⦙ ما اشرب\n⪼ `.ص44` ⦙ مع الاسف\n⪼ `.ص45` ⦙ مقتدى\n⪼ `.ص46` ⦙ من رخصتكم\n⪼ `.ص47` ⦙ منو انت\n⪼ `.ص48` ⦙ منورني\n⪼ `.ص49` ⦙ نتلاكه بالدور الثاني\n⪼ `.ص50` ⦙ نستودعكم الله\n⪼ `.ص51` ⦙ ها شنهي\n⪼ `.ص52` ⦙ ههاي الافكار حطها\n⪼ `.ص53` ⦙ وينهم\n⪼ `.ص54` ⦙ يموتون جهالي\n⪼ `.ص55` ⦙ اريد انام\n⪼ `.ص56` ⦙ افتحك فتح\n⪼ `.ص57` ⦙ اكل خره لدوخني\n⪼ `.ص58` ⦙ السيد شنهو السيد\n⪼ `.ص59` ⦙ زيج2\n⪼ `.ص60` ⦙ زيج لهارون\n⪼ `.ص61` ⦙ زيج الناصرية\n⪼ `.ص62` ⦙ راقبو اطفالكم\n⪼ `.ص63` ⦙ راح اموتن\n⪼ `.ص64` ⦙ ذس اس مضرطة\n⪼ `.ص65` ⦙ دروح سرسح منا\n⪼ `.ص66` ⦙ خويه ما دكوم بيه\n⪼ `.ص67` ⦙ خلصت تمسلت ديلة كافي انجب\n⪼ `.ص68` ⦙ بعدك تخاف\n⪼ `.ص69` ⦙ بسبوس\n⪼ `.ص70` ⦙ اني بتيتة كحبة\n⪼ `.ص71` ⦙ انعل ابوكم لابو اليلعب وياكم طوبة\n⪼ `.ص72` ⦙ انت شدخلك\n⪼ `.ص73` ⦙ انا ماشي بطلع\n⪼ `.ص74` ⦙ امداك وامده الخلفتك\n⪼ `.ص75` ⦙ امبيههههه\n⪼ `.ص76` ⦙ هدي بيبي\n⪼ `.ص77` ⦙ هاه صدك تحجي\n⪼ `.ص78` ⦙ مو كتلك رجعني\n⪼ `.ص79` ⦙ مامرجية منك هاية\n⪼ `.ص80` ⦙ ليش هيجي\n⪼ `.ص81` ⦙ كـــافـي\n⪼ `.ص82` ⦙ كس اخت السيد\n⪼ `.ص83` ⦙ شنو كواد ولك اني هنا\n⪼ `.ص84` ⦙ شجلبت\n⪼ `.ص85` ⦙ شبيك وجه الدبس\n⪼ `.ص86` ⦙ سييييي\n⪼ `.ص87` ⦙ زيجج1\n⪼ `.ص88` ⦙ يموتون جهالي\n⪼ `.ص89` ⦙ ياخي اسكت اسكت\n⪼ `.ص90` ⦙ وينهم\n⪼ `.ص91` ⦙ هيلو سامر وحود\n⪼ `.ص92` ⦙ هو\n⪼ `.ص93` ⦙ ههاي الافكار حطها\n\n𓆩 [𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁](t.me/Repthon) 𓆪"
+    roger = [[Button.inline("رجــوع", data="bbaqir")]]
+    await zq_lo.edit(text, buttons=roger, link_preview=False)
 
 #لوحـة قنــوات الســورس
 @zq_lo.tgbot.on(events.InlineQuery)
@@ -432,44 +340,15 @@ async def rep_handler(event):
     result = None
     query = event.text
     await zq_lo.get_me()
-    if query.startswith("ريبثون") and event.query.user_id == zq_lo.uid:
+    if query.startswith("السورس") and event.query.user_id == zq_lo.uid:
         RPIC = gvarstatus("ALIVE_PIC")
-        buttons = [[Button.url("قنـاة السـورس", "https://t.me/Repthon"),],[Button.url("التحـديثـات", "https://t.me/Repthon_up"), Button.url("الفـارات", "https://t.me/Repthon_vars"),],[Button.url("الشـروحـات", "https://t.me/Repthonn"),],[Button.url("مطـور السـورس", "https://t.me/E_7_V"),]]
+        buttons = [[Button.url("قنـاة السـورس", "https://t.me/Repthon"),],[Button.url("التحـديثـات", "https://t.me/Repthon_up"), Button.url("الفـارات", "https://t.me/Repthon_vars"),],[Button.url("الشـروحـات", "https://t.me/Repthonn"),],[Button.url("مطـور السـورس", "https://t.me/RR0RT"),]]
         if RPIC and RPIC.endswith((".jpg", ".png", "gif", "mp4")):
             result = builder.photo(RPIC,text=Channels, buttons=buttons, link_preview=True)
         elif RPIC and RPIC.endswith((".gif", ".mp4")):
             result = builder.document(RPIC,title="zq_lo",text=Channels,buttons=buttons,link_preview=True)
         else:
             result = builder.article(title="zq_lo",text=Channels,buttons=buttons,link_preview=True)
-        await event.answer([result] if result else None)
-@zq_lo.rep_cmd(pattern="ريبثون")
-async def reporepthon(event):
-    if event.fwd_from:
-        return
-    TG = Config.TG_BOT_USERNAME
-    if event.reply_to_msg_id:
-        await event.get_reply_message()
-    response = await zq_lo.inline_query(TG, "ريبثون")
-    await response[0].click(event.chat_id)
-    await event.delete()
-
-
-@zq_lo.tgbot.on(InlineQuery)
-@check_owner
-async def rep_handler(event):
-    builder = event.builder
-    result = None
-    query = event.text
-    await zq_lo.get_me()
-    if query.startswith("السورس") and event.query.user_id == zq_lo.uid:
-        RPIC = gvarstatus("ALIVE_PIC")
-        buttons = [[Button.url("قنـاة الســورس", "https://t.me/Repthon")]]
-        if RPIC and RPIC.endswith((".jpg", ".png")):
-            result = builder.photo(RPIC,text=Baqir, buttons=buttons, link_preview=True)
-        elif RPIC and RPIC.endswith((".gif", ".mp4")):
-            result = builder.document(RPIC,title="zq_lo",text=Baqir,buttons=buttons,link_preview=True)
-        else:
-            result = builder.article(title="zq_lo",text=Baqir,buttons=buttons,link_preview=True)
         await event.answer([result] if result else None)
 @zq_lo.rep_cmd(pattern="السورس")
 async def reporepthon(event):
@@ -479,198 +358,5 @@ async def reporepthon(event):
     if event.reply_to_msg_id:
         await event.get_reply_message()
     response = await zq_lo.inline_query(TG, "السورس")
-    await response[0].click(event.chat_id)
-    await event.delete()
-
-
-@zq_lo.tgbot.on(InlineQuery)
-@check_owner
-async def rep_handler(event):
-    builder = event.builder
-    result = None
-    query = event.text
-    await zq_lo.get_me()
-    if query.startswith("سورس") and event.query.user_id == zq_lo.uid:
-        RPIC = gvarstatus("ALIVE_PIC")
-        buttons = [[Button.url("قنـاة الســورس", "https://t.me/Repthon")]]
-        if RPIC and RPIC.endswith((".jpg", ".png")):
-            result = builder.photo(RPIC,text=Baqir, buttons=buttons, link_preview=True)
-        elif RPIC and RPIC.endswith((".gif", ".mp4")):
-            result = builder.document(RPIC,title="zq_lo",text=Baqir,buttons=buttons,link_preview=True)
-        else:
-            result = builder.article(title="zq_lo",text=Baqir,buttons=buttons,link_preview=True)
-        await event.answer([result] if result else None)
-@zq_lo.rep_cmd(pattern="سورس")
-async def reporepthon(event):
-    if event.fwd_from:
-        return
-    TG = Config.TG_BOT_USERNAME
-    if event.reply_to_msg_id:
-        await event.get_reply_message()
-    response = await zq_lo.inline_query(TG, "سورس")
-    await response[0].click(event.chat_id)
-    await event.delete()
-
-
-async def get_user_from_event(event):
-    if event.reply_to_msg_id:
-        previous_message = await event.get_reply_message()
-        user_object = await event.client.get_entity(previous_message.sender_id)
-    else:
-        user = event.pattern_match.group(1)
-        if user.isnumeric():
-            user = int(user)
-        if not user:
-            self_user = await event.client.get_me()
-            user = self_user.id
-        if event.message.entities:
-            probable_user_mention_entity = event.message.entities[0]
-            if isinstance(probable_user_mention_entity, MessageEntityMentionName):
-                user_id = probable_user_mention_entity.user_id
-                user_obj = await event.client.get_entity(user_id)
-                return user_obj
-        if isinstance(user, int) or user.startswith("@"):
-            user_obj = await event.client.get_entity(user)
-            return user_obj
-        try:
-            user_object = await event.client.get_entity(user)
-        except (TypeError, ValueError) as err:
-            await event.edit(str(err))
-            return None
-    return user_object
-
-
-@zq_lo.tgbot.on(events.InlineQuery)
-@check_owner
-async def rep_handler(event):
-    builder = event.builder
-    result = None
-    query = event.text
-    await zq_lo.get_me()
-    user = gvarstatus("who_id")
-    if user is not None:
-        baqir = int(user)
-    else:
-        return
-    try:
-        user_rep = await event.client.get_entity(baqir)
-    except ValueError:
-        return
-    name_rep = user_rep.first_name
-    if query.startswith("اليدوي") and event.query.user_id == zq_lo.uid:
-        baqir = f"**• عـزيـزي ** [{name_rep}](tg://user?id={user}) \n**• اليـك شـرح اعـادة التشغيـل اليـدوي↓**"
-        buttons = [[Button.url("قريباً", "https://t.me/قريباً")]]
-        result = builder.article(title="zq_lo",text=baqir,buttons=buttons,link_preview=False)
-        await event.answer([result] if result else None)
-@zq_lo.rep_cmd(pattern="اليدوي(?: |$)(.*)")
-async def reporepthon(event):
-    user = await get_user_from_event(event)
-    if not user:
-        return
-    else:
-    	addgvar("who_id", user.id)
-    response = await event.client.inline_query(Config.TG_BOT_USERNAME, "اليدوي")
-    await response[0].click(event.chat_id)
-    await event.delete()
-
-
-@zq_lo.tgbot.on(events.InlineQuery)
-@check_owner
-async def rep_handler(event):
-    builder = event.builder
-    result = None
-    query = event.text
-    await zq_lo.get_me()
-    user = gvarstatus("who_id")
-    if user is not None:
-        baqir = int(user)
-    else:
-        return
-    try:
-        user_rep = await event.client.get_entity(baqir)
-    except ValueError:
-        return
-    name_rep = user_rep.first_name
-    if query.startswith("الفيزا") and event.query.user_id == zq_lo.uid:
-        baqir = f"**• عـزيـزي ** [{name_zed}](tg://user?id={user}) \n**• اليـك الفيـزا الخـاصـه بهيـروكـو↓**"
-        buttons = [[Button.url("اضغــط هنــا", "https://t.me/xxfir")]]
-        result = builder.article(title="zq_lo",text=baqir,buttons=buttons,link_preview=False)
-        await event.answer([result] if result else None)
-@zq_lo.rep_cmd(pattern="الفيزا(?: |$)(.*)")
-async def reporepthon(event):
-    user = await get_user_from_event(event)
-    if not user:
-        return
-    else:
-    	addgvar("who_id", user)
-    response = await event.client.inline_query(Config.TG_BOT_USERNAME, "الفيزا")
-    await response[0].click(event.chat_id)
-    await event.delete()
-
-
-@zq_lo.tgbot.on(events.InlineQuery)
-@check_owner
-async def rep_handler(event):
-    builder = event.builder
-    result = None
-    query = event.text
-    await zq_lo.get_me()
-    user = gvarstatus("who_id")
-    if user is not None:
-        baqir = int(user)
-    else:
-        return
-    try:
-        user_rep = await event.client.get_entity(baqir)
-    except ValueError:
-        return
-    name_rep = user_rep.first_name
-    if query.startswith("الهيروكو") and event.query.user_id == zq_lo.uid:
-        baqir = f"**• عـزيـزي ** [{name_rep}](tg://user?id={user}) \n**• اليـك شـرح إنشـاء حسـاب هيـروكـو↓**"
-        buttons = [[Button.url("اضـغـط هنــا", "https://t.me/Repthonn/28")]]
-        result = builder.article(title="zq_lo",text=baqir,buttons=buttons,link_preview=False)
-        await event.answer([result] if result else None)
-@zq_lo.rep_cmd(pattern="الهيروكو(?: |$)(.*)")
-async def reporepthon(event):
-    user = await get_user_from_event(event)
-    if not user:
-        return
-    else:
-    	addgvar("who_id", user)
-    response = await event.client.inline_query(Config.TG_BOT_USERNAME, "الهيروكو")
-    await response[0].click(event.chat_id)
-    await event.delete()
-
-
-@zq_lo.tgbot.on(events.InlineQuery)
-@check_owner
-async def rep_handler(event):
-    builder = event.builder
-    result = None
-    query = event.text
-    await zq_lo.get_me()
-    user = gvarstatus("who_id")
-    if user is not None:
-        baqir = int(user)
-    else:
-        return
-    try:
-        user_rep = await event.client.get_entity(baqir)
-    except ValueError:
-        return
-    name_rep = user_rep.first_name
-    if query.startswith("التنصيب") and event.query.user_id == zq_lo.uid:
-        baqir = f"**• عـزيـزي ** [{name_rep}](tg://user?id={user}) \n**• اليـك شـرح تنصيب السـورس ع هيـروكـو↓**"
-        buttons = [[Button.url("قريـباً", "https://t.me/قريباً")]]
-        result = builder.article(title="zq_lo",text=baqir,buttons=buttons,link_preview=False)
-        await event.answer([result] if result else None)
-@zq_lo.rep_cmd(pattern="التنصيب(?: |$)(.*)")
-async def reporepthon(event):
-    user = await get_user_from_event(event)
-    if not user:
-        return
-    else:
-    	addgvar("who_id", user)
-    response = await event.client.inline_query(Config.TG_BOT_USERNAME, "التنصيب")
     await response[0].click(event.chat_id)
     await event.delete()
