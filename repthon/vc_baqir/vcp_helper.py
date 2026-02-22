@@ -5,7 +5,7 @@ import glob
 import random
 import requests
 
-from pytgcalls import PyTgCalls, StreamType
+from pytgcalls import PyTgCalls
 from pytgcalls.exceptions import (
     AlreadyJoinedError,
     NoActiveGroupCall,
@@ -32,7 +32,6 @@ def get_cookies_file():
         raise FileNotFoundError("No .txt files found in the specified folder.")
     cookie_txt_file = random.choice(txt_files)
     return cookie_txt_file
-
 
 class RepVC:
     def __init__(self, client) -> None:
@@ -66,7 +65,7 @@ class RepVC:
             self.CHAT_ID = None
             self.PLAYING = False
             self.PLAYLIST = []
-            #return f"⚈ **مـوجـود بالفعـل بالمحـادثـه الصـوتيـه عـلى** {self.CHAT_NAME}"
+
         if join_as:
             try:
                 join_as_chat = await self.client.get_entity(int(join_as))
@@ -76,44 +75,35 @@ class RepVC:
         else:
             join_as_chat = await self.client.get_me()
             join_as_title = ""
+
         try:
             await self.app.join_group_call(
                 chat_id=chat.id,
                 stream=AudioPiped("baqir/baqir/Silence01s.mp3"),
                 join_as=join_as_chat,
-                stream_type=StreamType().pulse_stream,
+                stream_type="pulse",
             )
         except NoActiveGroupCall:
-            if vc_session:
-                try:
-                    await self.client(
-                        functions.phone.CreateGroupCallRequest(
-                            peer=chat,
-                            title="مكالمة صوتيه",
-                        )
+            try:
+                await self.client(
+                    functions.phone.CreateGroupCallRequest(
+                        peer=chat,
+                        title="مكالمة صوتيه",
                     )
-                    await self.join_vc(chat=chat, join_as=join_as)
-                except ChatAdminRequiredError:
-                    return "⚉ **انت بحاجه الى صلاحيات المشـرف✖️**\n⚉ **لـ بـدء محـادثه صـوتيـه هنـا 🤷🏻‍♀**\n⚉ **او قم بطلب من احـد المشـرفين هنـا**"
-                except ChannelInvalidError:
-                    return "⚉ **لديك حساب مساعد للميوزك قمت بتعيينه سابقاً**\n⚉قم باضافة الحساب المساعد اولاً للمجموعة**\n⚉ **ثم قم بفتح المكالمه في المجموعة**"
-            else:
-                try:
-                    await self.client(
-                        functions.phone.CreateGroupCallRequest(
-                            peer=chat,
-                            title="مكالمة صوتيه",
-                        )
-                    )
-                    await self.join_vc(chat=chat, join_as=join_as)
-                except ChatAdminRequiredError:
-                    return "⚉ **انت بحاجه الى صلاحيات المشـرف✖️**\n⚉ **لـ بـدء محـادثه صـوتيـه هنـا 🤷🏻‍♀**\n⚉ **او قم بطلب من احـد المشـرفين هنـا**"
+                )
+                await self.join_vc(chat=chat, join_as=join_as)
+            except ChatAdminRequiredError:
+                return "⚉ **انت بحاجه الى صلاحيات المشـرف✖️**\n⚉ **لـ بـدء محـادثه صـوتيـه هنـا 🤷🏻‍♀**"
+            except ChannelInvalidError:
+                return "⚉ **لديك حساب مساعد للميوزك قمت بتعيينه سابقاً**\n⚉ قم باضافة الحساب المساعد اولاً للمجموعة"
+
         except (NodeJSNotInstalled, TooOldNodeJSVersion):
             return "- آخـر اصـدار من NodeJs لم يتـم تحميلـه ...؟!"
         except AlreadyJoinedError:
             await self.app.leave_group_call(chat.id)
             await asyncio.sleep(3)
             await self.join_vc(chat=chat, join_as=join_as)
+
         self.CHAT_ID = chat.id
         self.CHAT_NAME = chat.title
         if vc_session:
@@ -126,10 +116,7 @@ class RepVC:
             await self.app.leave_group_call(self.CHAT_ID)
         except (NotInGroupCallError, NoActiveGroupCall):
             pass
-        self.CHAT_NAME = None
-        self.CHAT_ID = None
-        self.PLAYING = False
-        self.PLAYLIST = []
+        self.clear_vars()
 
     async def play_song(self, input, stream=Stream.audio, force=False):
         if yt_regex.match(input):
@@ -186,12 +173,13 @@ class RepVC:
             else:
                 return f"⚉ **تم التشغيـل .. بنجـاح 🎶**\n⚉ **العنـوان:** `{title}`\n⚉ **لـ عـرض اوامـر الميـوزك ⇜⎞** `.ميوزك` **⎝**"
 
+    
     async def handle_next(self, update):
         if isinstance(update, StreamAudioEnded):
             await self.skip()
 
     async def skip(self, clear=False):
-        if clear:
+    if clear:
             self.PLAYLIST = []
 
         if not self.PLAYLIST:
@@ -233,19 +221,19 @@ class RepVC:
             await self.app.resume_stream(self.CHAT_ID)
             self.PAUSED = False
         return f"⚈ **تم الاستئنـاف في**  {self.CHAT_NAME}"
+    
+    async def pause(self):
+        if not self.PLAYING:
+            return "⚈ **عـذراً عـزيـزي ✗**\n⚈ **لايـوجـد شـي لـ الايقـاف ؟!**"
+        if not self.PAUSED:
+            await self.app.pause_stream(self.CHAT_ID)
+            self.PAUSED = True
+        return f"⚈ **تم التمهـل في** {self.CHAT_NAME}"
 
-    # async def mute(self):
-    #     if not self.PLAYING:
-    #         return "Nothing is playing to Mute"
-    #     if not self.MUTED:
-    #         await self.app.mute_stream(self.CHAT_ID)
-    #         self.PAUSED = True
-    #     return f"Muted Stream on {self.CHAT_NAME}"
-
-    # async def unmute(self):
-    #     if not self.PLAYING:
-    #         return "Nothing is playing to Unmute"
-    #     if self.MUTED:
-    #         await self.app.unmute_stream(self.CHAT_ID)
-    #         self.MUTED = False
-    #     return f"Unmuted Stream on {self.CHAT_NAME}"
+    async def resume(self):
+        if not self.PLAYING:
+            return "⚈ **عـذراً عـزيـزي ✗**\n⚈ **لايـوجـد شـي لـ الاستئنـاف ؟!**"
+        if self.PAUSED:
+            await self.app.resume_stream(self.CHAT_ID)
+            self.PAUSED = False
+        return f"⚈ **تم الاستئنـاف في**  {self.CHAT_NAME}"
