@@ -179,7 +179,7 @@ class RepVC:
             await self.skip()
 
     async def skip(self, clear=False):
-    if clear:
+        if clear:
             self.PLAYLIST = []
 
         if not self.PLAYLIST:
