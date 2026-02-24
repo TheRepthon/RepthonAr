@@ -45,7 +45,7 @@ class RepVC:
             await self.leave_vc()
 
         try:
-            await self.app.join_group_call(
+            await self.app.play(
                 chat.id,
                 MediaStream(audio="baqir/baqir/Silence01s.mp3"),
                 join_as=join_as,
@@ -100,7 +100,7 @@ class RepVC:
         if not self.PLAYLIST:
             self.PLAYING = None
             try:
-                await self.app.change_stream(
+                await self.app.play(
                     self.CHAT_ID,
                     MediaStream(audio="baqir/baqir/Silence01s.mp3"),
                 )
