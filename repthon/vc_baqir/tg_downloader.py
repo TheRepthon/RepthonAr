@@ -1,11 +1,7 @@
 import asyncio
-import io
 import os
 import pathlib
 import time
-from datetime import datetime
-from telethon.tl import types
-from telethon.utils import get_extension
 from ..Config import Config
 from ..core.managers import edit_or_reply
 from ..helpers import progress
@@ -13,42 +9,39 @@ from ..helpers import progress
 downloads = pathlib.Path(os.path.join(os.getcwd(), Config.TMP_DOWNLOAD_DIRECTORY))
 downloads.mkdir(parents=True, exist_ok=True)
 
-
 async def tg_dl(event):
-    mone = await edit_or_reply(event, "**- جاري التحميل 📥...**")
+    mone = await edit_or_reply(event, "**- جاري التحميل من تيليجرام 📥...**")
     reply = await event.get_reply_message()
-    if not reply:
-        await mone.edit("**- بالرد على فيديو أو ملف صوتي لتشغيله...**")
+    
+    if not reply or not reply.media:
+        await mone.edit("**- عذراً، يجب الرد على فيديو أو ملف صوتي...**")
         return False
 
-    name = getattr(reply.document, "file_name", None) or f"untitled_{reply.id}"
-    ext = get_extension(reply.document) if getattr(reply, "document", None) else ""
-    file_path = downloads / name
-    if not file_path.suffix and ext:
-        file_path = file_path.with_suffix(ext)
-
-    file_path.parent.mkdir(parents=True, exist_ok=True)
+    file_name = getattr(reply.document, "file_name", None) or f"repthon_{reply.id}.mp3"
+    file_path = downloads / file_name
+    
     start = time.time()
-    if getattr(reply, "document", None):
-        async with io.FileIO(file_path, "wb") as f:
-            await event.client.fast_download_file(
-                location=reply.document,
-                out=f,
-                progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    progress(d, t, mone, start, "**- جاري التحميل 📥...**")
-                ),
-            )
-    else:
-        file_path = await reply.download_media(
-            file=file_path,
+    
+    try:
+        downloaded_file = await event.client.download_media(
+            reply,
+            file=str(file_path),
             progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
                 progress(d, t, mone, start, "**- جاري التحميل 📥...**")
             ),
         )
+    except Exception as e:
+        await mone.edit(f"**- حدث خطأ أثناء التحميل:**\n`{str(e)}`")
+        return False
 
     elapsed = int(time.time() - start)
+    
+    rel_path = os.path.relpath(downloaded_file, os.getcwd())
+    
     await mone.edit(
-        f"**❈╎تم التحميل خلال {elapsed} ثانية.**\n"
-        f"**❈╎مسار التحميل: ** `{os.path.relpath(file_path, os.getcwd())}`"
+        f"**❈╎تم التحميل بنجاح ✅**\n"
+        f"**❈╎الوقت المستغرق: {elapsed} ثانية.**\n"
+        f"**❈╎المسار:** `{rel_path}`"
     )
-    return os.path.relpath(file_path, os.getcwd())
+    
+    return rel_path
