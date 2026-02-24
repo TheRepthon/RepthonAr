@@ -71,27 +71,41 @@ async def joinVoicechat(event):
     "لـ الانضمـام الى المحـادثه الصـوتيـه"
     chat = event.pattern_match.group(1)
     joinas = event.pattern_match.group(2)
+
     await edit_or_reply(event, "⚈ **جـارِ الانضمـام الى المكالمـة الصـوتيـه ...**")
+
     if chat and chat != "ك":
         if chat.strip("-").isnumeric():
             chat = int(chat)
-        else:
-            chat = event.chat_id
-            if vc_player.app.active_calls:
-                return await edit_delete(
-                    event, f"⚈ **انت منضـم مسبقـاً الـى**  {vc_player.CHAT_NAME}"
-                )
-                try:
-                    vc_chat = await zq_lo.get_entity(chat)
-                except Exception as e:
-                    return await edit_delete(event, f'⚈ **خطـأ** : \n{e or "UNKNOWN CHAT"}')
-                    if isinstance(vc_chat, User):
-                        return await edit_delete(event, "⚈ **عـذراً عـزيـزي ✗**\n⚈ **المكالمـة الصـوتيـه مغلقـه هنـا ؟!**\n⚈ **قم بفتح المكالمـه اولاً 🗣**")
-                        if joinas and not vc_chat.username:
-                            await edit_or_reply(event, "⚈ **عـذراً عـزيـزي**\n⚈**لم استطـع الانضمـام الى المكالمـة ✗**\n⚈ **قم بالانضمـام يدويـاً**")
-                            joinas = False
-                            out = await vc_player.join_vc(vc_chat, joinas)
-                            await edit_delete(event, out)
+    else:
+        chat = event.chat_id
+
+    if vc_player.app.active_calls:
+        return await edit_delete(
+            event, f"⚈ **انت منضـم مسبقـاً الـى**  {vc_player.CHAT_NAME}"
+        )
+
+    try:
+        vc_chat = await zq_lo.get_entity(chat)
+    except Exception as e:
+        return await edit_delete(event, f'⚈ **خطـأ** : \n{e or "UNKNOWN CHAT"}')
+
+    if isinstance(vc_chat, User):
+        return await edit_delete(
+            event,
+            "⚈ **عـذراً عـزيـزي ✗**\n⚈ **المكالمـة الصـوتيـه مغلقـه هنـا ؟!**\n⚈ **قم بفتح المكالمـه اولاً 🗣**",
+        )
+
+    if joinas and not vc_chat.username:
+        await edit_or_reply(
+            event,
+            "⚈ **عـذراً عـزيـزي**\n⚈**لم استطـع الانضمـام الى المكالمـة ✗**\n⚈ **قم بالانضمـام يدويـاً**",
+        )
+        joinas = False
+
+    out = await vc_player.join_vc(vc_chat, joinas)
+    await edit_delete(event, out)
+
 
 @zq_lo.rep_cmd(
     pattern="خروج",
@@ -143,67 +157,23 @@ async def get_playlist(event):
 @zq_lo.rep_cmd(
     pattern="شغل فيديو ?(1)? ?([\\S ]*)?",
     command=("شغل فيديو", plugin_category),
-    info={
-        "header": "تشغيـل مقـاطع الفيـديـو في المكـالمـات",
-        "امـر اضافـي": {
-            "1": "فرض تشغيـل المقطـع بالقـوة",
-        },
-        "الاستخـدام": [
-            "{tr}شغل فيديو بالــرد ع فيـديـو",
-            "{tr}شغل فيديو + رابـط",
-            "{tr}شغل فيديو  ف + رابـط",
-        ],
-        "مثــال :": [
-            "{tr}شغل فيديو بالـرد",
-            "{tr}شغل فيديو https://www.youtube.com/watch?v=c05GBLT_Ds0",
-            "{tr}شغل فيديو 1 https://www.youtube.com/watch?v=c05GBLT_Ds0",
-        ],
-    },
 )
 async def play_video(event):
     "لـ تشغيـل مقـاطع الفيـديـو في المكـالمـات"
-    #con = event.pattern_match.group(1).lower()
     flag = event.pattern_match.group(1)
     input_str = event.pattern_match.group(2)
-    if flag == "يو":
-        return
     photo = None
+
     if input_str and not input_str.startswith("http"):
         try:
             results = YoutubeSearch(input_str, max_results=1).to_dict()
             input_str = f"https://youtube.com{results[0]['url_suffix']}"
             title = results[0]["title"][:40]
             thumbnail = results[0]["thumbnails"][0]
-            #thumb_name = f"{title}.jpg"
-            #thumb = requests.get(thumbnail, allow_redirects=True)
-            #try:
-                #open(thumb_name, "wb").write(thumb.content)
-            #except Exception:
-                #thumb_name = None
-                #pass
-            duration = results[0]["duration"]
             photo = thumbnail
         except Exception as e:
             await edit_or_reply(event, f"⚈ **فشـل التحميـل** \n⚈ **الخطأ :** `{str(e)}`")
             return
-        rrr = await edit_or_reply(event, "**╮ جـارِ تشغيـل المقطـٓـع الصـٓـوتي في المكـالمـه... 🎧♥️╰**")
-        if flag:
-            resp = await vc_player.play_song(input_str, Stream.video, force=True)
-        else:
-            resp = await vc_player.play_song(input_str, Stream.video, force=False)
-        if resp:
-            if photo:
-                try:
-                    await event.client.send_file(
-                        event.chat_id,
-                        photo,
-                        caption=resp,
-                        link_preview=False,
-                        force_document=False,
-                    )
-                    return await rrr.delete()
-                except TypeError:
-                    return await rrr.edit(reap)
 
     if input_str == "" and event.reply_to_msg_id:
         input_str = await tg_dl(event)
@@ -212,9 +182,10 @@ async def play_video(event):
             event, "⚈ **قـم بـ إدخـال رابـط مقطع الفيديـو للتشغيـل...**", time=20
         )
     if not vc_player.CHAT_ID:
-        return await edit_or_reply(event, "⚈ **قـم بالانضمـام اولاً الى المكالمـه عبـر الامـر .انضمام**")
-    if not input_str:
-        return await edit_or_reply(event, "⚈ **استخـدم الامـر هكـذا**\n• (`.شغل فيديو` + **اسم مقطع الفيديو**)\n**• او**\n• (`.شغل فيديو` + **رابـط مقطع الفيديو**")
+        return await edit_or_reply(
+            event, "⚈ **قـم بالانضمـام اولاً الى المكالمـه عبـر الامـر .انضمام**"
+        )
+
     await edit_or_reply(event, "**╮ جـارِ تشغيـل مقطـٓـع الفيـٓـديو في المكـالمـه... 🎧♥️╰**")
     if flag:
         resp = await vc_player.play_song(input_str, Stream.video, force=True)
@@ -227,66 +198,26 @@ async def play_video(event):
 @zq_lo.rep_cmd(
     pattern="شغل ?(1)? ?([\\S ]*)?",
     command=("شغل", plugin_category),
-    info={
-        "header": "تشغيـل المقـاطع الصـوتيـه في المكـالمـات",
-        "امـر اضافـي": {
-            "1": "فرض تشغيـل المقطـع بالقـوة",
-        },
-        "الاستخـدام": [
-            "{tr}شغل بالــرد ع مقطـع صـوتي",
-            "{tr}شغل + رابـط",
-            "{tr}شغل 1 + رابـط",
-        ],
-        "مثــال :": [
-            "{tr}شغل بالـرد",
-            "{tr}شغل https://www.youtube.com/watch?v=c05GBLT_Ds0",
-            "{tr}شغل 1 https://www.youtube.com/watch?v=c05GBLT_Ds0",
-        ],
-    },
 )
 async def play_audio(event):
     "لـ تشغيـل المقـاطع الصـوتيـه في المكـالمـات"
     flag = event.pattern_match.group(1)
     input_str = event.pattern_match.group(2)
     photo = None
+
     if input_str and input_str.startswith("فيديو"):
         return
+
     if input_str and not input_str.startswith("http"):
         try:
             results = YoutubeSearch(input_str, max_results=1).to_dict()
             input_str = f"https://youtube.com{results[0]['url_suffix']}"
             title = results[0]["title"][:40]
             thumbnail = results[0]["thumbnails"][0]
-            #thumb_name = f"{title}.jpg"
-            #thumb = requests.get(thumbnail, allow_redirects=True)
-            #try:
-                #open(thumb_name, "wb").write(thumb.content)
-            #except Exception:
-                #thumb_name = None
-                #pass
-            duration = results[0]["duration"]
             photo = thumbnail
         except Exception as e:
             await edit_or_reply(event, f"⚈ **فشـل التحميـل** \n⚈ **الخطأ :** `{str(e)}`")
             return
-        bbb = await edit_or_reply(event, "**╮ جـارِ تشغيـل المقطـٓـع الصـٓـوتي في المكـالمـه... 🎧♥️╰**")
-        if flag:
-            resp = await vc_player.play_song(input_str, Stream.audio, force=True)
-        else:
-            resp = await vc_player.play_song(input_str, Stream.audio, force=False)
-        if resp:
-            if photo:
-                try:
-                    await event.client.send_file(
-                        event.chat_id,
-                        photo,
-                        caption=resp,
-                        link_preview=False,
-                        force_document=False,
-                    )
-                    return await bbb.delete()
-                except TypeError:
-                    return await bbb.edit(resp)
 
     if input_str == "" and event.reply_to_msg_id:
         input_str = await tg_dl(event)
@@ -295,9 +226,10 @@ async def play_audio(event):
             event, "⚈ **قـم بـ إدخـال رابـط المقطـع الصوتـي للتشغيـل...**", time=20
         )
     if not vc_player.CHAT_ID:
-        return await edit_or_reply(event, "⚈ **قـم بالانضمـام الى المكالمـه اولاً**\n⚈ **عبـر الامـر ⤌ ⎞** `.انضمام` **⎝**")
-    if not input_str:
-        return await edit_or_reply(event, "⚈ **استخـدم الامـر هكـذا**\n• (`.شغل` + **اسم المقطع الصوتي**)\n**• او**\n• (`.شغل` + **رابـط المقطع الصوتي**")
+        return await edit_or_reply(
+            event, "⚈ **قـم بالانضمـام الى المكالمـه اولاً**\n⚈ **عبـر الامـر ⤌ ⎞** `.انضمام` **⎝**"
+        )
+
     await edit_or_reply(event, "**╮ جـارِ تشغيـل المقطـٓـع الصـٓـوتي في المكـالمـه... 🎧♥️╰**")
     if flag:
         resp = await vc_player.play_song(input_str, Stream.audio, force=True)
@@ -307,16 +239,7 @@ async def play_audio(event):
         await edit_delete(event, resp, time=30)
 
 
-@zq_lo.rep_cmd(
-    pattern="توقف",
-    command=("توقف", plugin_category),
-    info={
-        "header": "لـ ايقـاف تشغيـل للمقطـع مؤقتـاً في المكـالمـه",
-        "الاستخـدام": [
-            "{tr}تمهل",
-        ],
-    },
-)
+@zq_lo.rep_cmd(pattern="توقف", command=("توقف", plugin_category))
 async def pause_stream(event):
     "لـ ايقـاف تشغيـل للمقطـع مؤقتـاً في المكـالمـه"
     await edit_or_reply(event, "⚈ **جـارِ الايقـاف مؤقتـاً ...**")
@@ -324,16 +247,7 @@ async def pause_stream(event):
     await edit_delete(event, res, time=30)
 
 
-@zq_lo.rep_cmd(
-    pattern="كمل",
-    command=("كمل", plugin_category),
-    info={
-        "header": "لـ متابعـة تشغيـل المقطـع في المكـالمـه",
-        "الاستخـدام": [
-            "{tr}تابع",
-        ],
-    },
-)
+@zq_lo.rep_cmd(pattern="كمل", command=("كمل", plugin_category))
 async def resume_stream(event):
     "لـ متابعـة تشغيـل المقطـع في المكـالمـه"
     await edit_or_reply(event, "⚈ **جـار الاستئنـاف ...**")
@@ -341,16 +255,7 @@ async def resume_stream(event):
     await edit_delete(event, res, time=30)
 
 
-@zq_lo.rep_cmd(
-    pattern="تخطي",
-    command=("تخطي", plugin_category),
-    info={
-        "header": "لـ تخطي تشغيـل المقطـع وتشغيـل المقطـع التالـي في المكـالمـه",
-        "الاستخـدام": [
-            "{tr}تخطي",
-        ],
-    },
-)
+@zq_lo.rep_cmd(pattern="تخطي", command=("تخطي", plugin_category))
 async def skip_stream(event):
     "لـ تخطي تشغيـل المقطـع وتشغيـل المقطـع التالـي في المكـالمـه"
     await edit_or_reply(event, "⚈ **جـار التخطـي ...**")
@@ -359,23 +264,23 @@ async def skip_stream(event):
 
 
 Music_cmd = (
-"[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - اوامــر الميـوزك 🎸](t.me/Repthon) ."
-"**⋆─┄─┄─┄─┄──┄─┄─┄─┄─⋆**\n"
-"⚉ `.شغل`\n"
-"**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع صوتـي**\n"
-"⚉ `.شغل فيديو`\n"
-"**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع فيديـو**\n\n"
-"**Ⓜ️ اوامـر تشغيـل اجباريـه مـع تخطـي قائمـة التشغيـل :**\n"
-"⚉ `.شغل 1`\n"
-"**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع صوتـي**\n"
-"⚉ `.شغل فيديو 1`\n"
-"**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع فيديـو**\n\n"
-"⚉ `.قائمة التشغيل`\n"
-"⚉ `.توقف`\n"
-"⚉ `.كمل`\n"
-"⚉ `.تخطي`\n\n"
-"⚉ `.انضمام`\n"
-"⚉ `.خروج`"
+    "[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - اوامــر الميـوزك 🎸](t.me/Repthon) ."
+    "**⋆─┄─┄─┄─┄──┄─┄─┄─┄─⋆**\n"
+    "⚉ `.شغل`\n"
+    "**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع صوتـي**\n"
+    "⚉ `.شغل فيديو`\n"
+    "**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع فيديـو**\n\n"
+    "**Ⓜ️ اوامـر تشغيـل اجباريـه مـع تخطـي قائمـة التشغيـل :**\n"
+    "⚉ `.شغل 1`\n"
+    "**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع صوتـي**\n"
+    "⚉ `.شغل فيديو 1`\n"
+    "**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع فيديـو**\n\n"
+    "⚉ `.قائمة التشغيل`\n"
+    "⚉ `.توقف`\n"
+    "⚉ `.كمل`\n"
+    "⚉ `.تخطي`\n\n"
+    "⚉ `.انضمام`\n"
+    "⚉ `.خروج`"
 )
 
 @zq_lo.rep_cmd(pattern="الميوزك")
