@@ -75,7 +75,7 @@ async def joinVoicechat(event):
     else:
         chat = event.chat_id
 
-    if vc_player.app.active_calls:
+    if vc_player.CHAT_ID:
         return await edit_delete(
             event, f"⚈ **انت منضـم مسبقـاً الـى** {vc_player.CHAT_NAME}"
         )
