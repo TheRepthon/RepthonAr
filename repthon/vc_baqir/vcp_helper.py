@@ -1,15 +1,10 @@
 import asyncio
 from pytgcalls import PyTgCalls
-from pytgcalls.exceptions import (
-    NoActiveGroupCall,
-    NotInCallError,
-)
+from pytgcalls.exceptions import NoActiveGroupCall, NotInCallError
 from pytgcalls.types import MediaStream, StreamEnded
-
-from telethon import functions
+from telethon import functions, utils
 from telethon.errors import ChatAdminRequiredError
 from telethon.errors.rpcerrorlist import ChannelInvalidError
-
 from ..Config import Config
 
 vc_session = Config.VC_SESSION
@@ -18,7 +13,6 @@ class RepVC:
     def __init__(self, client) -> None:
         self.client = client
         self.app = PyTgCalls(client)
-
         self.CHAT_ID = None
         self.CHAT_NAME = None
         self.PLAYING = None
@@ -27,7 +21,6 @@ class RepVC:
 
     async def start(self):
         await self.app.start()
-
         @self.app.on_update()
         async def stream_handler(_, update):
             if isinstance(update, StreamEnded):
@@ -44,10 +37,16 @@ class RepVC:
         if self.CHAT_ID:
             await self.leave_vc()
 
+        real_id = utils.get_peer_id(chat)
+
+        if join_as and isinstance(join_as, str) and join_as.strip("-").isnumeric():
+            join_as = int(join_as)
+
         try:
             await self.app.play(
-                chat.id,
+                real_id,
                 MediaStream("baqir/baqir/Silence01s.mp3"),
+                join_as=join_as
             )
         except NoActiveGroupCall:
             try:
@@ -64,35 +63,17 @@ class RepVC:
             except ChannelInvalidError:
                 return "⚉ الحساب المساعد غير موجود في المجموعة"
 
-        self.CHAT_ID = chat.id
+        self.CHAT_ID = real_id
         self.CHAT_NAME = chat.title
-
         return f"✅ تم الانضمام إلى المكالمة في {chat.title}"
 
     async def leave_vc(self):
         try:
             await self.app.leave_group_call(self.CHAT_ID)
-        except NotInCallError:
+        except Exception:
             pass
-
         self.clear_vars()
 
-    async def play_song(self, path, video=False):
-        if not self.CHAT_ID:
-            return "⚠️ لست داخل مكالمة صوتية"
-
-        track = {
-            "path": path,
-            "video": video,
-        }
-
-        if self.PLAYING:
-            self.PLAYLIST.append(track)
-            return f"📌 تمت الإضافة لقائمة التشغيل ({len(self.PLAYLIST)})"
-
-        self.PLAYLIST.append(track)
-        return await self.skip()
-        
     async def skip(self, clear=False):
         if clear:
             self.PLAYLIST.clear()
@@ -108,15 +89,12 @@ class RepVC:
             return "⚠️ قائمة التشغيل فارغة"
             
         next_track = self.PLAYLIST.pop(0)
-        if next_track["video"]:
-            stream = MediaStream(next_track["path"], video_flags=VideoFlags.SOURCE)
-        else:
-            stream = MediaStream(next_track["path"])
-        
-        await self.app.change_stream(self.CHAT_ID, stream)
+        stream = MediaStream(next_track["path"])
+            
+        await self.app.play(self.CHAT_ID, stream)
         self.PLAYING = next_track
         return "🎵 تم تشغيل المقطع"
-        
+
     async def pause(self):
         if not self.PLAYING:
             return "⚠️ لا يوجد شيء يعمل"
