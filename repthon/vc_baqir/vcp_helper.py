@@ -39,14 +39,10 @@ class RepVC:
 
         real_id = utils.get_peer_id(chat)
 
-        if join_as and isinstance(join_as, str) and join_as.strip("-").isnumeric():
-            join_as = int(join_as)
-
         try:
             await self.app.play(
                 real_id,
-                MediaStream("baqir/baqir/Silence01s.mp3"),
-                join_as=join_as
+                MediaStream("baqir/baqir/Silence01s.mp3")
             )
         except NoActiveGroupCall:
             try:
@@ -67,6 +63,7 @@ class RepVC:
         self.CHAT_NAME = chat.title
         return f"✅ تم الانضمام إلى المكالمة في {chat.title}"
 
+        
     async def leave_vc(self):
         try:
             await self.app.leave_group_call(self.CHAT_ID)
