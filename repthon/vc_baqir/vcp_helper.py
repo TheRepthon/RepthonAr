@@ -5,7 +5,6 @@ from pytgcalls.exceptions import (
     NotInCallError,
 )
 from pytgcalls.types import MediaStream, StreamEnded
-from pyrogram.methods.stream import StreamMethods
 
 from telethon import functions
 from telethon.errors import ChatAdminRequiredError
