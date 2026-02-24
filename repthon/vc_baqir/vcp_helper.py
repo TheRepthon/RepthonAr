@@ -47,8 +47,7 @@ class RepVC:
         try:
             await self.app.play(
                 chat.id,
-                MediaStream(audio="baqir/baqir/Silence01s.mp3"),
-                join_as=join_as,
+                MediaStream("baqir/baqir/Silence01s.mp3"),
             )
         except NoActiveGroupCall:
             try:
@@ -102,7 +101,7 @@ class RepVC:
             try:
                 await self.app.play(
                     self.CHAT_ID,
-                    MediaStream(audio="baqir/baqir/Silence01s.mp3"),
+                    MediaStream("baqir/baqir/Silence01s.mp3"),
                 )
             except Exception:
                 pass
@@ -110,13 +109,10 @@ class RepVC:
             
         next_track = self.PLAYLIST.pop(0)
         if next_track["video"]:
-            stream = MediaStream(
-                audio=next_track["path"],
-                video=next_track["path"],
-            )
+            stream = MediaStream(next_track["path"], video_flags=VideoFlags.SOURCE)
         else:
-            stream = MediaStream(audio=next_track["path"])
-            
+            stream = MediaStream(next_track["path"])
+        
         await self.app.change_stream(self.CHAT_ID, stream)
         self.PLAYING = next_track
         return "🎵 تم تشغيل المقطع"
