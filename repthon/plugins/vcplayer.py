@@ -36,10 +36,9 @@ vc_player = RepVC(vc_client)
 asyncio.create_task(vc_player.start())
 
 
-@self.app.on_update()
-async def stream_handler(_, update):
-    if isinstance(update, StreamEnded):
-        await self.skip()
+@vc_player.app.on_stream_end()
+async def handler(_, update):
+    await vc_player.handle_next(update)
 
 
 ALLOWED_USERS = set()
