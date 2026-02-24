@@ -97,12 +97,13 @@ async def joinVoicechat(event):
         )
 
     if joinas and not vc_chat.username:
-        await edit_or_reply(
-            event,
-            "⚈ **عـذراً عـزيـزي**\n⚈**لم استطـع الانضمـام الى المكالمـة ✗**\n⚈ **قم بالانضمـام يدويـاً**",
-        )
-        joinas = False
-
+    await edit_or_reply(
+        event,
+        "⚈ **عـذراً عـزيـزي**\n"
+        "⚈**لم استطـع الانضمـام الى المكالمـة ✗**\n"
+        "⚈ **قم بالانضمـام يدويـاً**"
+    )
+    joinas = False
     out = await vc_player.join_vc(vc_chat, joinas)
     await edit_delete(event, out)
 
