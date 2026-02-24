@@ -75,24 +75,23 @@ async def joinVoicechat(event):
     if chat and chat != "ك":
         if chat.strip("-").isnumeric():
             chat = int(chat)
-    else:
-        chat = event.chat_id
-        if vc_player.app.active_calls:
-        return await edit_delete(
-            event, f"⚈ **انت منضـم مسبقـاً الـى**  {vc_player.CHAT_NAME}"
-        )
-    try:
-        vc_chat = await zq_lo.get_entity(chat)
-    except Exception as e:
-        return await edit_delete(event, f'⚈ **خطـأ** : \n{e or "UNKNOWN CHAT"}')
-        if isinstance(vc_chat, User):
-        return await edit_delete(event, "⚈ **عـذراً عـزيـزي ✗**\n⚈ **المكالمـة الصـوتيـه مغلقـه هنـا ؟!**\n⚈ **قم بفتح المكالمـه اولاً 🗣**")
-        if joinas and not vc_chat.username:
-        await edit_or_reply(event, "⚈ **عـذراً عـزيـزي**\n⚈**لم استطـع الانضمـام الى المكالمـة ✗**\n⚈ **قم بالانضمـام يدويـاً**")
-        joinas = False
-        out = await vc_player.join_vc(vc_chat, joinas)
-        await edit_delete(event, out)
-
+        else:
+            chat = event.chat_id
+            if vc_player.app.active_calls:
+                return await edit_delete(
+                    event, f"⚈ **انت منضـم مسبقـاً الـى**  {vc_player.CHAT_NAME}"
+                )
+                try:
+                    vc_chat = await zq_lo.get_entity(chat)
+                except Exception as e:
+                    return await edit_delete(event, f'⚈ **خطـأ** : \n{e or "UNKNOWN CHAT"}')
+                    if isinstance(vc_chat, User):
+                        return await edit_delete(event, "⚈ **عـذراً عـزيـزي ✗**\n⚈ **المكالمـة الصـوتيـه مغلقـه هنـا ؟!**\n⚈ **قم بفتح المكالمـه اولاً 🗣**")
+                        if joinas and not vc_chat.username:
+                            await edit_or_reply(event, "⚈ **عـذراً عـزيـزي**\n⚈**لم استطـع الانضمـام الى المكالمـة ✗**\n⚈ **قم بالانضمـام يدويـاً**")
+                            joinas = False
+                            out = await vc_player.join_vc(vc_chat, joinas)
+                            await edit_delete(event, out)
 
 @zq_lo.rep_cmd(
     pattern="خروج",
