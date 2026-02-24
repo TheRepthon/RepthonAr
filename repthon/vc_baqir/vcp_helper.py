@@ -12,9 +12,7 @@ from telethon.errors.rpcerrorlist import ChannelInvalidError
 
 from ..Config import Config
 
-
 vc_session = Config.VC_SESSION
-
 
 class RepVC:
     def __init__(self, client) -> None:
@@ -42,7 +40,6 @@ class RepVC:
         self.PLAYLIST = []
         self.PAUSED = False
 
-    
     async def join_vc(self, chat, join_as=None):
         if self.CHAT_ID:
             await self.leave_vc()
@@ -73,7 +70,6 @@ class RepVC:
 
         return f"✅ تم الانضمام إلى المكالمة في {chat.title}"
 
-    
     async def leave_vc(self):
         try:
             await self.app.leave_group_call(self.CHAT_ID)
@@ -82,7 +78,6 @@ class RepVC:
 
         self.clear_vars()
 
-    
     async def play_song(self, path, video=False):
         if not self.CHAT_ID:
             return "⚠️ لست داخل مكالمة صوتية"
@@ -99,16 +94,20 @@ class RepVC:
         self.PLAYLIST.append(track)
         return await self.skip()
         
-        async def skip(self, clear=False):
+    async def skip(self, clear=False):
         if clear:
             self.PLAYLIST.clear()
         if not self.PLAYLIST:
             self.PLAYING = None
-            await self.app.change_stream(
-                self.CHAT_ID,
-                MediaStream(audio="baqir/baqir/Silence01s.mp3"),
-            )
+            try:
+                await self.app.change_stream(
+                    self.CHAT_ID,
+                    MediaStream(audio="baqir/baqir/Silence01s.mp3"),
+                )
+            except Exception:
+                pass
             return "⚠️ قائمة التشغيل فارغة"
+            
         next_track = self.PLAYLIST.pop(0)
         if next_track["video"]:
             stream = MediaStream(
@@ -117,20 +116,21 @@ class RepVC:
             )
         else:
             stream = MediaStream(audio=next_track["path"])
-            await self.app.change_stream(self.CHAT_ID, stream)
-            self.PLAYING = next_track
-            return "🎵 تم تشغيل المقطع"
+            
+        await self.app.change_stream(self.CHAT_ID, stream)
+        self.PLAYING = next_track
+        return "🎵 تم تشغيل المقطع"
         
-        async def pause(self):
+    async def pause(self):
         if not self.PLAYING:
             return "⚠️ لا يوجد شيء يعمل"
-            await self.app.pause_stream(self.CHAT_ID)
-            self.PAUSED = True
-            return "⏸ تم الإيقاف المؤقت"
+        await self.app.pause_stream(self.CHAT_ID)
+        self.PAUSED = True
+        return "⏸ تم الإيقاف المؤقت"
         
-        async def resume(self):
-            if not self.PLAYING:
-                return "⚠️ لا يوجد شيء يعمل"
-                await self.app.resume_stream(self.CHAT_ID)
-                self.PAUSED = False
-                return "▶️ تم الاستئناف"
+    async def resume(self):
+        if not self.PLAYING:
+            return "⚠️ لا يوجد شيء يعمل"
+        await self.app.resume_stream(self.CHAT_ID)
+        self.PAUSED = False
+        return "▶️ تم الاستئناف"
