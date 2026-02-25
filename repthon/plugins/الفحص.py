@@ -57,7 +57,7 @@ def get_platform():
         return "𝚁𝚎𝚗𝚍𝚎𝚛"
     elif "KOYEB_SERVICE_NAME" in os.environ:
         return "𝙺𝚘𝚢𝚎𝚋"
-    elif "RAILWAY_STATIC_URL" in os.environ:
+    elif "RAILWAY_SERVICE_ID" in os.environ or "RAILWAY_ENVIRONMENT" in os.environ:
         return "𝚁𝚊𝚒𝚕𝚠𝚊𝚢"
     else:
         return "𝚅𝙿𝚂 / 𝙻𝚘𝚌𝚊𝚕"
