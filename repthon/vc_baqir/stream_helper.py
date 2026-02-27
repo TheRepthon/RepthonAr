@@ -1,13 +1,11 @@
 import re
 import os
 import glob
-import io
+import time
 import random
 from enum import Enum
-from requests.models import PreparedRequest
-from requests.exceptions import MissingSchema
-from ..utils import runcmd
 from yt_dlp import YoutubeDL
+
 
 
 class Stream(Enum):
@@ -24,57 +22,70 @@ def get_cookies_file():
     return cookie_txt_file
 
 
-yt_regex_str = (
-    r"^((?:https?:)?\/\/)?"
-    r"((?:www|m)\.)?"
-    r"((?:youtube(-nocookie)?\.com|youtu.be))"
-    r"(\/(?:[\w\-]+\?v=|embed\/|v\/)?)"
-    r"([\w\-]+)(\S+)?$"
+
+yt_regex = re.compile(
+    r"(https?://)?(www\.)?(youtube\.com|youtu\.be)/.+"
 )
-yt_regex = re.compile(yt_regex_str)
 
 
-def check_url(url: str):
-    prepared_request = PreparedRequest()
-    try:
-        prepared_request.prepare_url(url, None)
-        return prepared_request.url
-    except MissingSchema:
+
+YT_CACHE = {}
+
+
+def _cache_valid(url: str):
+    if url not in YT_CACHE:
         return False
+    stream_url, expire = YT_CACHE[url]
+    return time.time() < expire
 
 
-async def get_yt_stream_link(url: str, audio_only: bool = False) -> str:
-    cookies = get_cookies_file()
-    if audio_only:
-        cmd = f'yt-dlp --cookies "{cookies}" --geo-bypass -f bestaudio -g "{url}"'
-    else:
-        cmd = f'yt-dlp --cookies "{cookies}" --geo-bypass -f bestvideo+bestaudio -g "{url}"'
-    result = await runcmd(cmd)
-    return result[0]
+
+async def get_stream(url: str, stream_type: Stream = Stream.audio):
+
+    if not yt_regex.match(url):
+        return url
 
 
-async def video_dl(url: str, title: str) -> str:
-    os.makedirs("temp", exist_ok=True)
-    path = os.path.join("temp", f"{title.replace(' ', '_')}.mp4")
-    video_opts = {
-        "format": "(bestvideo[height<=?360][ext=mp4])+(bestaudio[ext=m4a])",
-        "addmetadata": True,
-        "key": "FFmpegMetadata",
-        "writethumbnail": False,
-        "prefer_ffmpeg": True,
-        "geo_bypass": True,
-        "nocheckcertificate": True,
-        "postprocessors": [
-            {"key": "FFmpegVideoConvertor", "preferedformat": "mp4"},
-            {"key": "FFmpegMetadata"},
-        ],
-        "outtmpl": path,
-        "logtostderr": False,
+    if _cache_valid(url):
+        return YT_CACHE[url][0]
+
+    ydl_opts = {
         "quiet": True,
-        "no_warnings": True,
+        "nocheckcertificate": True,
+        "geo_bypass": True,
         "cookiefile": get_cookies_file(),
     }
 
-    with YoutubeDL(video_opts) as ytdl:
-        ytdl.extract_info(url)
-    return path
+    if stream_type == Stream.audio:
+        ydl_opts["format"] = "bestaudio[ext=m4a]/bestaudio/best"
+    else:
+        ydl_opts["format"] = "best[height<=?480]"
+
+    with YoutubeDL(ydl_opts) as ytdl:
+        info = ytdl.extract_info(url, download=False)
+
+        if "entries" in info:
+            info = info["entries"][0]
+
+        stream_url = info["url"]
+
+        YT_CACHE[url] = (stream_url, time.time() + 300)
+
+        return stream_url
+
+
+async def search_youtube(query: str):
+    ydl_opts = {
+        "quiet": True,
+        "nocheckcertificate": True,
+        "geo_bypass": True,
+        "default_search": "ytsearch1",
+    }
+
+    with YoutubeDL(ydl_opts) as ytdl:
+        info = ytdl.extract_info(query, download=False)
+
+        if "entries" in info and info["entries"]:
+            return info["entries"][0]["webpage_url"]
+
+    return None
