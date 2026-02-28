@@ -96,26 +96,18 @@ async def play_audio(event):
 
 @zq_lo.rep_cmd(pattern="شغل فيديو(?: |$)(.*)")
 async def play_video(event):
-
     query = event.pattern_match.group(1)
-
     if not vc_player.CHAT_ID:
         return await edit_delete(event, "⚈ انضم اولاً عبر .انضمام")
-
-    if event.reply_to_msg_id and not query:
-        query = await tg_dl(event)
-
-    if not query:
-        return await edit_delete(event, "⚈ اكتب اسم فيديو او رابط")
-
-    if not query.startswith("http"):
-        query = await search_youtube(query)
-
-    await edit_or_reply(event, "📺 جاري تشغيل الفيديو ...")
-
-    resp = await vc_player.play_song(query)
-
-    await edit_delete(event, resp, time=20)
+        if event.reply_to_msg_id and not query:
+            query = await tg_dl(event)
+            if not query:
+                return await edit_delete(event, "⚈ اكتب اسم فيديو او رابط")
+                if not query.startswith("http"):
+                    query = await search_youtube(query)
+                    await edit_or_reply(event, "📺 جاري تشغيل الفيديو ...")
+                    resp = await vc_player.play_song(query)
+                    await edit_delete(event, resp, time=20)
 
 # ================= SKIP =================
 
