@@ -115,26 +115,21 @@ class RepVC:
 
     async def _safe_skip(self):
         async with self.LOCK:
-        if not self.PLAYLIST:
-            self.PLAYING = None
-            return "⚠️ انتهت القائمة"
-
-        next_track = self.PLAYLIST.pop(0)
-
-        try:
-            stream = MediaStream(next_track["path"])
-
-            await self.app.play(
-                self.CHAT_ID,
-                stream
-            )
-
-            self.PLAYING = next_track
-            return "🎵 تم التشغيل"
-
-        except Exception as e:
-            self.PLAYING = None
-            return f"❌ خطأ في التشغيل:\n{e}"
+            if not self.PLAYLIST:
+                self.PLAYING = None
+                return "⚠️ انتهت القائمة"
+                next_track = self.PLAYLIST.pop(0)
+                try:
+                    stream = MediaStream(next_track["path"])
+                    await self.app.play(
+                        self.CHAT_ID,
+                        stream
+                    )
+                    self.PLAYING = next_track
+                    return "🎵 تم التشغيل"
+                except Exception as e:
+                    self.PLAYING = None
+                    return f"❌ خطأ في التشغيل:\n{e}"
 
     async def skip(self):
         return await self._safe_skip()
