@@ -88,11 +88,7 @@ async def play_audio(event):
 
     await edit_or_reply(event, "🎧 جاري التشغيل ...")
 
-    resp = await vc_player.play_song(
-        path=query,
-        stream_type=Stream.audio,
-        force=False
-    )
+    resp = await vc_player.play_song(query)
 
     await edit_delete(event, resp, time=20)
 
@@ -117,11 +113,7 @@ async def play_video(event):
 
     await edit_or_reply(event, "📺 جاري تشغيل الفيديو ...")
 
-    resp = await vc_player.play_song(
-        path=query,
-        stream_type=Stream.video,
-        force=False
-    )
+    resp = await vc_player.play_song(query)
 
     await edit_delete(event, resp, time=20)
 
