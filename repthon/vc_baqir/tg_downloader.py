@@ -6,7 +6,7 @@ from ..Config import Config
 from ..core.managers import edit_or_reply
 from ..helpers import progress
 
-downloads = pathlib.Path(os.path.join(os.getcwd(), Config.TEMP_DIR))
+downloads = pathlib.Path(os.path.join(os.getcwd(), "temp"))
 downloads.mkdir(parents=True, exist_ok=True)
 
 async def tg_dl(event):
