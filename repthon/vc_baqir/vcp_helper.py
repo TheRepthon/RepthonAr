@@ -114,7 +114,7 @@ class RepVC:
 
 
     async def _safe_skip(self):
-    async with self.LOCK:
+        async with self.LOCK:
         if not self.PLAYLIST:
             self.PLAYING = None
             return "⚠️ انتهت القائمة"
