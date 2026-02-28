@@ -6,7 +6,7 @@ from ..Config import Config
 from ..core.managers import edit_or_reply
 from ..helpers import progress
 
-downloads = pathlib.Path(os.path.join(os.getcwd(), Config.TMP_DOWNLOAD_DIRECTORY))
+downloads = pathlib.Path(os.path.join(os.getcwd(), Config.TEMP_DIR))
 downloads.mkdir(parents=True, exist_ok=True)
 
 async def tg_dl(event):
@@ -17,7 +17,7 @@ async def tg_dl(event):
         await mone.edit("**- عذراً، يجب الرد على فيديو أو ملف صوتي...**")
         return False
 
-    file_name = getattr(reply.document, "file_name", None) or f"repthon_{reply.id}.mp3"
+    file_name = getattr(reply.document, "file_name", None) or f"repthon_{reply.id}"
     file_path = downloads / file_name
     
     start = time.time()
@@ -35,13 +35,11 @@ async def tg_dl(event):
         return False
 
     elapsed = int(time.time() - start)
-    
-    rel_path = os.path.relpath(downloaded_file, os.getcwd())
-    
+
     await mone.edit(
         f"**❈╎تم التحميل بنجاح ✅**\n"
         f"**❈╎الوقت المستغرق: {elapsed} ثانية.**\n"
-        f"**❈╎المسار:** `{rel_path}`"
+        f"**❈╎المسار:** `{downloaded_file}`"
     )
     
-    return rel_path
+    return str(downloaded_file)
