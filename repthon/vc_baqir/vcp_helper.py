@@ -6,10 +6,7 @@ from telethon import functions, utils
 from telethon.errors import ChatAdminRequiredError
 from telethon.errors.rpcerrorlist import ChannelInvalidError
 from repthon import zq_lo
-from ..vc_baqir.stream_helper import Stream
 from ..Config import Config
-
-vc_session = Config.VC_SESSION
 
 
 class RepVC:
@@ -25,7 +22,6 @@ class RepVC:
 
         self.PAUSED = False
         self.LOCK = asyncio.Lock()
-        self.STREAM_READY = False
 
 
     async def start(self):
@@ -34,10 +30,8 @@ class RepVC:
         @self.app.on_update()
         async def handler(_, update):
             if isinstance(update, StreamEnded):
-                if self.PLAYING:
-                    await asyncio.sleep(1)
-                    if self.PLAYING:
-                        await self._safe_skip()
+                await asyncio.sleep(1)
+                await self._safe_skip()
 
 
     async def join_vc(self, chat):
@@ -71,10 +65,6 @@ class RepVC:
         self.CHAT_ID = real_id
         self.CHAT_NAME = chat.title
 
-        await asyncio.sleep(2)
-
-        self.STREAM_READY = True
-
         return f"✅ تم الانضمام إلى {chat.title}"
 
 
@@ -89,7 +79,6 @@ class RepVC:
         self.PLAYING = None
         self.PLAYLIST.clear()
         self.PAUSED = False
-        self.STREAM_READY = False
 
 
     async def play_song(self, path, force=False):
@@ -114,22 +103,28 @@ class RepVC:
 
 
     async def _safe_skip(self):
-        async with self.LOCK:
-            if not self.PLAYLIST:
-                self.PLAYING = None
-                return "⚠️ انتهت القائمة"
-                next_track = self.PLAYLIST.pop(0)
-                try:
-                    stream = MediaStream(next_track["path"])
-                    await self.app.play(
-                        self.CHAT_ID,
-                        stream
-                    )
-                    self.PLAYING = next_track
-                    return "🎵 تم التشغيل"
-                except Exception as e:
-                    self.PLAYING = None
-                    return f"❌ خطأ في التشغيل:\n{e}"
+
+        if not self.PLAYLIST:
+            self.PLAYING = None
+            return "⚠️ انتهت القائمة"
+
+        next_track = self.PLAYLIST.pop(0)
+
+        try:
+            stream = MediaStream(next_track["path"])
+
+            await self.app.play(
+                self.CHAT_ID,
+                stream
+            )
+
+            self.PLAYING = next_track
+            return "🎵 تم التشغيل"
+
+        except Exception as e:
+            self.PLAYING = None
+            return f"❌ خطأ في التشغيل:\n{e}"
+
 
     async def skip(self):
         return await self._safe_skip()
@@ -142,6 +137,7 @@ class RepVC:
         await self.app.pause_stream(self.CHAT_ID)
         self.PAUSED = True
         return "⏸ تم الإيقاف"
+
 
     async def resume(self):
         if not self.PLAYING:
