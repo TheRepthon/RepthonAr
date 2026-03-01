@@ -499,26 +499,25 @@ async def _(event): #Code by T.me/RR0RT
     else:
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
-    ydl_ops = {
-        "format": "bestaudio/best",
-        "keepvideo": False,
-        "prefer_ffmpeg": True,
-        "geo_bypass": True,
-        "outtmpl": "%(title)s.%(ext)s",
-        "quiet": True,
-        "no_warnings": True,
-        "cookiefile": get_cookies_file(),
-        "noplaylist": True,
-        "js_runtimes": {
-            "node": {}
-        },
-    }
-        "postprocessors": [{
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
-            "preferredquality": "192",
-        }],
-    }
+    ydl_opts = {
+    "format": "bestaudio/best",
+    "keepvideo": False,
+    "prefer_ffmpeg": True,
+    "geo_bypass": True,
+    "outtmpl": "%(title)s.%(ext)s",
+    "quiet": True,
+    "no_warnings": True,
+    "cookiefile": get_cookies_file(),
+    "noplaylist": True,
+    "js_runtimes": {
+        "node": {}
+    },
+    "postprocessors": [{
+        "key": "FFmpegExtractAudio",
+        "preferredcodec": "mp3",
+        "preferredquality": "192",
+    }],
+}
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
