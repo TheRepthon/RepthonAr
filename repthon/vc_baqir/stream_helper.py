@@ -3,14 +3,7 @@ import os
 import glob
 import time
 import random
-from enum import Enum
 from yt_dlp import YoutubeDL
-
-
-
-class Stream(Enum):
-    audio = 1
-    video = 2
 
 
 def get_cookies_file():
@@ -28,7 +21,6 @@ yt_regex = re.compile(
 )
 
 
-
 YT_CACHE = {}
 
 
@@ -40,11 +32,10 @@ def _cache_valid(url: str):
 
 
 
-async def get_stream(url: str, stream_type: Stream = Stream.audio):
+async def get_stream(url: str, audio_only: bool = True):
 
     if not yt_regex.match(url):
         return url
-
 
     if _cache_valid(url):
         return YT_CACHE[url][0]
@@ -54,9 +45,10 @@ async def get_stream(url: str, stream_type: Stream = Stream.audio):
         "nocheckcertificate": True,
         "geo_bypass": True,
         "cookiefile": get_cookies_file(),
+        "js_runtimes": ["node"],
     }
 
-    if stream_type == Stream.audio:
+    if audio_only:
         ydl_opts["format"] = "bestaudio[ext=m4a]/bestaudio/best"
     else:
         ydl_opts["format"] = "best[height<=?480]"
@@ -74,12 +66,15 @@ async def get_stream(url: str, stream_type: Stream = Stream.audio):
         return stream_url
 
 
+
 async def search_youtube(query: str):
+
     ydl_opts = {
         "quiet": True,
         "nocheckcertificate": True,
         "geo_bypass": True,
         "default_search": "ytsearch1",
+        "js_runtimes": ["node"],
     }
 
     with YoutubeDL(ydl_opts) as ytdl:
