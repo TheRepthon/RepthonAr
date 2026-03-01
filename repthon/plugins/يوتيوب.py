@@ -509,7 +509,10 @@ async def _(event): #Code by T.me/RR0RT
         "no_warnings": True,
         "cookiefile": get_cookies_file(),
         "noplaylist": True,
-        "js_runtimes": ["node"],
+        "js_runtimes": {
+            "node": {}
+        },
+    }
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
@@ -578,7 +581,9 @@ async def _(event): #Code by T.me/RR0RT
                     "no_warnings": True,
                     "cookiefile": get_cookies_file(),
                     "noplaylist": True,
-                    "js_runtimes": ["node"],
+                    "js_runtimes": {
+                        "node": {}
+                    },
                 }
                 
                 with yt_dlp.YoutubeDL(ydl_ops_alt) as ydl:
