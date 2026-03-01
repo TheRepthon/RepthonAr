@@ -499,7 +499,7 @@ async def _(event): #Code by T.me/RR0RT
     else:
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
-    ydl_opts = {
+    ydl_ops = {
     "format": "bestaudio/best",
     "keepvideo": False,
     "prefer_ffmpeg": True,
