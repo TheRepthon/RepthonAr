@@ -500,7 +500,7 @@ async def _(event): #Code by T.me/RR0RT
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
     ydl_ops = {
-    "format": "bestaudio*",
+    "format": None,
     "keepvideo": False,
     "prefer_ffmpeg": True,
     "geo_bypass": True,
@@ -509,7 +509,6 @@ async def _(event): #Code by T.me/RR0RT
     "no_warnings": True,
     "cookiefile": get_cookies_file(),
     "noplaylist": True,
-    "allow_unplayable_formats": True,
     "js_runtimes": {
         "node": {}
     },
