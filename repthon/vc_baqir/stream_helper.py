@@ -45,6 +45,7 @@ async def get_stream(url: str, video: bool = False):
         "nocheckcertificate": True,
         "geo_bypass": True,
         "cookiefile": get_cookies_file(),
+        "noplaylist": True
         "js_runtimes": {
             "node": {}
         },
@@ -53,7 +54,7 @@ async def get_stream(url: str, video: bool = False):
     if video:
         ydl_opts["format"] = "best[height<=?720]"
     else:
-        ydl_opts["format"] = "bestaudio[ext=m4a]/bestaudio/best"
+        ydl_opts["format"] = "bestaudio/best"
 
     with YoutubeDL(ydl_opts) as ytdl:
         info = ytdl.extract_info(url, download=False)
