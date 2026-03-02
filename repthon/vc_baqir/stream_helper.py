@@ -50,10 +50,10 @@ async def get_stream(url: str, audio_only: bool = True):
         },
     }
 
-    if audio_only:
-        ydl_opts["format"] = "bestaudio[ext=m4a]/bestaudio/best"
+    if video:
+        ydl_opts["format"] = "best[height<=?720]"
     else:
-        ydl_opts["format"] = "best[height<=?480]"
+        ydl_opts["format"] = "bestaudio[ext=m4a]/bestaudio/best"
 
     with YoutubeDL(ydl_opts) as ytdl:
         info = ytdl.extract_info(url, download=False)
