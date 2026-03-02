@@ -76,6 +76,7 @@ async def search_youtube(query: str):
         "nocheckcertificate": True,
         "geo_bypass": True,
         "default_search": "ytsearch1",
+        "cookiefile": get_cookies_file(),
         "js_runtimes": {
             "node": {}
         },
