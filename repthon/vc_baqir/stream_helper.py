@@ -32,7 +32,7 @@ def _cache_valid(url: str):
 
 
 
-async def get_stream(url: str, audio_only: bool = True):
+async def get_stream(url: str, video: bool = False):
 
     if not yt_regex.match(url):
         return url
