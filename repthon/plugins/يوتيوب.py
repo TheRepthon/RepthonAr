@@ -493,7 +493,6 @@ def remove_if_exists(path):
 @zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
 async def _(event):
     reply = await event.get_reply_message()
-
     if event.pattern_match.group(1):
         query = event.pattern_match.group(1)
     elif reply and reply.message:
@@ -506,28 +505,8 @@ async def _(event):
 
     revent = await edit_or_reply(
         event,
-        "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**"
+        "**جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**"
     )
-
-    try:
-        search = VideosSearch(query, limit=1)
-        result = search.result()["result"][0]
-
-        link = result["link"]
-        title = result["title"][:40]
-        duration = result.get("duration", "0:00")
-        thumbnail = result["thumbnails"][0]["url"]
-
-        thumb_name = f"{title}.jpg"
-        thumb = requests.get(thumbnail)
-        open(thumb_name, "wb").write(thumb.content)
-
-    except Exception as e:
-        return await revent.edit(
-            f"**• فشـل في البحث**\n**• الخطـأ :** `{str(e)}`"
-        )
-
-    await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
 
     ydl_opts = {
         "quiet": True,
@@ -548,39 +527,36 @@ async def _(event):
     }
 
     audio_file = None
-
+    await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(link, download=True)
+
+            info = ydl.extract_info(
+                f"ytsearch1:{query}",
+                download=True
+            )
+
+            info = info["entries"][0]
+
+            title = info.get("title", "Unknown")[:40]
+            duration = info.get("duration", 0)
+            uploader = info.get("uploader", "Unknown")
+
             audio_file = ydl.prepare_filename(info)
             audio_file = audio_file.rsplit(".", 1)[0] + ".mp3"
 
         await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
 
-        # ⏱ حساب المدة
-        duration_seconds = 0
-        if ":" in duration:
-            parts = duration.split(":")
-            if len(parts) == 2:
-                duration_seconds = int(parts[0]) * 60 + int(parts[1])
-            elif len(parts) == 3:
-                duration_seconds = (
-                    int(parts[0]) * 3600 +
-                    int(parts[1]) * 60 +
-                    int(parts[2])
-                )
-
         await event.client.send_file(
             event.chat_id,
             audio_file,
             force_document=False,
-            thumb=thumb_name,
             caption=f"**⎉ البحث ⥃** `{title}`",
             attributes=[
                 DocumentAttributeAudio(
-                    duration=duration_seconds,
+                    duration=int(duration),
                     title=title,
-                    performer=info.get("uploader", "Unknown")
+                    performer=uploader
                 )
             ]
         )
@@ -599,12 +575,10 @@ async def _(event):
         try:
             if audio_file and os.path.exists(audio_file):
                 os.remove(audio_file)
-            if thumb_name and os.path.exists(thumb_name):
-                os.remove(thumb_name)
         except:
-            pass        
+            pass
         
-
+        
 @zq_lo.rep_cmd(pattern="s(?: |$)(.*)")
 async def _(event):
     query = event.pattern_match.group(1)
