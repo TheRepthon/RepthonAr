@@ -490,7 +490,7 @@ def remove_if_exists(path):
         os.remove(path)
 
 #R
-@zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
+"""@zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
 async def _(event):
     reply = await event.get_reply_message()
     if event.pattern_match.group(1):
@@ -577,10 +577,10 @@ async def _(event):
             if audio_file and os.path.exists(audio_file):
                 os.remove(audio_file)
         except:
-            pass
+            pass"""
         
         
-@zq_lo.rep_cmd(pattern="s(?: |$)(.*)")
+@zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
 async def _(event):
     query = event.pattern_match.group(1)
     reply = await event.get_reply_message()
