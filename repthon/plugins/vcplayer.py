@@ -12,7 +12,7 @@ from repthon import zq_lo
 from ..Config import Config
 from ..core.managers import edit_delete, edit_or_reply
 
-from ..vc_baqir.stream_helper import search_youtube, get_stream
+from ..vc_baqir.stream_helper import search_youtube
 from ..vc_baqir.tg_downloader import tg_dl
 from ..vc_baqir.vcp_helper import RepVC
 
@@ -80,8 +80,7 @@ async def play_media(event):
     if not query:
         return await edit_delete(event, "⚠️ لم يتم العثور على نتيجة")
     await edit_or_reply(event, "🎧 جاري التشغيل ...")
-    stream = await get_stream(query, video=False)
-    resp = await vc_player.play_song(stream, force=force)
+    resp = await vc_player.play_song(query, force=force)
     await edit_delete(event, resp, time=20)
 
 
@@ -103,8 +102,7 @@ async def play_video(event):
     if not query:
         return await edit_delete(event, "⚠️ لم يتم العثور على نتيجة")
     await edit_or_reply(event, "📺 جاري تشغيل الفيديو ...")
-    stream = await get_stream(query, video=True)
-    resp = await vc_player.play_song(stream, force=force)
+    resp = await vc_player.play_song(query, force=force)
     await edit_delete(event, resp, time=20)
 
 
