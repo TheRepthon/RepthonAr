@@ -513,9 +513,10 @@ async def _(event):
         "noplaylist": True,
         "geo_bypass": True,
         "cookiefile": get_cookies_file(),
+        "proxy": "http://vwtkkqgk:sadbkrwphdli@23.95.150.145:6114/",
         "extractor_args": {
             "youtube": {
-                "player_client": ["android"]
+                "player_client": ["android", "web"]
             }
         },
         "outtmpl": "%(title)s.%(ext)s",
