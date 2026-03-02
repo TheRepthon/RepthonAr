@@ -45,7 +45,7 @@ async def get_stream(url: str, video: bool = False):
         "nocheckcertificate": True,
         "geo_bypass": True,
         "cookiefile": get_cookies_file(),
-        "noplaylist": True
+        "noplaylist": True,
         "js_runtimes": {
             "node": {}
         },
