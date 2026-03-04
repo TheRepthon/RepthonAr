@@ -507,7 +507,7 @@ async def _(event): #Code by T.me/RR0RT
     "outtmpl": "%(title)s.%(ext)s",
     "verbose": True,
     "no_warnings": True,
-    "cookiesfrombrowser": ("firefox", ),
+    "cookiefile": get_cookies_file()
     "noplaylist": True,
     "js_runtimes": {
         "node": {}
@@ -613,7 +613,7 @@ async def _(event): #Code by T.me/RR0RT
             print(f"Error cleaning up: {e}")
         
         
-@zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
+@zq_lo.rep_cmd(pattern="s(?: |$)(.*)")
 async def _(event):
     query = event.pattern_match.group(1)
     reply = await event.get_reply_message()
