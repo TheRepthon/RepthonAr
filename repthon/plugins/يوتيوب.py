@@ -16,7 +16,6 @@ import wget
 import yt_dlp
 from yt_dlp import YoutubeDL
 from youtube_search import YoutubeSearch
-from youtubesearchpython import VideosSearch
 from ShazamAPI import Shazam
 from validators.url import url
 
@@ -490,94 +489,128 @@ def remove_if_exists(path):
         os.remove(path)
 
 #R
-"""@zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
-async def _(event):
+@zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
+async def _(event): #Code by T.me/RR0RT
     reply = await event.get_reply_message()
     if event.pattern_match.group(1):
         query = event.pattern_match.group(1)
     elif reply and reply.message:
         query = reply.message
     else:
-        return await edit_or_reply(
-            event,
-            "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**"
-        )
-
-    revent = await edit_or_reply(
-        event,
-        "**جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**"
-    )
-
-    ydl_opts = {
-        "quiet": True,
-        "noplaylist": True,
-        "geo_bypass": True,
-        "cookiefile": get_cookies_file(),
-        "proxy": "http://vwtkkqgk:sadbkrwphdli@23.95.150.145:6114/",
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["android", "web"]
-            }
-        },
-        "outtmpl": "%(title)s.%(ext)s",
-        "postprocessors": [{
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
-            "preferredquality": "192",
-        }],
-    }
-
-    audio_file = None
-    await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
+        return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
+    revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
+    ydl_ops = {
+    "format": "bestaudio/best",
+    "keepvideo": False,
+    "prefer_ffmpeg": True,
+    "geo_bypass": True,
+    "outtmpl": "%(title)s.%(ext)s",
+    "verbose": True,
+    "no_warnings": True,
+    "cookiefile": get_cookies_file(),
+    "noplaylist": True,
+    "js_runtimes": {
+        "node": {}
+    },
+    "postprocessors": [{
+        "key": "FFmpegExtractAudio",
+        "preferredcodec": "mp3",
+        "preferredquality": "192",
+    }],
+}
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        results = YoutubeSearch(query, max_results=1).to_dict()
+        link = f"https://youtube.com{results[0]['url_suffix']}"
+        title = results[0]["title"][:40]
+        thumbnail = results[0]["thumbnails"][0]
+        thumb_name = f"{title}.jpg"
+        thumb = requests.get(thumbnail, allow_redirects=True)
+        try:
+            open(thumb_name, "wb").write(thumb.content)
+        except Exception:
+            thumb_name = None
+        duration = results[0]["duration"]
 
-            info = ydl.extract_info(
-                f"ytsearch1:{query}",
-                download=True
-            )
-
-            info = info["entries"][0]
-
-            title = info.get("title", "Unknown")[:40]
-            duration = info.get("duration", 0)
-            uploader = info.get("uploader", "Unknown")
-
-            audio_file = ydl.prepare_filename(info)
-            audio_file = audio_file.rsplit(".", 1)[0] + ".mp3"
-
+    except Exception as e:
+        await revent.edit(f"**• فشـل في البحث** \n**• الخطـأ :** `{str(e)}`")
+        return
+    
+    await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
+    
+    try:
+        with yt_dlp.YoutubeDL(ydl_ops) as ydl:
+            info_dict = ydl.extract_info(link, download=True)
+            audio_file = ydl.prepare_filename(info_dict)
+            if audio_file.endswith('.webm'):
+                audio_file = audio_file[:-5] + '.mp3'
+            elif audio_file.endswith('.m4a'):
+                audio_file = audio_file[:-4] + '.mp3'
+            else:
+                audio_file = audio_file.rsplit('.', 1)[0] + '.mp3'
+            
         await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
-
+        
         await event.client.send_file(
             event.chat_id,
             audio_file,
             force_document=False,
             caption=f"**⎉ البحث ⥃** `{title}`",
+            thumb=thumb_name,
             attributes=[
                 DocumentAttributeAudio(
-                    duration=int(duration),
+                    duration=int(duration.split(':')[0])*60 + int(duration.split(':')[1]) if ':' in duration else int(duration),
                     title=title,
-                    performer=uploader
+                    performer=info_dict.get('uploader', 'Unknown')
                 )
             ]
         )
-
         await revent.delete()
-
     except ChatSendMediaForbiddenError:
-        await revent.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
-
+        return await revent.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
     except Exception as e:
-        await revent.edit(
-            f"**• فشـل التحميـل**\n**• الخطـأ :** `{str(e)}`"
-        )
-
+        if "Requested format is not available" in str(e):
+            try:
+                ydl_ops_alt = {
+                    "format": "worstaudio/worst",
+                    "keepvideo": False,
+                    "prefer_ffmpeg": True,
+                    "geo_bypass": True,
+                    "outtmpl": "%(title)s.%(ext)s",
+                    "quiet": True,
+                    "no_warnings": True,
+                    "cookiefile": get_cookies_file(),
+                    "noplaylist": True,
+                    "js_runtimes": {
+                        "node": {}
+                    },
+                }
+                
+                with yt_dlp.YoutubeDL(ydl_ops_alt) as ydl:
+                    info_dict = ydl.extract_info(link, download=True)
+                    audio_file = ydl.prepare_filename(info_dict)
+                
+                await event.client.send_file(
+                    event.chat_id,
+                    audio_file,
+                    force_document=False,
+                    caption=f"**⎉ البحث ⥃** `{title}`",
+                    thumb=thumb_name,
+                )
+                await revent.delete()
+                
+            except Exception as e2:
+                return await revent.edit(f"**• فشـل التحميـل** \n**• الخطـأ :** `{str(e2)}`")
+        else:
+            return await revent.edit(f"**• فشـل التحميـل** \n**• الخطـأ :** `{str(e)}`")
+    
     finally:
         try:
-            if audio_file and os.path.exists(audio_file):
+            if os.path.exists(audio_file):
                 os.remove(audio_file)
-        except:
-            pass"""
+            if thumb_name and os.path.exists(thumb_name):
+                os.remove(thumb_name)
+        except Exception as e:
+            print(f"Error cleaning up: {e}")
         
         
 @zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
