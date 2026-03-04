@@ -507,7 +507,7 @@ async def _(event): #Code by T.me/RR0RT
     "outtmpl": "%(title)s.%(ext)s",
     "verbose": True,
     "no_warnings": True,
-    "cookiefile": get_cookies_file(),
+    "cookiesfrombrowser": ("firefox", ),
     "noplaylist": True,
     "js_runtimes": {
         "node": {}
