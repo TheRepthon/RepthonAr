@@ -500,17 +500,17 @@ async def _(event): #Code by T.me/RR0RT
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
     ydl_ops = {
-    "format": "bestaudio[ext=mp3]/bestaudio",
-    "keepvideo": False,
-    "prefer_ffmpeg": True,
-    "geo_bypass": True,
+    "format": "bestaudio/best",
     "outtmpl": "%(title)s.%(ext)s",
-    "verbose": True,
+    "quiet": True,
     "no_warnings": True,
+    "geo_bypass": True,
     "cookiefile": get_cookies_file(),
     "noplaylist": True,
-    "js_runtimes": {
-        "node": {}
+    "extractor_args": {
+        "youtube": {
+            "player_client": ["android", "web"]
+        }
     },
     "postprocessors": [{
         "key": "FFmpegExtractAudio",
@@ -540,77 +540,47 @@ async def _(event): #Code by T.me/RR0RT
     try:
         with yt_dlp.YoutubeDL(ydl_ops) as ydl:
             info_dict = ydl.extract_info(link, download=True)
-            audio_file = ydl.prepare_filename(info_dict)
-            if audio_file.endswith('.webm'):
-                audio_file = audio_file[:-5] + '.mp3'
-            elif audio_file.endswith('.m4a'):
-                audio_file = audio_file[:-4] + '.mp3'
-            else:
-                audio_file = audio_file.rsplit('.', 1)[0] + '.mp3'
-            
-        await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
-        
-        await event.client.send_file(
-            event.chat_id,
-            audio_file,
-            force_document=False,
-            caption=f"**⎉ البحث ⥃** `{title}`",
-            thumb=thumb_name,
-            attributes=[
-                DocumentAttributeAudio(
-                    duration=int(duration.split(':')[0])*60 + int(duration.split(':')[1]) if ':' in duration else int(duration),
-                    title=title,
-                    performer=info_dict.get('uploader', 'Unknown')
-                )
-            ]
-        )
-        await revent.delete()
+            audio_file = None
+            if "requested_downloads" in info_dict:
+                audio_file = info_dict["requested_downloads"][0]["filepath"]
+                if not audio_file:
+                    audio_file = ydl.prepare_filename(info_dict)
+                    audio_file = os.path.splitext(audio_file)[0] + ".mp3"
+                    if audio_file.endswith('.webm'):
+                        audio_file = audio_file[:-5] + '.mp3'
+                    elif audio_file.endswith('.m4a'):
+                        audio_file = audio_file[:-4] + '.mp3'
+                    else:
+                        audio_file = audio_file.rsplit('.', 1)[0] + '.mp3'
+                        
+                        await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
+                        await event.client.send_file(
+                            event.chat_id,
+                            audio_file,
+                            force_document=False,
+                            caption=f"**⎉ البحث ⥃** `{title}`",
+                            thumb=thumb_name,
+                            attributes=[
+                                DocumentAttributeAudio(
+                                    duration=int(duration.split(':')[0])*60 + int(duration.split(':')[1]) if ':' in duration else int(duration),
+                                    title=title,
+                                    performer=info_dict.get('uploader', 'Unknown')
+                                )
+                            ]
+                        )
+                        await revent.delete()
     except ChatSendMediaForbiddenError:
         return await revent.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
     except Exception as e:
         if "Requested format is not available" in str(e):
-            try:
-                ydl_ops_alt = {
-                    "format": "worstaudio/worst",
-                    "keepvideo": False,
-                    "prefer_ffmpeg": True,
-                    "geo_bypass": True,
-                    "outtmpl": "%(title)s.%(ext)s",
-                    "quiet": True,
-                    "no_warnings": True,
-                    "cookiefile": get_cookies_file(),
-                    "noplaylist": True,
-                    "js_runtimes": {
-                        "node": {}
-                    },
-                }
-                
-                with yt_dlp.YoutubeDL(ydl_ops_alt) as ydl:
-                    info_dict = ydl.extract_info(link, download=True)
-                    audio_file = ydl.prepare_filename(info_dict)
-                
-                await event.client.send_file(
-                    event.chat_id,
-                    audio_file,
-                    force_document=False,
-                    caption=f"**⎉ البحث ⥃** `{title}`",
-                    thumb=thumb_name,
-                )
-                await revent.delete()
-                
-            except Exception as e2:
-                return await revent.edit(f"**• فشـل التحميـل** \n**• الخطـأ :** `{str(e2)}`")
-        else:
-            return await revent.edit(f"**• فشـل التحميـل** \n**• الخطـأ :** `{str(e)}`")
-    
-    finally:
-        try:
-            if os.path.exists(audio_file):
-                os.remove(audio_file)
-            if thumb_name and os.path.exists(thumb_name):
-                os.remove(thumb_name)
-        except Exception as e:
-            print(f"Error cleaning up: {e}")
+            finally:
+                try:
+                    if os.path.exists(audio_file):
+                        os.remove(audio_file)
+                        if thumb_name and os.path.exists(thumb_name):
+                            os.remove(thumb_name)
+                except Exception as e:
+                    print(f"Error cleaning up: {e}")
         
         
 @zq_lo.rep_cmd(pattern="s(?: |$)(.*)")
