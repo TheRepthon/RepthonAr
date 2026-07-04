@@ -279,23 +279,41 @@ async def _(event):
         await checking(zq_lo)
     except Exception:
         pass
-    try:
-        ulist = get_collectionlist_items()
-        for i in ulist:
-            if i == "restart_update":
-                del_keyword_collectionlist("restart_update")
-    except Exception as e:
-        LOGS.error(e)
-    try:
-        add_to_collectionlist("restart_update", [sandy.chat_id, sandy.id])
-    except Exception as e:
-        LOGS.error(e)
-    try:
-        await zq_lo.disconnect()
-    except CancelledError:
-        pass
-    except Exception as e:
-        LOGS.error(e)
+        
+        try:
+            ulist = get_collectionlist_items()
+            for i in ulist:
+                if i == "restart_update":
+                    del_keyword_collectionlist("restart_update")
+        except Exception as e:
+            LOGS.error(e)
+            
+            try:
+                add_to_collectionlist("restart_update", [sandy.chat_id, sandy.id])
+            except Exception as e:
+                LOGS.error(e)
+                
+                try:
+                    await zq_lo.disconnect()
+                except CancelledError:
+                    pass
+                except Exception:
+                    pass
+
+if os.getenv("RAILWAY_ENVIRONMENT"):
+    os.execv(sys.executable, [sys.executable] + sys.argv)
+
+elif os.getenv("RENDER"):
+    os.execv(sys.executable, [sys.executable] + sys.argv)
+
+elif os.getenv("DYNO"):
+    os.execv(sys.executable, [sys.executable] + sys.argv)
+
+elif os.getenv("KOYEB_SERVICE_ID") or os.getenv("KOYEB_DEPLOYMENT_ID"):
+    os.execv(sys.executable, [sys.executable] + sys.argv)
+
+else:
+    os.execv(sys.executable, [sys.executable] + sys.argv)
 
 
 @zq_lo.rep_cmd(
