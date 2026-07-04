@@ -1,7 +1,9 @@
+import os
 import html
 
 from telethon.tl import functions
 from telethon.tl.functions.users import GetFullUserRequest
+from PIL import Image
 
 from ..Config import Config
 from . import ALIVE_NAME, BOTLOG, BOTLOG_CHATID, zq_lo, edit_delete, get_user_from_event
@@ -37,17 +39,20 @@ async def _(event):
     await event.client(functions.account.UpdateProfileRequest(last_name=last_name))
     await event.client(functions.account.UpdateProfileRequest(about=user_bio))
     try:
-        pfile = await event.client.upload_file(profile_pic)
+        img = Image.open(profile_pic).convert("RGB")
+        jpg = os.path.splitext(profile_pic)[0] + ".jpg"
+        img.save(jpg, "JPEG")
+        pfile = await event.client.upload_file(jpg)
+        await event.client(functions.photos.UploadProfilePhotoRequest(file=pfile))
     except Exception as e:
         return await edit_delete(event, f"**اووبس خطـأ بالانتحـال:**\n__{e}__")
-    await event.client(functions.photos.UploadProfilePhotoRequest(pfile))
-    await edit_delete(event, "**⎉╎تـم انتحـال الشخـص .. بنجـاح ༗**")
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID,
-            f"#الانتحـــال\n ⪼ تم انتحـال حسـاب الشخـص ↫ [{first_name}](tg://user?id={user_id }) بنجاح ✅",
-        )
-
+        await event.client(functions.photos.UploadProfilePhotoRequest(pfile))
+        await edit_delete(event, "**⎉╎تـم انتحـال الشخـص .. بنجـاح ༗**")
+        if BOTLOG:
+            await event.client.send_message(
+                BOTLOG_CHATID,
+                f"#الانتحـــال\n ⪼ تم انتحـال حسـاب الشخـص ↫ [{first_name}](tg://user?id={user_id }) بنجاح ✅",
+            )
 
 
 @zq_lo.rep_cmd(pattern="انتحال(?:\\s|$)([\\s\\S]*)")
@@ -74,16 +79,20 @@ async def _(event):
     await event.client(functions.account.UpdateProfileRequest(last_name=last_name))
     await event.client(functions.account.UpdateProfileRequest(about=user_bio))
     try:
-        pfile = await event.client.upload_file(profile_pic)
+        img = Image.open(profile_pic).convert("RGB")
+        jpg = os.path.splitext(profile_pic)[0] + ".jpg"
+        img.save(jpg, "JPEG")
+        pfile = await event.client.upload_file(jpg)
+        await event.client(functions.photos.UploadProfilePhotoRequest(file=pfile))
     except Exception as e:
         return await edit_delete(event, f"**اووبس خطـأ بالانتحـال:**\n__{e}__")
-    await event.client(functions.photos.UploadProfilePhotoRequest(pfile))
-    await edit_delete(event, "**⎉╎تـم انتحـال الشخـص .. بنجـاح ༗**")
-    if BOTLOG:
-        await event.client.send_message(
-            BOTLOG_CHATID,
-            f"#الانتحـــال\n ⪼ تم انتحـال حسـاب الشخـص ↫ [{first_name}](tg://user?id={user_id }) بنجاح ✅",
-        )
+        await event.client(functions.photos.UploadProfilePhotoRequest(pfile))
+        await edit_delete(event, "**⎉╎تـم انتحـال الشخـص .. بنجـاح ༗**")
+        if BOTLOG:
+            await event.client.send_message(
+                BOTLOG_CHATID,
+                f"#الانتحـــال\n ⪼ تم انتحـال حسـاب الشخـص ↫ [{first_name}](tg://user?id={user_id }) بنجاح ✅",
+            )
 
 
 @zq_lo.rep_cmd(pattern=f"{ANTHAL}$")
