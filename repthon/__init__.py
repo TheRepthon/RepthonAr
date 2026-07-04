@@ -14,7 +14,7 @@ from .sql_helper.globals import addgvar, delgvar, gvarstatus
 __version__ = "3.1.3"
 __license__ = "حقـوق سـورس ريبـــثون"
 __author__ = "ريبـــثون <https://T.me/Repthon>"
-__copyright__ = "Repthon Source (C) 2022 - 2025" + __author__
+__copyright__ = "Repthon Source (C) 2022 - 2026" + __author__
 
 zq_lo.version = __version__
 LOGS = logging.getLogger("𝐑𝐞𝐩𝐭𝐡𝐨𝐧")
@@ -23,7 +23,7 @@ bot = zq_lo
 StartTime = time.time()
 repversion = "3.1.3"
 
-if Config.UPSTREAM_REPO == "Repthon-Bot":
+if Config.UPSTREAM_REPO == "RepthonAr":
     UPSTREAM_REPO_URL = "https://github.com/TheRepthon/RepthonAr"
 else:
     UPSTREAM_REPO_URL = Config.UPSTREAM_REPO
