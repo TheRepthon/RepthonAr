@@ -510,7 +510,8 @@ async def _(event): #Code by T.me/RR0RT
         "noplaylist": True,
         "extractor_args": {
             "youtube": {
-                "player_client": ["android", "web"]
+                "player_client": ["ios", "android", "web"],
+                "skip": ["dash", "hls"]
             }
         },
         "postprocessors": [{
@@ -519,6 +520,7 @@ async def _(event): #Code by T.me/RR0RT
             "preferredquality": "192",
         }],
     }
+
     
     audio_file = None
     thumb_name = None
