@@ -501,17 +501,19 @@ async def _(event): #Code by T.me/RR0RT
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
     ydl_ops = {
-        "format": "bestaudio/best",
+        "format": "best",
         "outtmpl": "%(title)s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
         "geo_bypass": True,
-        "cookiefile": get_cookies_file(),
         "noplaylist": True,
+        "js_runtimes": {
+        "node": {}
         "extractor_args": {
             "youtube": {
-                "player_client": ["ios", "android", "web"],
-                "skip": ["dash", "hls"]
+                "player_client": ["android", "web"],
+                "skip": ["dash", "hls"],
+                "po_token": ["web+get-pot", "android+get-pot"]
             }
         },
         "postprocessors": [{
@@ -521,7 +523,7 @@ async def _(event): #Code by T.me/RR0RT
         }],
     }
 
-    
+
     audio_file = None
     thumb_name = None
     title = ""
