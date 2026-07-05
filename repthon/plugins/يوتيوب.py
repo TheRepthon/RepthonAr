@@ -507,11 +507,13 @@ async def _(event): #Code by T.me/RR0RT
         "no_warnings": True,
         "geo_bypass": True,
         "noplaylist": True,
+        "cookiefile": get_cookies_file(),
         "js_runtimes": {
         "node": {}
+        },
         "extractor_args": {
             "youtube": {
-                "player_client": ["android", "web"],
+                "player_client": ["ios", "android", "web"],
                 "skip": ["dash", "hls"],
                 "po_token": ["web+get-pot", "android+get-pot"]
             }
