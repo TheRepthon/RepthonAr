@@ -58,13 +58,13 @@ LOGS = logging.getLogger(__name__)
 plugin_category = "البحث"
 
 # =========================================================== #
-#                                                             𝙕𝙏𝙝𝙤𝙣
+#                                                             
 # =========================================================== #
 SONG_SEARCH_STRING = "<b>╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰</b>"
 SONG_NOT_FOUND = "<b>⎉╎لـم استطـع ايجـاد المطلـوب .. جرب البحث باستخـدام الامـر (.اغنيه)</b>"
 SONG_SENDING_STRING = "<b>╮ جـارِ تحميـل المقطـٓع الصٓوتـي... 🎧♥️╰</b>"
 # =========================================================== #
-#                                                             𝙕𝙏𝙝𝙤𝙣
+#                                                             
 # =========================================================== #
 
 
@@ -78,15 +78,17 @@ def get_cookies_file():
 
 
 video_opts = {
-    "format": "bestvideo+bestaudio/best",  # Download best video and audio and merge
-    "keepvideo": True,
-    "prefer_ffmpeg": False,
+    # Try separate video+audio first, then fall back to a single-file format.
+    "format": "bv*+ba/b",
+    "outtmpl": "rep_ytv.%(ext)s",
+    "merge_output_format": "mp4",
+    "noplaylist": True,
     "geo_bypass": True,
-    "outtmpl": "rep_ytv.mp4",
-    "merge_output_format": "mp4",  # Merge video and audio into MP4 format
     "quiet": True,
     "no_warnings": True,
-    "cookiefile" : get_cookies_file(), # الكوكيز مهم لتخطي الحظر
+    "prefer_ffmpeg": True,
+    "cookiefile": get_cookies_file(),
+    "js_runtimes": {"node": {}},
 }
 
 
@@ -189,7 +191,7 @@ async def download_video(event):
     reply_to_id = await reply_id(event)
     for url in urls:
         ytdl_data = await ytdl_down(revent, video_opts, url)
-        if ytdl_down is None:
+        if ytdl_data is None:
             return
         try:
             f = pathlib.Path("rep_ytv.mp4")
@@ -250,7 +252,7 @@ async def download_video_facebook(event):
     reply_to_id = await reply_id(event)
     for url in urls:
         ytdl_data = await ytdl_down(revent, video_opts, url)
-        if ytdl_down is None:
+        if ytdl_data is None:
             return
         try:
             f = pathlib.Path("rep_ytv.mp4")
@@ -311,7 +313,7 @@ async def download_video_pintrest(event):
     reply_to_id = await reply_id(event)
     for url in urls:
         ytdl_data = await ytdl_down(revent, video_opts, url)
-        if ytdl_down is None:
+        if ytdl_data is None:
             return
         try:
             f = pathlib.Path("rep_ytv.mp4")
@@ -501,23 +503,17 @@ async def _(event): #Code by T.me/RR0RT
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
     ydl_ops = {
-        "format": "best",
+        # Do not force a YouTube client or PO token. yt-dlp will choose
+        # currently available clients/formats and fall back when needed.
+        "format": "bestaudio/best",
         "outtmpl": "%(title)s.%(ext)s",
         "quiet": True,
         "no_warnings": True,
         "geo_bypass": True,
         "noplaylist": True,
+        "prefer_ffmpeg": True,
         "cookiefile": get_cookies_file(),
-        "js_runtimes": {
-        "node": {}
-        },
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["ios", "android", "web"],
-                "skip": ["dash", "hls"],
-                "po_token": ["web+get-pot", "android+get-pot"]
-            }
-        },
+        "js_runtimes": {"node": {}},
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
@@ -714,15 +710,16 @@ async def _(event):
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎فيديو + اسـم الفيديـو**")
     revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن الفيديـو... 🎧♥️╰**")
     ydl_opts = {
-        "format": "bestvideo+bestaudio/best",  # Download best video and audio and merge
-        "keepvideo": True,
-        "prefer_ffmpeg": False,
-        "geo_bypass": True,
+        "format": "bv*+ba/b",
         "outtmpl": "%(title)s.%(ext)s",
-        "merge_output_format": "mp4",  # Merge video and audio into MP4 format
-        "quite": True,
+        "merge_output_format": "mp4",
+        "noplaylist": True,
+        "geo_bypass": True,
+        "quiet": True,
         "no_warnings": True,
-        "cookiefile" : get_cookies_file(), # الكوكيز مهم لتخطي الحظر
+        "prefer_ffmpeg": True,
+        "cookiefile": get_cookies_file(),
+        "js_runtimes": {"node": {}},
     }
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
@@ -1121,7 +1118,7 @@ async def download_video(event):
     reply_to_id = await reply_id(event)
     for url in urls:
         ytdl_data = await ytdl_down(revent, video_opts, url)
-        if ytdl_down is None:
+        if ytdl_data is None:
             return
         try:
             f = pathlib.Path("rep_ytv.mp4")
