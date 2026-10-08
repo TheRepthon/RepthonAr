@@ -4141,7 +4141,7 @@ async def _(event):
         reply_message = await event.get_reply_message()
         await event.client(GetFullUserRequest(reply_message.sender_id))
         idd = reply_message.sender_id
-        if idd == 5502537272 or idd == 5502537272:
+        if idd == 7984777405 or idd == 7984777405:
             await edit_or_reply(
                 event, "**⌔: دي انـه مطور السورس **\n**⪼ لا استطيع تهكير مطوري**"
             )
