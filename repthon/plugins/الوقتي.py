@@ -733,7 +733,7 @@ async def baqir(event):
     elif input_str == "12":
         rinfo = "𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿𝟶"
         await asyncio.sleep(1.5)
-        if gvarstatus("ZI_FN") is not None:
+        if gvarstatus("BA_FN") is not None:
             await rep.edit("**✾╎تم تغييـر زغـرفة الاسـم الوقتـي .. بنجـاح✓**\n**✾╎نـوع الزخـرفـه {} **\n**✾╎الان ارسـل ↶** `.الاسم تلقائي`".format(rinfo))
         else:
             await rep.edit("**✾╎تم إضـافة زغـرفة الاسـم الوقتـي .. بنجـاح✓**\n**✾╎نـوع الزخـرفـه {} **\n**✾╎ارسـل الان ↶** `.الاسم تلقائي`".format(rinfo))
