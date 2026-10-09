@@ -113,6 +113,7 @@ async def baqir_tiktok(event):
                 "⎉╎بواسطة "
                 "<a href='https://t.me/Repthon'>Repthon</a></b>"
             )
+            
             for index, item in enumerate(media_list):
                 await borg.send_file(
                     event.chat_id,
@@ -123,6 +124,11 @@ async def baqir_tiktok(event):
                 )
 
             await rep.delete()
+
+    except Exception as e:
+        await rep.edit(
+            f"**- حدث خطأ أثناء التحميل:**\n`{str(e)[:500]}`"
+        )
 
 
 # Write Code By telegram.dog/E_7_V ✌🏻
