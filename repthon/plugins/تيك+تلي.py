@@ -60,26 +60,28 @@ async def baqir_tiktok(event):
     chat = "@TIKTOKDOWNLOADROBOT"
     rep = await edit_or_reply(
         event,
-        "**⎉╎جارِ تحميل الفيديو... انتظر قليلاً ⏳**"
+        "**⎉╎جارِ تحميل من التيك توك... انتظر قليلاً ⏳**"
     )
 
     try:
         async with borg.conversation(chat, timeout=120) as conv:
             await conv.send_message(link)
 
-            video = None
+            
+            media_list = []
+            seen_ids = set()
 
-            # فحص عدة رسائل لأن البوت قد يرسل صورة أو صوتاً أولاً.
-            for _ in range(8):
-                response = await conv.get_response()
+            for _ in range(20):
+                try:
+                    response = await conv.get_response()
+                except Exception:
+                    break
 
-                if not response:
+                if not response or not response.media:
                     continue
 
-                # تجاهل النصوص والصور والملفات الصوتية.
-                if response.video:
-                    video = response
-                    break
+                if response.audio:
+                    continue
 
                 if response.document:
                     mime = getattr(
@@ -88,35 +90,39 @@ async def baqir_tiktok(event):
                         ""
                     ) or ""
 
-                    if mime.startswith("video/"):
-                        video = response
-                        break
+                    if mime.startswith("audio/"):
+                        continue
 
-            if not video:
+                    if not (
+                        mime.startswith("image/")
+                        or mime.startswith("video/")
+                    ):
+                        continue
+
+                if response.id in seen_ids:
+                    continue
+                seen_ids.add(response.id)
+                media_list.append(response)
+            if not media_list:
                 await rep.edit(
-                    "**- لم أجد رسالة فيديو ضمن ردود البوت.**"
+                    "**- لم أجد صوراً أو فيديوهات في ردود البوت.**"
                 )
                 return
-
-            await borg.send_file(
-                event.chat_id,
-                video.media,
-                caption=(
-                    "<b>⎉╎تم تحميل الفيديو بنجاح ☑️\n"
-                    "⎉╎بواسطة "
-                    "<a href='https://t.me/Repthon'>Repthon</a></b>"
-                ),
-                parse_mode="html",
-                reply_to=event.reply_to_msg_id
+            caption = (
+                "<b>⎉╎تم التحميل بنجاح ☑️\n"
+                "⎉╎بواسطة "
+                "<a href='https://t.me/Repthon'>Repthon</a></b>"
             )
+            for index, item in enumerate(media_list):
+                await borg.send_file(
+                    event.chat_id,
+                    item.media,
+                    caption=caption if index == 0 else None,
+                    parse_mode="html" if index == 0 else None,
+                    reply_to=event.reply_to_msg_id
+                )
 
             await rep.delete()
-
-    except Exception as e:
-        await rep.edit(
-            f"**- حدث خطأ أثناء التحميل:**\n`{str(e)[:500]}`"
-        )
-
 
 
 # Write Code By telegram.dog/E_7_V ✌🏻
