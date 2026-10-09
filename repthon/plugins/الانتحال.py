@@ -11,15 +11,22 @@ from ..sql_helper.globals import gvarstatus
 
 plugin_category = "العروض"
 DEFAULTUSER = gvarstatus("FIRST_NAME") or ALIVE_NAME
-DEFAULTUSERBIO = Config.DEFAULT_BIO or "- ‏وحدي أضيء، وحدي أنطفئ انا قمري و كُل نجومي..🤍"
-ANTHAL = gvarstatus("ANTHAL") or "(اعادة الحساب|اعادة|اعاده)"
+ANTHAL = gvarstatus("ANTHAL") or "(ايقاف الانتحال|اعادة|اعاده)"
+# =========================================================== #
+#                                                             
+# =========================================================== #
+WW_CHANGED = "**⎉╎جـارِ الانتحـال . . .**"
+RR_CHANGED = "**⎉╎تم انتحـال الشخص .. بنجـاح 🥷**"
+# =========================================================== #
+#                                                             
+# =========================================================== #
 
-
-@zq_lo.rep_cmd(pattern="نسخ(?:\\s|$)([\\s\\S]*)")
+@zq_lo.rep_cmd(pattern="انتحال(?: |$)(.*)")
 async def _(event):
     replied_user, error_i_a = await get_user_from_event(event)
     if replied_user is None:
         return
+    rrr = await edit_or_reply(event, WW_CHANGED)
     user_id = replied_user.id
     profile_pic = await event.client.download_profile_photo(user_id, Config.TEMP_DIR)
     first_name = html.escape(replied_user.first_name)
@@ -39,27 +46,46 @@ async def _(event):
     await event.client(functions.account.UpdateProfileRequest(last_name=last_name))
     await event.client(functions.account.UpdateProfileRequest(about=user_bio))
     try:
-        img = Image.open(profile_pic).convert("RGB")
-        jpg = os.path.splitext(profile_pic)[0] + ".jpg"
-        img.save(jpg, "JPEG")
-        pfile = await event.client.upload_file(jpg)
-        await event.client(functions.photos.UploadProfilePhotoRequest(file=pfile))
+        pfile = await event.client.upload_file(profile_pic)
     except Exception as e:
         return await edit_delete(event, f"**اووبس خطـأ بالانتحـال:**\n__{e}__")
-        await event.client(functions.photos.UploadProfilePhotoRequest(pfile))
-        await edit_delete(event, "**⎉╎تـم انتحـال الشخـص .. بنجـاح ༗**")
-        if BOTLOG:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                f"#الانتحـــال\n ⪼ تم انتحـال حسـاب الشخـص ↫ [{first_name}](tg://user?id={user_id }) بنجاح ✅",
+    if profile_pic.endswith((".mp4", ".MP4")):
+        size = os.stat(profile_pic).st_size
+        if size > 2097152:
+            await rrr.edit("⎉╎يجب ان يكون الحجم اقل من 2 ميغا ✅")
+            os.remove(profile_pic)
+            return
+        rpic = None
+        rvideo = await event.client.upload_file(profile_pic)
+    else:
+        rpic = await event.client.upload_file(profile_pic)
+        rvideo = None
+    try:
+        await event.client(
+            functions.photos.UploadProfilePhotoRequest(
+                file=rpic, video=rvideo, video_start_ts=0.01
             )
+        )
+    except Exception as e:
+        await rrr.edit(f"**خطأ:**\n`{str(e)}`")
+    await edit_or_reply(rrr, RR_CHANGED)
+    try:
+        os.remove(profile_pic)
+    except Exception as e:
+        LOGS.info(str(e))
+    if BOTLOG:
+        await event.client.send_message(
+            BOTLOG_CHATID,
+            f"#الانتحـــال\n**⪼ تم انتحـال حسـاب الشخـص ↫** [{first_name}](tg://user?id={user_id }) **بنجاح ✅**\n**⪼ لـ الغـاء الانتحـال ارسـل** ( `.اعاده` )",
+        )
 
 
-@zq_lo.rep_cmd(pattern="انتحال(?:\\s|$)([\\s\\S]*)")
+@zq_lo.rep_cmd(pattern="نسخ(?: |$)(.*)")
 async def _(event):
     replied_user, error_i_a = await get_user_from_event(event)
     if replied_user is None:
         return
+    rrr = await edit_or_reply(event, WW_CHANGED)
     user_id = replied_user.id
     profile_pic = await event.client.download_profile_photo(user_id, Config.TEMP_DIR)
     first_name = html.escape(replied_user.first_name)
@@ -79,27 +105,45 @@ async def _(event):
     await event.client(functions.account.UpdateProfileRequest(last_name=last_name))
     await event.client(functions.account.UpdateProfileRequest(about=user_bio))
     try:
-        img = Image.open(profile_pic).convert("RGB")
-        jpg = os.path.splitext(profile_pic)[0] + ".jpg"
-        img.save(jpg, "JPEG")
-        pfile = await event.client.upload_file(jpg)
-        await event.client(functions.photos.UploadProfilePhotoRequest(file=pfile))
+        pfile = await event.client.upload_file(profile_pic)
     except Exception as e:
         return await edit_delete(event, f"**اووبس خطـأ بالانتحـال:**\n__{e}__")
-        await event.client(functions.photos.UploadProfilePhotoRequest(pfile))
-        await edit_delete(event, "**⎉╎تـم انتحـال الشخـص .. بنجـاح ༗**")
-        if BOTLOG:
-            await event.client.send_message(
-                BOTLOG_CHATID,
-                f"#الانتحـــال\n ⪼ تم انتحـال حسـاب الشخـص ↫ [{first_name}](tg://user?id={user_id }) بنجاح ✅",
+    if profile_pic.endswith((".mp4", ".MP4")):
+        size = os.stat(profile_pic).st_size
+        if size > 2097152:
+            await rrr.edit("⎉╎يجب ان يكون الحجم اقل من 2 ميغا ✅")
+            os.remove(profile_pic)
+            return
+        rpic = None
+        rvideo = await event.client.upload_file(profile_pic)
+    else:
+        rpic = await event.client.upload_file(profile_pic)
+        rvideo = None
+    try:
+        await event.client(
+            functions.photos.UploadProfilePhotoRequest(
+                file=rpic, video=rvideo, video_start_ts=0.01
             )
+        )
+    except Exception as e:
+        await rrr.edit(f"**خطأ:**\n`{str(e)}`")
+    await edit_or_reply(rrr, RR_CHANGED)
+    try:
+        os.remove(profile_pic)
+    except Exception as e:
+        LOGS.info(str(e))
+    if BOTLOG:
+        await event.client.send_message(
+            BOTLOG_CHATID,
+            f"#الانتحـــال\n**⪼ تم انتحـال حسـاب الشخـص ↫** [{first_name}](tg://user?id={user_id }) **بنجاح ✅**\n**⪼ لـ الغـاء الانتحـال ارسـل** ( `.اعاده` )",
+        )
 
 
 @zq_lo.rep_cmd(pattern=f"{ANTHAL}$")
 async def revert(event):
-    firstname = DEFAULTUSER
+    firstname = gvarstatus("FIRST_NAME") or ALIVE_NAME
     lastname = gvarstatus("LAST_NAME") or ""
-    bio = DEFAULTUSERBIO
+    bio = gvarstatus("DEFAULT_BIO") or "{وَتَوَكَّلْ عَلَى اللَّهِ ۚ وَكَفَىٰ بِاللَّهِ وَكِيلًا}"
     await event.client(
         functions.photos.DeletePhotosRequest(
             await event.client.get_profile_photos("me", limit=1)
