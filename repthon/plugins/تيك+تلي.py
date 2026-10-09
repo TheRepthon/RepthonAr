@@ -34,46 +34,89 @@ from ..helpers.utils import reply_id
 bot = zq_lo
 
 #Code by T.me/E_7_V
+
 @zq_lo.rep_cmd(pattern="تيك(?: |$)(.*)")
 async def baqir_tiktok(event):
-    link = event.pattern_match.group(1)
+    link = event.pattern_match.group(1).strip()
     reply = await event.get_reply_message()
-    
+
     if not link and reply:
-        link = reply.text
+        link = (reply.text or reply.message or "").strip()
+
     if not link:
-        return await edit_delete(event, "**- ارسـل (.تيك) + رابـط او بالـرد ع رابـط**", 10)
-    
-    if "tiktok.com" not in link:
-        return await edit_delete(event, "**- احتـاج الـى رابــط من تيـك تـوك .. للتحميــل ؟!**", 10)
+        return await edit_delete(
+            event,
+            "**- أرسل (.تيك) + رابط تيك توك أو رد على الرابط.**",
+            10
+        )
 
-    cap_rrr = f"<b>⎉╎تم تحميـل مـن تيـك تـوك .. بنجـاح ☑️\n⎉╎الرابـط 🖇:  {link}\n⎉╎تم التحميـل بواسطـة <a href='https://t.me/Repthon'>𝗥𝗲𝗽𝘁𝗵𝗼𝗻</a> </b>"
-    chat = "@QJ9bot"
-    rep = await edit_or_reply(event, "**⎉╎جـارِ التحميل من تيـك تـوك .. انتظر قليلا ▬▭**")
+    if "tiktok.com" not in link.lower():
+        return await edit_delete(
+            event,
+            "**- أحتاج رابطاً من تيك توك فقط.**",
+            10
+        )
 
-    async with borg.conversation(chat) as conv:
-        try:
+    chat = "@TIKTOKDOWNLOADROBOT"
+    rep = await edit_or_reply(
+        event,
+        "**⎉╎جارِ تحميل الفيديو... انتظر قليلاً ⏳**"
+    )
+
+    try:
+        async with borg.conversation(chat, timeout=120) as conv:
             await conv.send_message(link)
-            response = await conv.get_response()
-            if not response.media:
+
+            video = None
+
+            # فحص عدة رسائل لأن البوت قد يرسل صورة أو صوتاً أولاً.
+            for _ in range(8):
                 response = await conv.get_response()
 
-            if response.media:
-                await borg.send_file(
-                    event.chat_id,
-                    response.media,
-                    caption=cap_rrr,
-                    parse_mode="html",
+                if not response:
+                    continue
+
+                # تجاهل النصوص والصور والملفات الصوتية.
+                if response.video:
+                    video = response
+                    break
+
+                if response.document:
+                    mime = getattr(
+                        response.document,
+                        "mime_type",
+                        ""
+                    ) or ""
+
+                    if mime.startswith("video/"):
+                        video = response
+                        break
+
+            if not video:
+                await rep.edit(
+                    "**- لم أجد رسالة فيديو ضمن ردود البوت.**"
                 )
-                await rep.delete()
-            else:
-                await rep.edit("**- عذراً، فشل الحصول على الفيديو من البوت.**")
+                return
 
-            # تنظيف المحادثة مع البوت
-            await event.client.delete_dialog(chat)
+            await borg.send_file(
+                event.chat_id,
+                video.media,
+                caption=(
+                    "<b>⎉╎تم تحميل الفيديو بنجاح ☑️\n"
+                    "⎉╎بواسطة "
+                    "<a href='https://t.me/Repthon'>Repthon</a></b>"
+                ),
+                parse_mode="html",
+                reply_to=event.reply_to_msg_id
+            )
 
-        except Exception as e:
-            await rep.edit(f"**- حدث خطأ أثناء التحميل:**\n`{str(e)}`")
+            await rep.delete()
+
+    except Exception as e:
+        await rep.edit(
+            f"**- حدث خطأ أثناء التحميل:**\n`{str(e)[:500]}`"
+        )
+
 
 
 # Write Code By telegram.dog/E_7_V ✌🏻
