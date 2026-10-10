@@ -81,49 +81,63 @@ class RepVC:
         self.PAUSED = False
 
 
-    async def play_song(self, path, force=False):
+    
+async def play_song(self, path, force=False, video=False):
+    if not self.CHAT_ID:
+        return "⚠️ لست داخل مكالمة"
 
-        if not self.CHAT_ID:
-            return "⚠️ لست داخل مكالمة"
+    track = {"path": path, "video": video}
 
-        track = {"path": path}
-
-        async with self.LOCK:
-
-            if force:
-                self.PLAYLIST.insert(0, track)
-                return await self._safe_skip()
-
-            if self.PLAYING:
-                self.PLAYLIST.append(track)
-                return f"📌 أضيف للقائمة ({len(self.PLAYLIST)})"
-
-            self.PLAYLIST.append(track)
+    async with self.LOCK:
+        if force:
+            self.PLAYLIST.insert(0, track)
             return await self._safe_skip()
 
+        if self.PLAYING:
+            self.PLAYLIST.append(track)
+            return f"📌 أضيف للقائمة ({len(self.PLAYLIST)})"
 
-    async def _safe_skip(self):
+        self.PLAYLIST.append(track)
+        return await self._safe_skip()
 
-        if not self.PLAYLIST:
-            self.PLAYING = None
-            return "⚠️ انتهت القائمة"
 
-        next_track = self.PLAYLIST.pop(0)
 
-        try:
+    
+
+async def _safe_skip(self):
+    if not self.PLAYLIST:
+        self.PLAYING = None
+        self.PAUSED = False
+        return "⚠️ انتهت القائمة"
+
+    next_track = self.PLAYLIST.pop(0)
+
+    try:
+        if next_track.get("video", False):
             stream = MediaStream(next_track["path"])
-
-            await self.app.play(
-                self.CHAT_ID,
-                stream
+        else:
+            stream = MediaStream(
+                next_track["path"],
+                video_flags=MediaStream.Flags.IGNORE,
             )
 
-            self.PLAYING = next_track
-            return "🎵 تم التشغيل"
+        await self.app.play(
+            self.CHAT_ID,
+            stream
+        )
 
-        except Exception as e:
-            self.PLAYING = None
-            return f"❌ خطأ في التشغيل:\n{e}"
+        self.PLAYING = next_track
+        self.PAUSED = False
+
+        if next_track.get("video", False):
+            return "📺 تم تشغيل الفيديو"
+        return "🎵 تم تشغيل"
+
+    except Exception as e:
+        self.PLAYING = None
+        return f"❌ خطأ في التشغيل:\n{e}"
+
+
 
 
     async def skip(self):
