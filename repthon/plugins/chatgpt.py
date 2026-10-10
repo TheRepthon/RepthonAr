@@ -29,6 +29,7 @@ from ..helpers.utils import reply_id
 
 plugin_category = "البوت"
 
+lastResponse = None
 
 async def process_gpt(question):
     global lastResponse
