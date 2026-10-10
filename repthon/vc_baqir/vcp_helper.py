@@ -130,19 +130,25 @@ class RepVC:
         return await self._safe_skip()
 
 
+    
     async def pause(self):
         if not self.PLAYING:
             return "⚠️ لا يوجد شيء يعمل"
 
-        await self.app.pause_stream(self.CHAT_ID)
-        self.PAUSED = True
-        return "⏸ تم الإيقاف"
+        if self.PAUSED:
+            return "⚠️ التشغيل متوقف مؤقتًا بالفعل"
 
+        await self.app.pause(self.CHAT_ID)
+        self.PAUSED = True
+        return "⏸ تم الإيقاف المؤقت"
 
     async def resume(self):
         if not self.PLAYING:
             return "⚠️ لا يوجد شيء يعمل"
 
-        await self.app.resume_stream(self.CHAT_ID)
+        if not self.PAUSED:
+            return "⚠️ التشغيل يعمل بالفعل"
+
+        await self.app.resume(self.CHAT_ID)
         self.PAUSED = False
         return "▶️ تم الاستئناف"
