@@ -501,7 +501,7 @@ async def _(event): #Code by T.me/RR0RT
         query = reply.message
     else:
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
-    revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
+    revent = await edit_or_reply(event, "** ╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰ **")
     ydl_ops = {
         # Do not force a YouTube client or PO token. yt-dlp will choose
         # currently available clients/formats and fall back when needed.
@@ -571,7 +571,7 @@ async def _(event): #Code by T.me/RR0RT
                         DocumentAttributeAudio(
                             duration=int(duration.split(':')[0])*60 + int(duration.split(':')[1]) if ':' in duration else int(duration),
                             title=title,
-                            performer=info_dict.get('uploader', 'Unknown')
+                            performer=info_dict.get('uploader', 'Repthon')
                         )
                     ]
                 )
