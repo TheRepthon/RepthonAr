@@ -62,48 +62,63 @@ async def leaveVoicechat(event):
     await edit_delete(event, f"⚈ تم مغادرة {name}")
 
 
-@zq_lo.rep_cmd(pattern="شغل(?: |$)(.*)")
-async def play_media(event):
-    query = event.pattern_match.group(1).strip()
-    force = False
-    if not vc_player.CHAT_ID:
-        return await edit_delete(event, "⚈ انضم اولاً عبر .انضمام")
-    if query.endswith(" 1"):
-        force = True
-        query = query[:-2].strip()
-    if event.reply_to_msg_id and not query:
-        query = await tg_dl(event)
-    if not query:
-        return await edit_delete(event, "⚈ اكتب اسم او رابط")
-    if not query.startswith("http") and not os.path.exists(query):
-        query = await search_youtube(query)
-    if not query:
-        return await edit_delete(event, "⚠️ لم يتم العثور على نتيجة")
-    await edit_or_reply(event, "🎧 جاري التشغيل ...")
-    resp = await vc_player.play_song(query, force=force)
-    await edit_delete(event, resp, time=20)
-
-
 @zq_lo.rep_cmd(pattern="شغل فيديو(?: |$)(.*)")
 async def play_video(event):
     query = event.pattern_match.group(1).strip()
     force = False
+
     if not vc_player.CHAT_ID:
         return await edit_delete(event, "⚈ انضم اولاً عبر .انضمام")
+
     if query.endswith(" 1"):
         force = True
         query = query[:-2].strip()
+
     if event.reply_to_msg_id and not query:
         query = await tg_dl(event)
+
     if not query:
         return await edit_delete(event, "⚈ اكتب اسم فيديو او رابط")
+
     if not query.startswith("http") and not os.path.exists(query):
         query = await search_youtube(query)
+
     if not query:
         return await edit_delete(event, "⚠️ لم يتم العثور على نتيجة")
+
     await edit_or_reply(event, "📺 جاري تشغيل الفيديو ...")
-    resp = await vc_player.play_song(query, force=force)
+    resp = await vc_player.play_song(query, force=force, video=True)
     await edit_delete(event, resp, time=20)
+
+
+@zq_lo.rep_cmd(pattern="شغل(?! فيديو)(?: |$)(.*)")
+async def play_media(event):
+    query = event.pattern_match.group(1).strip()
+    force = False
+
+    if not vc_player.CHAT_ID:
+        return await edit_delete(event, "⚈ انضم اولاً عبر .انضمام")
+
+    if query.endswith(" 1"):
+        force = True
+        query = query[:-2].strip()
+
+    if event.reply_to_msg_id and not query:
+        query = await tg_dl(event)
+
+    if not query:
+        return await edit_delete(event, "⚈ اكتب اسم او رابط")
+
+    if not query.startswith("http") and not os.path.exists(query):
+        query = await search_youtube(query)
+
+    if not query:
+        return await edit_delete(event, "⚠️ لم يتم العثور على نتيجة")
+
+    await edit_or_reply(event, "🎧 جاري تشغيل ...")
+    resp = await vc_player.play_song(query, force=force, video=False)
+    await edit_delete(event, resp, time=20)
+
 
 
 @zq_lo.rep_cmd(pattern="تخطي$")
