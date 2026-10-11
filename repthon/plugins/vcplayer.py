@@ -3,10 +3,12 @@
 import asyncio
 import logging
 import os
+import html
 
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.tl.types import User
+from yt_dlp import YoutubeDL
 
 from repthon import zq_lo
 from ..Config import Config
@@ -18,6 +20,90 @@ from ..vc_baqir.vcp_helper import RepVC
 
 
 plugin_category = "المكالمات"
+
+
+async def send_track_card(event, query, video, result, status_msg=None):
+    title = os.path.basename(query) if os.path.isfile(query) else query
+    thumbnail = None
+    url = query if query.startswith("http") else None
+
+    if url:
+        def extract_info():
+            with YoutubeDL({
+                "quiet": True,
+                "no_warnings": True,
+                "skip_download": True,
+                "noplaylist": True,
+            }) as ydl:
+                return ydl.extract_info(url, download=False)
+
+        try:
+            info = await asyncio.to_thread(extract_info)
+            if info:
+                title = info.get("title") or title
+                thumbnail = info.get("thumbnail")
+                url = info.get("webpage_url") or url
+        except Exception:
+            pass
+
+    safe_title = html.escape(str(title))
+    safe_url = html.escape(url, quote=True) if url else None
+
+    mode = "📺 فيديو" if video else "🎧 صوت"
+
+    if "أضيف للقائمة" in result:
+        state = f"📌 {html.escape(result)}"
+    elif result.startswith("❌") or result.startswith("⚠️"):
+        state = html.escape(result)
+    else:
+        state = "▶️ قيد التشغيل"
+
+    caption = (
+        "<b>╭━━━〔 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗣𝗹𝗮𝘆𝗲𝗿 〕━━━╮</b>\n\n"
+        f"🎵 <b>اسم المقطع:</b> {safe_title}\n"
+        f"🎚️ <b>نوع التشغيل:</b> {mode}\n"
+        f"📡 <b>الحالة:</b> {state}\n"
+    )
+
+    if safe_url:
+        caption += (
+            f'\n🔗 <a href="{safe_url}">اضغط هنا لفتح المقطع الأصلي على اليوتيوب</a>\n'
+        )
+
+    caption += "\n<b>╰━━━━━━━━━━━━━━━━━━╯</b>"
+
+    try:
+        if thumbnail:
+            await event.client.send_file(
+                event.chat_id,
+                thumbnail,
+                caption=caption,
+                parse_mode="html",
+                reply_to=event.id,
+            )
+        else:
+            await event.client.send_message(
+                event.chat_id,
+                caption,
+                parse_mode="html",
+                reply_to=event.id,
+                link_preview=False,
+            )
+    except Exception:
+        await event.client.send_message(
+            event.chat_id,
+            caption,
+            parse_mode="html",
+            reply_to=event.id,
+            link_preview=False,
+        )
+
+    if status_msg:
+        try:
+            await status_msg.delete()
+        except Exception:
+            pass
+
 
 logging.getLogger("pytgcalls").setLevel(logging.ERROR)
 
@@ -68,7 +154,7 @@ async def play_video(event):
     force = False
 
     if not vc_player.CHAT_ID:
-        return await edit_delete(event, "⚈ انضم اولاً عبر .انضمام")
+        return await edit_delete(event, "⚈ **قـم بالانضمـام اولاً الى المكالمـه عبـر الامـر .انضمام**")
 
     if query.endswith(" 1"):
         force = True
@@ -78,7 +164,7 @@ async def play_video(event):
         query = await tg_dl(event)
 
     if not query:
-        return await edit_delete(event, "⚈ اكتب اسم فيديو او رابط")
+        return await edit_delete(event, "⚈ **استخـدم الامـر هكـذا**\n• (`.شغل فيديو` + **اسم مقطع الفيديو**)\n**• او**\n• (`.شغل فيديو` + **رابـط مقطع الفيديو**")
 
     if not query.startswith("http") and not os.path.exists(query):
         query = await search_youtube(query)
@@ -86,9 +172,12 @@ async def play_video(event):
     if not query:
         return await edit_delete(event, "⚠️ لم يتم العثور على نتيجة")
 
-    await edit_or_reply(event, "📺 جاري تشغيل الفيديو ...")
+    status = await edit_or_reply(event, "**╮ جـارِ تشغيـل مقطـٓـع الفيـٓـديو في المكـالمـه... 🎧♥️╰**")
     resp = await vc_player.play_song(query, force=force, video=True)
-    await edit_delete(event, resp, time=20)
+
+    await send_track_card(
+        event, query, True, resp, status
+    )
 
 
 @zq_lo.rep_cmd(pattern="شغل(?! فيديو)(?: |$)(.*)")
@@ -97,7 +186,7 @@ async def play_media(event):
     force = False
 
     if not vc_player.CHAT_ID:
-        return await edit_delete(event, "⚈ انضم اولاً عبر .انضمام")
+        return await edit_delete(event, "⚈ **قـم بالانضمـام اولاً الى المكالمـه عبـر الامـر .انضمام**")
 
     if query.endswith(" 1"):
         force = True
@@ -107,7 +196,7 @@ async def play_media(event):
         query = await tg_dl(event)
 
     if not query:
-        return await edit_delete(event, "⚈ اكتب اسم او رابط")
+        return await edit_delete(event, "⚈ **استخـدم الامـر هكـذا**\n• (`.شغل` + **اسم المقطع الصوتي**)\n**• او**\n• (`.شغل` + **رابـط المقطع الصوتي**")
 
     if not query.startswith("http") and not os.path.exists(query):
         query = await search_youtube(query)
@@ -115,7 +204,7 @@ async def play_media(event):
     if not query:
         return await edit_delete(event, "⚠️ لم يتم العثور على نتيجة")
 
-    await edit_or_reply(event, "🎧 جاري تشغيل ...")
+    await edit_or_reply(event, "**╮ جـارِ تشغيـل المقطـٓـع الصـٓـوتي في المكـالمـه... 🎧♥️╰**")
     resp = await vc_player.play_song(query, force=force, video=False)
     await edit_delete(event, resp, time=20)
 
