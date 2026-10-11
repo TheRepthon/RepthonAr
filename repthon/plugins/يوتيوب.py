@@ -571,7 +571,7 @@ async def _(event): #Code by T.me/RR0RT
                         DocumentAttributeAudio(
                             duration=int(duration.split(':')[0])*60 + int(duration.split(':')[1]) if ':' in duration else int(duration),
                             title=title,
-                            performer=info_dict.get('uploader', 'Repthon')
+                            performer=info_dict.get('uploader', 'Unknown')
                         )
                     ]
                 )
