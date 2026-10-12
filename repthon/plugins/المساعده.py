@@ -1,3 +1,4 @@
+import os
 import re
 import random
 import time
@@ -18,6 +19,19 @@ from ..helpers.functions import repalive, check_data_base_heal_th, get_readable_
 from ..helpers.utils import reply_id
 from ..sql_helper.globals import gvarstatus
 
+
+def get_platform():
+    if "HEROKU_APP_NAME" in os.environ or "HEROKU_API_KEY" in os.environ:
+        return "𝙷𝚎𝚛𝚘𝚔𝚞"
+    elif "RENDER" in os.environ:
+        return "𝚁𝚎𝚗𝚍𝚎𝚛"
+    elif "KOYEB_SERVICE_NAME" in os.environ:
+        return "𝙺𝚘𝚢𝚎𝚋"
+    elif "RAILWAY_SERVICE_ID" in os.environ or "RAILWAY_ENVIRONMENT" in os.environ:
+        return "𝚁𝚊𝚒𝚕𝚠𝚊𝚢"
+    else:
+        return "𝚅𝙿𝚂 / 𝙻𝚘𝚌𝚊𝚕"
+
 HELP = f"**🧑🏻‍💻┊مـࢪحبـاً عـزيـزي {mention}**\n**🛂┊في قائمـة المسـاعـده والشـروحـات\n🛃┊من هنـا يمكنـك ايجـاد شـرح لكـل اوامـر السـورس**\n\n[ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 ♥️](t.me/Repthon)\n\n"
 
 rep_temp = """
@@ -27,7 +41,7 @@ rep_temp = """
 │ ● ɴᴀᴍᴇ ➪  {mention}
 │ ● ʀᴇᴘᴛʜᴏɴ ➪ {repver}
 │ ● ᴘʏᴛʜᴏɴ ➪ {pyver}
-│ ● ᴘʟᴀᴛғᴏʀᴍ ➪ 𝚁𝚎𝚗𝚍𝚎𝚛
+│ ● ᴘʟᴀᴛғᴏʀᴍ ➪ {platform}
 │ ● ᴘɪɴɢ ➪ {ping}
 │ ● ᴜᴘ ᴛɪᴍᴇ ➪ {uptime}
 │ ● ᴀʟɪᴠᴇ sɪɴᴇᴄ ➪ {reppa}
@@ -97,6 +111,7 @@ if Config.TG_BOT_USERNAME is not None and tgbot is not None:
             rme = await zq_lo.get_me()
             r_name = f"{rme.first_name}{rme.last_name}" if rme.last_name else rme.first_name
             r_username = rme.username if rme.username else "Repthon"
+            platform_name = get_platform()
             USERID = zq_lo.uid if Config.OWNER_ID == 0 else Config.OWNER_ID
             ALIVE_NAME = gvarstatus("ALIVE_NAME") if gvarstatus("ALIVE_NAME") else "-"
             mention = f"[{ALIVE_NAME}](tg://user?id={USERID})"
@@ -112,6 +127,7 @@ if Config.TG_BOT_USERNAME is not None and tgbot is not None:
                 pyver=python_version(),
                 dbhealth=check_sgnirts,
                 ping=ms,
+                platform=platform_name
             )
             buttons = [[Button.inline(r_name, f"https://t.me/{r_username}")]]
             result = builder.article(
