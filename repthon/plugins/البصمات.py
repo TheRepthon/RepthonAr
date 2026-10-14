@@ -58,7 +58,7 @@ async def reply_id(event):
 async def filter_incoming_handler(event):
     name = event.raw_text
     repl = await reply_id(event)
-    filters = get_pasmats(zedub.uid)
+    filters = get_pasmats(zq_lo.uid)
     if not filters:
         return
     for trigger in filters:
