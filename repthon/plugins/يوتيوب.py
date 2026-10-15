@@ -512,7 +512,7 @@ async def _(event): #Code by T.me/RR0RT
         "geo_bypass": True,
         "noplaylist": True,
         "prefer_ffmpeg": True,
-        "cookiefile": get_cookies_file(),
+        #"cookiefile": get_cookies_file(),
         "js_runtimes": {"node": {}},
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
