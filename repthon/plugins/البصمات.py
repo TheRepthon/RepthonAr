@@ -88,16 +88,55 @@ async def filter_incoming_handler(event):
 
 @zq_lo.rep_cmd(pattern="بصمه (.*)")
 async def add_new_meme(event):
-    keyword = event.pattern_match.group(1)
+    keyword = event.pattern_match.group(1).strip()
     string = event.text.partition(keyword)[2]
     msg = await event.get_reply_message()
+    if not msg:
+        filters = get_pasmats(zq_lo.uid)
+        for trigger in filters:
+            if trigger.keyword == keyword:
+                file_media = None
+                link_preview = True
+                if trigger.f_mesg_id:
+                    msg_o = await event.client.get_messages(
+                        entity=BOTLOG_CHATID, ids=int(trigger.f_mesg_id)
+                    )
+                    file_media = msg_o.media
+                elif trigger.reply:
+                    link_preview = False
+                try:
+                    if file_media:
+                        await event.client.send_file(
+                            event.chat_id,
+                            file=file_media,
+                            link_preview=link_preview,
+                        )
+                    elif trigger.reply:
+                        await event.client.send_message(
+                            event.chat_id,
+                            trigger.reply,
+                        )
+                except BaseException:
+                    return
+                await event.delete()
+                return
+
+        return await edit_or_reply(
+            event,
+            "⪼ لم يتم العثور على بصمة باسم ( {} ) ❌\n\n"
+            "⪼ لإضافـة بصمـة جديدة:\n"
+            "⪼ ارسـل ( .بصمه ) + اسم البصمـه\n"
+            "⪼ بالـرد ع بصمـه او مقطـع صـوتـي 🔊".format(keyword),
+        )
     msg_id = None
-    if msg and msg.media and not string:
+    if msg.media and not string:
         if BOTLOG:
             await event.client.send_message(
                 BOTLOG_CHATID,
-                f"**⪼ البصمـات 🔊 :**\
-                \n**⪼ تم حفـظ البصمـه بـ اسم {keyword}**\n**⪼ لـ قائمـه بصماتك .. بنجـاح ✅**\n**⪼ لـ تصفـح قائمـة بصماتك ارسـل (.بصماتي) 📑**",
+                f"⪼ البصمـات 🔊 :\
+\n**⪼ تم حفـظ البصمـه بـ اسم {keyword}\n"
+                f"⪼ لـ قائمـه بصماتك .. بنجـاح ✅\n"
+                f"⪼ لـ تصفـح قائمـة بصماتك ارسـل (.بصماتي) 📑",
             )
             msg_o = await event.client.forward_messages(
                 entity=BOTLOG_CHATID,
@@ -107,24 +146,31 @@ async def add_new_meme(event):
             )
             msg_id = msg_o.id
         else:
-            await edit_or_reply(
+            return await edit_or_reply(
                 event,
-                "**❈╎يتطلب اضافة البصمات تعيين كـروب السجـل اولاً ..**\n**❈╎لاضافـة كـروب السجـل**",
+                "**❈╎يتطلب اضافة البصمات تعيين كـروب السجـل اولاً ..**"
             )
-            return
-    elif msg and msg.text and not string:
-        return await edit_or_reply(event, "**⪼ ارسـل (** `.بصمه` **) + اسم البصمـه**\n**⪼بالـرد ع بصمـه او مقطـع صـوتـي 🔊**\n**⪼ لاضافتهـا لـ قائمـة بصماتك 🧾**")
-    elif not string:
-        return await edit_or_reply(event, "**⪼ ارسـل (** `.بصمه` **) + اسم البصمـه**\n**⪼بالـرد ع بصمـه او مقطـع صـوتـي 🔊**\n**⪼ لاضافتهـا لـ قائمـة بصماتك 🧾**")
+    elif msg.text and not string:
+        return await edit_or_reply(
+            event,
+            "⪼ ارسـل ( .بصمه ) + اسم البصمـه\n"
+            "**⪼بالـرد ع بصمـه او مقطـع صـوتـي 🔊\n"
+            "⪼ لاضافتهـا لـ قائمـة بصماتك 🧾",
+        )
     else:
-        return await edit_or_reply(event, "**⪼ ارسـل (** `.بصمه` **) + اسم البصمـه**\n**⪼بالـرد ع بصمـه او مقطـع صـوتـي 🔊**\n**⪼ لاضافتهـا لـ قائمـة بصماتك 🧾**")
-    success = "**⪼تم {} البصمـه بـ اسم {} .. بنجـاح ✅**"
+        return await edit_or_reply(
+            event,
+            "⪼ ارسـل ( .بصمه ) + اسم البصمـه\n"
+            "**⪼بالـرد ع بصمـه او مقطـع صـوتـي 🔊\n"
+            "⪼ لاضافتهـا لـ قائمـة بصماتك 🧾",
+        )
+
+    success = "⪼تم {} البصمـه بـ اسم {} .. بنجـاح ✅"
     if add_pasmat(str(zq_lo.uid), keyword, string, msg_id) is True:
         return await edit_or_reply(event, success.format("اضافة", keyword))
     remove_pasmat(str(zq_lo.uid), keyword)
     if add_pasmat(str(zq_lo.uid), keyword, string, msg_id) is True:
         return await edit_or_reply(event, success.format("تحديث", keyword))
-    await edit_or_reply(event, "**⪼ ارسـل (** `.بصمه` **) + اسم البصمـه**\n**⪼بالـرد ع بصمـه او مقطـع صـوتـي 🔊**\n**⪼ لاضافتهـا لـ قائمـة بصماتك 🧾**")
 
 
 @zq_lo.rep_cmd(pattern="بصماتي$")
