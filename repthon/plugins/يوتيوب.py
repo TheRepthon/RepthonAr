@@ -512,12 +512,18 @@ async def _(event): #Code by T.me/RR0RT
         "prefer_ffmpeg": True,
         #"cookiefile": get_cookies_file(),
         "extractor_args": {
-    "youtube": {
-        "player_client": ["tv", "web_safari", "mweb"],
-        "player_skip": ["webpage", "configs"],
-    }
-},
-"js_runtimes": {"node": {}},
+        "youtube": {
+            "player_client": ["mweb", "web_safari"],
+            "fetch_pot": ["always"],
+        },
+        "youtubepot-bgutilscript": {
+            "script_path": [os.environ.get(
+                "BGUTIL_SCRIPT_PATH",
+                "/usr/local/lib/python3.12/site-packages/bgutil_ytdlp_pot_provider/server/build/main.js"
+            )],
+        },
+    },
+    "js_runtimes": {"node": {}},
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
