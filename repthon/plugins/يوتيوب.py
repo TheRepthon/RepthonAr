@@ -501,8 +501,10 @@ async def _(event): #Code by T.me/RR0RT
         query = reply.message
     else:
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
-    revent = await edit_or_reply(event, "**╰ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️ ╮**")
+    revent = await edit_or_reply(event, "** ╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰ **")
     ydl_ops = {
+        # Do not force a YouTube client or PO token. yt-dlp will choose
+        # currently available clients/formats and fall back when needed.
         "format": "bestaudio/best",
         "outtmpl": "%(title)s.%(ext)s",
         "quiet": True,
@@ -510,20 +512,13 @@ async def _(event): #Code by T.me/RR0RT
         "geo_bypass": True,
         "noplaylist": True,
         "prefer_ffmpeg": True,
-        #"cookiefile": get_cookies_file(),
+        # "cookiefile": get_cookies_file(),
+        "js_runtimes": {"node": {}},
         "extractor_args": {
-        "youtube": {
-            "player_client": ["mweb", "web_safari"],
-            "fetch_pot": ["always"],
-        },
-        "youtubepot-bgutilscript": {
-            "script_path": [os.environ.get(
-                "BGUTIL_SCRIPT_PATH",
-                "/usr/local/lib/python3.12/site-packages/bgutil_ytdlp_pot_provider/server/build/main.js"
-            )],
-        },
-    },
-    "js_runtimes": {"node": {}},
+    "youtube": {
+        "player_client": ["default", "web_embedded"]
+    }
+},
         "postprocessors": [{
             "key": "FFmpegExtractAudio",
             "preferredcodec": "mp3",
@@ -729,13 +724,12 @@ async def _(event):
         "no_warnings": True,
         "prefer_ffmpeg": True,
         #"cookiefile": get_cookies_file(),
+        "js_runtimes": {"node": {}},
         "extractor_args": {
     "youtube": {
-        "player_client": ["tv", "web_safari", "mweb"],
-        "player_skip": ["webpage", "configs"],
+        "player_client": ["default", "web_embedded"]
     }
 },
-"js_runtimes": {"node": {}},
     }
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
@@ -1060,7 +1054,7 @@ async def download_audio(event):
             else:
                 _fpath = _path
         if not _fpath:
-            return await edit_delete(zedevent, "__Unable to upload file__")
+            return await edit_delete(revent, "__Unable to upload file__")
         await revent.edit(
             f"**╮ ❐ جـارِ التحضيـر للـرفع انتظـر ...𓅫╰**:\
             \n**{vid_data['title']}***"
