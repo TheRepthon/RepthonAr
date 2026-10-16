@@ -503,28 +503,21 @@ async def _(event): #Code by T.me/RR0RT
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "** ╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰ **")
     ydl_ops = {
-        # Do not force a YouTube client or PO token. yt-dlp will choose
-        # currently available clients/formats and fall back when needed.
-        "format": "bestaudio/best",
-        "outtmpl": "%(title)s.%(ext)s",
-        "quiet": True,
-        "no_warnings": True,
-        "geo_bypass": True,
-        "noplaylist": True,
-        "prefer_ffmpeg": True,
-        # "cookiefile": get_cookies_file(),
-        "js_runtimes": {"node": {}},
-        "extractor_args": {
-    "youtube": {
-        "player_client": ["default", "web_embedded"]
-    }
-},
-        "postprocessors": [{
-            "key": "FFmpegExtractAudio",
-            "preferredcodec": "mp3",
-            "preferredquality": "192",
-        }],
-    }
+    "format": "bestaudio/best",
+    "outtmpl": "%(title)s.%(ext)s",
+    "quiet": True,
+    "no_warnings": True,
+    "geo_bypass": True,
+    "noplaylist": True,
+    "prefer_ffmpeg": True,
+    "js_runtimes": {"node": {}},
+    "remote_components": ["ejs:github"],
+    "postprocessors": [{
+        "key": "FFmpegExtractAudio",
+        "preferredcodec": "mp3",
+        "preferredquality": "192",
+    }],
+}
 
 
     audio_file = None
@@ -725,11 +718,7 @@ async def _(event):
         "prefer_ffmpeg": True,
         #"cookiefile": get_cookies_file(),
         "js_runtimes": {"node": {}},
-        "extractor_args": {
-    "youtube": {
-        "player_client": ["default", "web_embedded"]
-    }
-},
+        "remote_components": ["ejs:github"],
     }
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
