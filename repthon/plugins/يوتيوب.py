@@ -511,7 +511,12 @@ async def _(event): #Code by T.me/RR0RT
     "noplaylist": True,
     "prefer_ffmpeg": True,
     "js_runtimes": {"node": {}},
-    "cookiefile": get_cookies_file(),
+    #"cookiefile": get_cookies_file(),
+    "extractor_args": {
+    "youtube": {
+        "player_client": ["default", "web_embedded"]
+    }
+},
     "postprocessors": [{
         "key": "FFmpegExtractAudio",
         "preferredcodec": "mp3",
