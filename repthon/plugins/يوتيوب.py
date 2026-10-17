@@ -511,7 +511,7 @@ async def _(event): #Code by T.me/RR0RT
     "noplaylist": True,
     "prefer_ffmpeg": True,
     "js_runtimes": {"node": {}},
-    "remote_components": ["ejs:github"],
+    "cookiefile": get_cookies_file(),
     "postprocessors": [{
         "key": "FFmpegExtractAudio",
         "preferredcodec": "mp3",
