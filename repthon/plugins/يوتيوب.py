@@ -443,7 +443,7 @@ async def download_audio_sound_cloud(event):
         )
         for _path in [_fpath, thumb_pic]:
             os.remove(_path)
-    await zedevent.delete()
+    await revent.delete()
 
 
 @zq_lo.rep_cmd(
@@ -517,6 +517,12 @@ async def _(event): #Code by T.me/RR0RT
         result = results[0]
         link = f"https://youtube.com{result['url_suffix']}"
         title = result.get("title", "Audio")[:40]
+        performer = (
+    result.get("channel")
+    or result.get("channel_name")
+    or result.get("uploader")
+    or "Unknown"
+        )
         duration_text = result.get("duration") or "0:00"
 
     except Exception as e:
@@ -610,7 +616,7 @@ async def _(event): #Code by T.me/RR0RT
                 DocumentAttributeAudio(
                     duration=duration,
                     title=title,
-                    performer="Unknown"
+                    performer=performer
                 )
             ]
         )
