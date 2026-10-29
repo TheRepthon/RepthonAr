@@ -502,102 +502,140 @@ async def _(event): #Code by T.me/RR0RT
     else:
         return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "** ╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰ **")
-    ydl_ops = {
-    "format": "bestaudio/best",
-    "outtmpl": "%(title)s.%(ext)s",
-    "quiet": True,
-    "no_warnings": True,
-    "geo_bypass": True,
-    "noplaylist": True,
-    "prefer_ffmpeg": True,
-    "js_runtimes": {"node": {}},
-    #"cookiefile": get_cookies_file(),
-    "extractor_args": {
-    "youtube": {
-        "player_client": ["default", "web_embedded"]
-    }
-},
-    "postprocessors": [{
-        "key": "FFmpegExtractAudio",
-        "preferredcodec": "mp3",
-        "preferredquality": "192",
-    }],
-}
-
-
+    
     audio_file = None
     thumb_name = None
-    title = ""
-    
+
     try:
-        results = YoutubeSearch(query, max_results=1).to_dict()
-        link = f"https://youtube.com{results[0]['url_suffix']}"
-        title = results[0]["title"][:40]
-        thumbnail = results[0]["thumbnails"][0]
-        thumb_name = f"{title}.jpg"
-        thumb = requests.get(thumbnail, allow_redirects=True)
-        try:
-            open(thumb_name, "wb").write(thumb.content)
-        except Exception:
-            thumb_name = None
-        duration = results[0]["duration"]
+        results = await asyncio.to_thread(
+            lambda: YoutubeSearch(query, max_results=1).to_dict()
+        )
+
+        if not results:
+            return await revent.edit("**• لم يتم العثور على أي نتيجة ✖️**")
+
+        result = results[0]
+        link = f"https://youtube.com{result['url_suffix']}"
+        title = result.get("title", "Audio")[:40]
+        duration_text = result.get("duration") or "0:00"
 
     except Exception as e:
-        await revent.edit(f"**• فشـل في البحث** \n**• الخطـأ :** `{str(e)}`")
-        return
-    
+        return await revent.edit(
+            f"**• فشـل في البحث**\n**• الخطـأ :** `{str(e)}`"
+        )
+
     await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
-    
-    try:
-        with yt_dlp.YoutubeDL(ydl_ops) as ydl:
-            info_dict = ydl.extract_info(link, download=True)
-            if "requested_downloads" in info_dict:
-                audio_file = info_dict["requested_downloads"][0]["filepath"]
-                if not audio_file:
-                    audio_file = ydl.prepare_filename(info_dict)
-                    audio_file = os.path.splitext(audio_file)[0] + ".mp3"
-                    if audio_file.endswith('.webm'):
-                        audio_file = audio_file[:-5] + '.mp3'
-                    elif audio_file.endswith('.m4a'):
-                        audio_file = audio_file[:-4] + '.mp3'
-                    else:
-                        audio_file = audio_file.rsplit('.', 1)[0] + '.mp3'
-                        
-                await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
-                await event.client.send_file(
-                    event.chat_id,
-                    audio_file,
-                    force_document=False,
-                    caption=f"**⎉ البحث ⥃** `{title}`",
-                    thumb=thumb_name,
-                    attributes=[
-                        DocumentAttributeAudio(
-                            duration=int(duration.split(':')[0])*60 + int(duration.split(':')[1]) if ':' in duration else int(duration),
-                            title=title,
-                            performer=info_dict.get('uploader', 'Unknown')
-                        )
-                    ]
-                )
-                await revent.delete()
-    except ChatSendMediaForbiddenError:
-        return await revent.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
-    except Exception as e:
-        if "Requested format is not available" in str(e):
-            await revent.edit("**• الصيغة المطلوبة غير متوفرة لهذا المقطع ✖️**")
-        else:
-            await revent.edit(f"**• حدث خطأ أثناء التحميل:** `{str(e)}`")
-    finally:
-        try:
-            if audio_file and os.path.exists(audio_file):
-                os.remove(audio_file)
-            if thumb_name and os.path.exists(thumb_name):
-                os.remove(thumb_name)
-        except Exception as e:
-            print(f"Error cleaning up: {e}")
 
+    try:
+        api_url = "https://api-abztech.zone.id/download/ytmp3"
+
+        response = await asyncio.to_thread(
+            lambda: requests.get(
+                api_url,
+                params={"url": link},
+                timeout=60
+            )
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        if not data.get("status"):
+            return await revent.edit(
+                "**• فشل الـ API في تجهيز المقطع الصوتي ✖️**"
+            )
+
+        download = data.get("download") or {}
+        audio_url = download.get("downloadUrl")
+
+        if not audio_url:
+            return await revent.edit(
+                "**• لم يتم العثور على رابط تحميل الصوت ✖️**"
+            )
+
+        title = (download.get("title") or title)[:40]
+        thumbnail = download.get("thumbnail")
+
+        if thumbnail:
+            try:
+                thumb_response = await asyncio.to_thread(
+                    lambda: requests.get(thumbnail, timeout=20)
+                )
+                thumb_response.raise_for_status()
+
+                thumb_name = f"rep_thumb_{event.id}.jpg"
+                with open(thumb_name, "wb") as f:
+                    f.write(thumb_response.content)
+            except Exception:
+                thumb_name = None
+
+
+        audio_file = f"rep_search_{event.id}.mp3"
+
+        def download_audio():
+            with requests.get(
+                audio_url,
+                stream=True,
+                timeout=(20, 120)
+            ) as audio_response:
+                audio_response.raise_for_status()
+                with open(audio_file, "wb") as f:
+                    for chunk in audio_response.iter_content(
+                        chunk_size=256 * 1024
+                    ):
+                        if chunk:
+                            f.write(chunk)
+
+        await asyncio.to_thread(download_audio)
+
+        if not os.path.isfile(audio_file) or os.path.getsize(audio_file) == 0:
+            return await revent.edit("**• ملف الصوت فارغ أو لم يكتمل تحميله ✖️**")
+
+        duration_parts = duration_text.split(":")
+        try:
+            duration = 0
+            for part in duration_parts:
+                duration = duration * 60 + int(part)
+        except (ValueError, TypeError):
+            duration = 0
+
+        await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
+
+        await event.client.send_file(
+            event.chat_id,
+            audio_file,
+            force_document=False,
+            caption=f"**⎉ البحث ⥃** `{title}`",
+            thumb=thumb_name,
+            attributes=[
+                DocumentAttributeAudio(
+                    duration=duration,
+                    title=title,
+                    performer="Unknown"
+                )
+            ]
+        )
+
+        await revent.delete()
+
+    except ChatSendMediaForbiddenError:
+        await revent.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
+
+    except Exception as e:
+        await revent.edit(
+            f"**• حدث خطأ أثناء التحميل:** `{str(e)}`"
+        )
+
+    finally:
+        for file_path in (audio_file, thumb_name):
+            try:
+                if file_path and os.path.isfile(file_path):
+                    os.remove(file_path)
+            except OSError as e:
+                print(f"Error cleaning up: {e}")
+    
         
         
-@zq_lo.rep_cmd(pattern="s(?: |$)(.*)")
+"""@zq_lo.rep_cmd(pattern="s(?: |$)(.*)")
 async def _(event):
     query = event.pattern_match.group(1)
     reply = await event.get_reply_message()
@@ -699,7 +737,7 @@ async def _(event):
         except asyncio.TimeoutError:
             await revent.edit("**• انتهت مهلة الانتظار للبوت.**")
         except Exception as e:
-            await revent.edit(f"**• خطأ في المحادثة:** `{str(e)}`")
+            await revent.edit(f"**• خطأ في المحادثة:** `{str(e)}`")"""
 
 #R
 @zq_lo.rep_cmd(pattern="فيديو(?: |$)(.*)")
@@ -710,67 +748,170 @@ async def _(event):
     elif reply and reply.message:
         query = reply.message
     else:
-        return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎فيديو + اسـم الفيديـو**")
-    revent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن الفيديـو... 🎧♥️╰**")
-    ydl_opts = {
-        "format": "bv*+ba/b",
-        "outtmpl": "%(title)s.%(ext)s",
-        "merge_output_format": "mp4",
-        "noplaylist": True,
-        "geo_bypass": True,
-        "quiet": True,
-        "no_warnings": True,
-        "prefer_ffmpeg": True,
-        #"cookiefile": get_cookies_file(),
-        "js_runtimes": {"node": {}},
-        "remote_components": ["ejs:github"],
-    }
+        return await edit_or_reply(
+            event,
+            "**⎉╎قم باضافـة إسـم للامـر ..**\n"
+            "**⎉╎فيديو + اسـم الفيديـو.**"
+        )
+
+    revent = await edit_or_reply(
+        event,
+        "**╮ جـارِ البحث ؏ـن الفيديـو... 🎧♥️╰**"
+    )
+
+    file_name = None
+    thumb_name = None
+
     try:
-        results = YoutubeSearch(query, max_results=1).to_dict()
+        results = await asyncio.to_thread(
+            lambda: YoutubeSearch(query, max_results=1).to_dict()
+        )
+
+        if not results:
+            return await revent.edit(
+                "**• لم يتم العثور على أي نتيجة ✖️**"
+            )
+
         link = f"https://youtube.com{results[0]['url_suffix']}"
-        title = results[0]["title"][:40]
-        thumbnail = results[0]["thumbnails"][0]
-        thumb_name = f"{title}.jpg"
-        thumb = requests.get(thumbnail, allow_redirects=True)
-        open(thumb_name, "wb").write(thumb.content)
-        results[0]["duration"]
-        results[0]["url_suffix"]
-        results[0]["views"]
+        title = results[0].get("title", "Video")[:40]
+
     except Exception as e:
-        if "Requested format is not available." in str(e): # تبعي
-            return await revent.edit("**• هنالك تحديث جديد لـ مكتبة يوتيوب 📡**\n**• أرسِـل الامـر** ( `.تحديث البوت` )\n**• ثم انتظر 5 دقائق لـ إعادة تشغيـل البوت ⏳**\n**• بعدها تستطيع استخدام اوامر التحميل .. بدون مشاكـل ☑️**")
-        else:
-            await revent.edit("**• هنالك تحديث جديد لـ مكتبة يوتيوب 📡**\n**• أرسِـل الامـر** ( `.تحديث البوت` )\n**• ثم انتظر 5 دقائق لـ إعادة تشغيـل البوت ⏳**\n**• بعدها تستطيع استخدام اوامر التحميل .. بدون مشاكـل ☑️**")
+        return await revent.edit(
+            f"**• فشـل في البحث**\n**• الخطـأ :** `{str(e)}`"
+        )
+
     try:
-        msg = await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
-        with YoutubeDL(ydl_opts) as ytdl:
-            ytdl_data = ytdl.extract_info(link, download=True)
-            file_name = ytdl.prepare_filename(ytdl_data)
-    except Exception as e:
-        if "Requested format is not available." in str(e): # تبعي
-            return await revent.edit("**• هنالك تحديث جديد لـ مكتبة يوتيوب 📡**\n**• أرسِـل الامـر** ( `.تحديث البوت` )\n**• ثم انتظر 5 دقائق لـ إعادة تشغيـل البوت ⏳**\n**• بعدها تستطيع استخدام اوامر التحميل .. بدون مشاكـل ☑️**")
-        else:
-            return await revent.edit(f"**• فشـل التحميـل** \n**• الخطـأ :** `{str(e)}`\n\n**• قم بـ إرســال هذا الخلل لـ مطور السورس لـ اصلاحه**\n**• تواصـل مطـور السـورس @RR0RT**")
-    preview = wget.download(thumbnail)
-    await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
-    try:
+        await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
+
+        api_url = "https://api-abztech.zone.id/download/omdown"
+
+        response = await asyncio.to_thread(
+            lambda: requests.get(
+                api_url,
+                params={"url": link},
+                timeout=60
+            )
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        if not data.get("success"):
+            return await revent.edit(
+                "**• فشل الـ API في جلب الفيديو ✖️**"
+            )
+
+        formats = data.get("formats") or []
+
+        video_formats = []
+
+        for fmt in formats:
+            if (
+                fmt.get("kind") == "video"
+                and fmt.get("ext", "").lower() == "mp4"
+                and fmt.get("url")
+            ):
+                match = re.search(
+                    r"(\d+)\s*p",
+                    fmt.get("label", ""),
+                    re.IGNORECASE
+                )
+
+                if match:
+                    quality = int(match.group(1))
+                    video_formats.append((quality, fmt["url"]))
+
+        if not video_formats:
+            return await revent.edit(
+                "**• لم يتم العثور على صيغة فيديو MP4 متاحة ✖️**"
+            )
+
+        video_formats.sort(key=lambda item: item[0], reverse=True)
+        quality, video_url = video_formats[0]
+        title = (data.get("title") or title)[:40]
+        thumbnail = data.get("cover")
+
+        if thumbnail:
+            try:
+                thumb_response = await asyncio.to_thread(
+                    lambda: requests.get(thumbnail, timeout=20)
+                )
+                thumb_response.raise_for_status()
+
+                thumb_name = f"rep_video_thumb_{event.id}.jpg"
+
+                with open(thumb_name, "wb") as f:
+                    f.write(thumb_response.content)
+
+            except Exception:
+                thumb_name = None
+
+        file_name = f"rep_video_{event.id}.mp4"
+
+        def download_video():
+            with requests.get(
+                video_url,
+                stream=True,
+                timeout=(20, 180)
+            ) as video_response:
+                video_response.raise_for_status()
+
+                with open(file_name, "wb") as f:
+                    for chunk in video_response.iter_content(
+                        chunk_size=256 * 1024
+                    ):
+                        if chunk:
+                            f.write(chunk)
+
+        await asyncio.to_thread(download_video)
+
+        if (
+            not os.path.isfile(file_name)
+            or os.path.getsize(file_name) == 0
+        ):
+            return await revent.edit(
+                "**• فشل تحميل الفيديو أو أن الملف فارغ ✖️**"
+            )
+
+        await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
+
         await event.client.send_file(
             event.chat_id,
             file_name,
-            caption=f"**⎉ البحث ⥃** `{title}`",
-            thumb=preview,
+            caption=f"**⎉ البحث ⥃** `{title}`",
+            thumb=thumb_name,
             supports_streaming=True,
+            attributes=[
+                DocumentAttributeVideo(
+                    duration=0,
+                    w=0,
+                    h=0,
+                    supports_streaming=True
+                )
+            ]
         )
-    except ChatSendMediaForbiddenError: # b
-        #LOGS.error(str(err))
-        return await revent.edit("**- عـذرًا .. الوسـائـط مغلقـه هنـا ؟!**")
-    except Exception as e: # b
-        return await revent.edit(f"**• فشـل التحميـل** \n**• الخطـأ :** `{str(e)}`\n\n**• قم بـ إرســال هذا الخلل لـ مطور السورس لـ اصلاحه**\n**• تواصـل مطـور السـورس @RR0RT**")
-    try:
-        remove_if_exists(file_name)
+
         await revent.delete()
+
+    except ChatSendMediaForbiddenError:
+        await revent.edit(
+            "**- عـذرًا .. الوسـائـط مغلقـه هنـا ؟!**"
+        )
+
     except Exception as e:
-        print(e)
+        await revent.edit(
+            f"**• فشـل التحميـل**\n"
+            f"**• الخطـأ :** `{str(e)}`\n\n"
+            "**• قم بإرسال هذا الخلل لمطور السورس لإصلاحه**\n"
+            "**• تواصل مطور السورس @RR0RT**"
+        )
+
+    finally:
+        for path in (file_name, thumb_name):
+            try:
+                if path and os.path.isfile(path):
+                    os.remove(path)
+            except OSError as e:
+                print(f"Error cleaning up: {e}")
 
 
 # ================================================================================================ #
