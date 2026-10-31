@@ -71,7 +71,7 @@ async def baqir_tiktok(event):
             media_list = []
             seen_ids = set()
 
-            for _ in range(20):
+            for _ in range(10):
                 try:
                     response = await conv.get_response()
                 except Exception:
@@ -132,30 +132,43 @@ async def baqir_tiktok(event):
 
 
 # Write Code By telegram.dog/E_7_V ✌🏻
-@zq_lo.on(admin_cmd(pattern="ستوري(?: |$)(.*)"))
-async def _(event):
-    if event.fwd_from:
-        return
-    j_link = event.pattern_match.group(1)
-    if ".me" not in j_link:
-        await event.edit("**⎉╎ يجب وضع رابط الستوري مع الامر اولا **")
+@zq_lo.rep_cmd(pattern=f"ستوري(?: |$)(.*)")
+async def baqir(event):
+    TIBA = event.pattern_match.group(1)
+    baq = None
+    if TIBA:
+        baqir = TIBA
+        baq = baqir
+    elif event.is_reply:
+        baqir = await event.get_reply_message()
+        baq = baqir.message
     else:
-        await event.edit("**⎉╎ يتم الان تنزيل الستوري انتظر قليلا**")
+        return await edit_or_reply(event, "**⎉╎باضافة رابـط ستـوري لـ الامـر او بالـࢪد ؏ــلى رابـط الستـوري**")
+    if not baq:
+        return await edit_or_reply(event, "**⎉╎باضافة رابـط ستـوري لـ الامـر او بالـࢪد ؏ــلى رابـط الستـوري**")
+    if ("https://t.me" not in baq) and ("/s/" not in baq):
+        return await edit_delete(event, "**- قم بإدخـال رابـط ستـوري صالـح .. للتحميــل ❌**", 10)
+    #chat_url = "https://t.me/msaver_bot?start=1895219306"
+    rrr = await edit_or_reply(event, f"**- جـارِ تحميـل الستـوري انتظـر ... 🍧╰\n- رابـط الستـوري :\n{baq}**")
     chat = "@msaver_bot"
-    async with bot.conversation(chat) as conv:
+    async with borg.conversation(chat) as conv:
         try:
-            msg = await conv.send_message(j_link)
-            video = await conv.get_response()
-            """ تم تحميل الستوري بنجاح من قبل @Repthon """
-            await bot.send_read_acknowledge(conv.chat_id)
+            purgeflag = await conv.send_message(baqir)
         except YouBlockedUserError:
-            await event.edit("**⎉╎ الغـي حـظر هـذا البـوت و حـاول مجـددا @msaver_bot**")
-            return
-        REPTHON = base64.b64decode("dHJ5OgogICAgYXdhaXQgenFfbG8oSm9pbkNoYW5uZWxSZXF1ZXN0KCJAUmVwdGhvbiIpKQ==")
-        TAIBA = Get(REPTHON)
-        try:
-            await event.client(TAIBA)
-        except BaseException:
-            pass
-        await bot.send_file(event.chat_id, video, caption=f"<b>⎉╎ BY : @Repthon 🎀</b>",parse_mode="html")
-        await event.delete()
+            await zq_lo(unblock("msaver_bot"))
+            purgeflag = await conv.send_message(baqir)
+        response = await conv.get_response()
+        await asyncio.sleep(3)
+        if response.media:
+            repthon = response.media
+        else:
+            repthon = await conv.get_response()
+        await borg.send_file(
+            event.chat_id,
+            repthon,
+            caption=f"<b>⎉╎تم تحميـل ستـوري تيليجرام .. بنجـاح 🎆\n⎉╎الرابـط 🖇:  {baq}\n⎉╎تم التحميـل بواسطـة <a href = https://t.me/Repthon>𝗥𝗲𝗽𝘁𝗵𝗼𝗻</a> </b>",
+            parse_mode="html",
+        )
+        await rrr.delete()
+        await delete_conv(event, chat, purgeflag)
+        await event.client(DeleteHistoryRequest(6135950112, max_id=0, just_clear=True))
