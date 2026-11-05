@@ -1292,7 +1292,7 @@ async def variable(event):
         addgvar("TZ", "Europe/Berlin")
 
 # Copyright (C) 2022 RepthonArabic . All Rights Reserved
-@zq_lo.rep_cmd(pattern="اضف صورة (الحماية|الحمايه|الفحص|الوقتي|البوت|الستارت|ستارت|الكتم|كتم|الحظر|الحضر|حظر|البلوك|بلوك) ?(.*)")
+@zq_lo.rep_cmd(pattern="اضف فار صورة (الحماية|الحمايه|الفحص|الوقتي|البوت|الستارت|ستارت|الكتم|كتم|الحظر|الحضر|حظر|البلوك|بلوك) ?(.*)")
 async def _(arwa):
     if arwa.fwd_from:
         return
@@ -1370,7 +1370,7 @@ async def _(arwa):
 
 
 # Copyright (C) 2022 RepthonArabic . All Rights Reserved
-@zq_lo.rep_cmd(pattern="اضف صوره (الحماية|الحمايه|الفحص|الوقتي|البوت|الستارت|ستارت|الكتم|كتم|الحظر|الحضر|حظر|البلوك|بلوك) ?(.*)")
+@zq_lo.rep_cmd(pattern="اضف فار صوره (الحماية|الحمايه|الفحص|الوقتي|البوت|الستارت|ستارت|الكتم|كتم|الحظر|الحضر|حظر|البلوك|بلوك) ?(.*)")
 async def _(arwa):
     if arwa.fwd_from:
         return
