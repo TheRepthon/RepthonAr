@@ -127,7 +127,7 @@ STRICT RULES:
         return False
 
 
-@zq_lo.rep_cmd(pattern="(?:ai-search|ais|searchai|ai)(?: |$)(.*)")
+@zq_lo.rep_cmd(pattern="ريب (?: |$)(.*)")
 async def repthon_ai_search(event):
     question = event.pattern_match.group(1).strip()
     if not question and event.reply_to_msg_id:
@@ -139,7 +139,7 @@ async def repthon_ai_search(event):
             event,
             "**⎉╎أرسل سؤالك بعد الأمر أو قم بالرد على رسالة.**\n\n"
             "**⎉╎مثال:**\n"
-            "`.ai من هو غول دي روجر؟`"
+            "`.ريب من هو غول دي روجر؟`"
         )
     rep = await edit_or_reply(
         event,
@@ -158,12 +158,12 @@ async def repthon_ai_search(event):
         f"**• س/ {question}**\n\n"
         f"**• الإجابة:**\n{answer}\n\n"
         f"**⋆┄─┄─┄─┄─┄─┄─┄─┄─┄⋆**\n"
-        f"𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁",
+        f"[𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁](t.me/Repthon)",
         link_preview=False
     )
 
 
-@zq_lo.rep_cmd(pattern="ريب(?: |$)(.*)")
+"""@zq_lo.rep_cmd(pattern="ريب(?: |$)(.*)")
 async def baqir_gpt(event):
     global lastResponse
     if lastResponse is None:
@@ -191,7 +191,7 @@ async def baqir_gpt(event):
         await rep.edit(f"ᯓ 𝗥𝗲𝗽𝘁𝗵𝗼𝗻 𝗚𝗽𝘁 -💡- **الذكاء الاصطناعي\n⋆┄─┄─┄─┄─┄─┄─┄─┄─┄⋆**\n**• س/ {question}**\n\n• {answer}", link_preview=False)
         lastResponse.append(str(answer))
         if len(lastResponse) > 8:
-            lastResponse.pop(0)
+            lastResponse.pop(0)"""
 
 
 @zq_lo.rep_cmd(pattern="س(?: |$)(.*)")
