@@ -127,7 +127,7 @@ STRICT RULES:
         return False
 
 
-@zq_lo.rep_cmd(pattern="ريب (?: |$)(.*)")
+@zq_lo.rep_cmd(pattern="ريب(?: |$)(.*)")
 async def repthon_ai_search(event):
     question = event.pattern_match.group(1).strip()
     if not question and event.reply_to_msg_id:
