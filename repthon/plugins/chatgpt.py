@@ -6,6 +6,8 @@
 # <https://www.github.com/RepthonArabic/RepthonAr/blob/master/LICENSE/>.
 
 
+import re
+import json
 import requests
 import asyncio
 import os
@@ -176,7 +178,7 @@ async def baqir_gpt(event):
         question = event.pattern_match.group(1)
     if question in ("مسح", "حذف"):
     lastResponse.clear()
-    return await edit_or_reply(event, "**⎉╎تم حذف سجل الذكاء الاصطناعي .. بنجاح ✅**\n**⎉╎ارسـل الان(.ريب + سؤالك) لـ البـدء من جديد**")
+        return await edit_or_reply(event, "**⎉╎تم حذف سجل الذكاء الاصطناعي .. بنجاح ✅**\n**⎉╎ارسـل الان(.ريب + سؤالك) لـ البـدء من جديد**")
     rep = await edit_or_reply(event, "**⎉╎جـارِ الاتصـال بـ الذكـاء الاصطناعي**\n**⎉╎الرجـاء الانتظـار .. لحظـات**\n\n**⎉╎ملاحظـه 🏷**\n- هذا النموذج يقوم بحفظ الموضوعات السابقة\n- اذا كان لديك اكثر من سؤال لـ نفس الموضوع\n- وتريد تقديم الاسئله رداً على الاجوبة السابقة\n**- لـ مسح سجل تخزين الموضوعات السابقة**\n**- ارسـل الامـر** ( `.ريب مسح` ) **لـ بدء موضوع جديد**")
     answer = await process_gpt(question)
     if answer:
