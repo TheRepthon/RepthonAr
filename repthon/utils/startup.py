@@ -60,24 +60,15 @@ elif os.path.exists("config.py"):
 bot = zq_lo
 DEV = 7984777405
 
+repthon_var = os.environ
+
 async def autovars(): #Code by T.me/RR0RT
-    if "ENV" in heroku_var and "TZ" in heroku_var:
+    if "ENV" in repthon_var and "TZ" in repthon_var:
         return
-    if "ENV" in heroku_var and "TZ" not in heroku_var:
         LOGS.info("جـارِ اضافـة بقيـة الفـارات .. تلقائيـاً")
-        rrcom = "."
-        rrrtz = "Asia/Baghdad"
-        heroku_var["COMMAND_HAND_LER"] = rrcom
-        heroku_var["TZ"] = rrrtz
-        LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
-    if "ENV" not in heroku_var and "TZ" not in heroku_var:
-        LOGS.info("جـارِ اضافـة بقيـة الفـارات .. تلقائيـاً")
-        rrenv = "ANYTHING"
-        rrcom = "."
-        rrrtz = "Asia/Baghdad"
-        heroku_var["ENV"] = rrenv
-        heroku_var["COMMAND_HAND_LER"] = rrcom
-        heroku_var["TZ"] = rrrtz
+        repthon_var.setdefault("ENV", "ANYTHING")
+        repthon_var.setdefault("COMMAND_HAND_LER", ".")
+        repthon_var.setdefault("TZ", "Asia/Baghdad")
         LOGS.info("تم اضافـة بقيـة الفـارات .. بنجـاح")
 
 async def autoname(): #Code by T.me/E_7_V
