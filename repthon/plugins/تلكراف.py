@@ -6,7 +6,6 @@ import string
 from datetime import datetime
 
 from PIL import Image
-from catbox import CatboxUploader
 from telegraph import Telegraph, exceptions
 from telethon.utils import get_display_name
 from urlextract import URLExtract
@@ -25,12 +24,58 @@ telegraph = Telegraph()
 r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
 auth_url = r["auth_url"]
 
-# Repthon - Catbox Uploader
-catbox = CatboxUploader()
 
 
 def upload_catbox(file_path):
-    return catbox.upload_file(file_path, timeout=300)
+    url = "https://catbox.moe/user/api.php"
+
+    try:
+        with open(file_path, "rb") as file:
+            response = requests.post(
+                url,
+                files={"fileToUpload": file},
+                data={"reqtype": "fileupload"},
+                timeout=300
+            )
+
+        status = response.status_code
+        body = response.text.strip()
+
+        LOGS.info(
+            "Catbox Response | HTTP: %s | Body: %r",
+            status,
+            body[:1000]
+        )
+
+        if status != 200:
+            raise RuntimeError(
+                f"Catbox HTTP {status}: {body[:1000]}"
+            )
+
+        if not body:
+            raise RuntimeError(
+                "Catbox returned an empty response."
+            )
+
+        if not body.startswith("https://"):
+            raise RuntimeError(
+                f"Catbox rejected upload: {body[:1000]}"
+            )
+
+        return body
+
+    except requests.exceptions.Timeout:
+        raise RuntimeError("Catbox upload timed out.")
+
+    except requests.exceptions.ConnectionError as exc:
+        raise RuntimeError(
+            f"Catbox connection failed: {exc}"
+        )
+
+    except requests.exceptions.RequestException as exc:
+        raise RuntimeError(
+            f"Catbox request error: {exc}"
+        )
 
 
 def resize_image(image):
