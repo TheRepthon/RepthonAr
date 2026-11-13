@@ -24,58 +24,49 @@ telegraph = Telegraph()
 r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
 auth_url = r["auth_url"]
 
-
-
 def upload_catbox(file_path):
     url = "https://catbox.moe/user/api.php"
 
-    try:
-        with open(file_path, "rb") as file:
-            response = requests.post(
-                url,
-                files={"fileToUpload": file},
-                data={"reqtype": "fileupload"},
-                timeout=300
-            )
-
-        status = response.status_code
-        body = response.text.strip()
-
-        LOGS.info(
-            "Catbox Response | HTTP: %s | Body: %r",
-            status,
-            body[:1000]
+    with open(file_path, "rb") as file:
+        response = requests.post(
+            url,
+            files={
+                "fileToUpload": (
+                    os.path.basename(file_path),
+                    file
+                )
+            },
+            data={"reqtype": "fileupload"},
+            timeout=300
         )
 
-        if status != 200:
-            raise RuntimeError(
-                f"Catbox HTTP {status}: {body[:1000]}"
-            )
+    LOGS.info(
+        "Catbox Diagnostic | HTTP=%s | "
+        "Length=%s | Headers=%r | Body=%r",
+        response.status_code,
+        len(response.content),
+        dict(response.headers),
+        response.content[:1000]
+    )
 
-        if not body:
-            raise RuntimeError(
-                "Catbox returned an empty response."
-            )
-
-        if not body.startswith("https://"):
-            raise RuntimeError(
-                f"Catbox rejected upload: {body[:1000]}"
-            )
-
-        return body
-
-    except requests.exceptions.Timeout:
-        raise RuntimeError("Catbox upload timed out.")
-
-    except requests.exceptions.ConnectionError as exc:
+    if response.status_code != 200:
         raise RuntimeError(
-            f"Catbox connection failed: {exc}"
+            f"Catbox HTTP {response.status_code}"
         )
 
-    except requests.exceptions.RequestException as exc:
+    if not response.content:
         raise RuntimeError(
-            f"Catbox request error: {exc}"
+            "Catbox returned HTTP 200 with zero bytes."
         )
+
+    result = response.text.strip()
+
+    if not result.startswith("https://"):
+        raise RuntimeError(
+            f"Unexpected Catbox response: {result[:1000]!r}"
+        )
+
+    return result
 
 
 def resize_image(image):
