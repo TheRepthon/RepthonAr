@@ -45,9 +45,8 @@ async def get_stream(url: str, audio_only: bool = True):
         "nocheckcertificate": True,
         "geo_bypass": True,
         "cookiefile": get_cookies_file(),
-        "js_runtimes": {
-            "node": {}
-        },
+        "js_runtimes": {"node": {}},
+        "remote_components": ["ejs:github"], 
     }
 
     if audio_only:
