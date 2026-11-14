@@ -10,6 +10,7 @@ from PIL import Image
 from telegraph import Telegraph, exceptions
 from telethon.utils import get_display_name
 from urlextract import URLExtract
+from catbox import CatboxUploader, CatboxError 
 
 from ..Config import Config
 from ..core.logger import logging
@@ -24,59 +25,20 @@ extractor = URLExtract()
 telegraph = Telegraph()
 r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
 auth_url = r["auth_url"]
+catbox = CatboxUploader()
 
 def upload_catbox(file_path):
-    url = "https://catbox.moe/user/api.php"
-
-    headers = {
-        "User-Agent": (
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            "AppleWebKit/537.36 (KHTML, like Gecko) "
-            "Chrome/131.0.0.0 Safari/537.36"
-        ),
-        "Accept": "*/*",
-    }
-
-    with open(file_path, "rb") as file:
-        response = requests.post(
-            url,
-            data={
-                "reqtype": "fileupload",
-            },
-            files={
-                "fileToUpload": (
-                    os.path.basename(file_path),
-                    file,
-                    "application/octet-stream",
-                ),
-            },
-            headers=headers,
+    try:
+        return catbox.upload_file(
+            file_path,
             timeout=300,
         )
-
-    LOGS.info(
-        "Catbox Diagnostic | HTTP=%s | "
-        "Length=%s | Body=%r",
-        response.status_code,
-        len(response.content),
-        response.content[:1000],
-    )
-
-    if response.status_code != 200:
-        raise RuntimeError(
-            f"Catbox HTTP {response.status_code}: "
-            f"{response.text[:500]}"
-        )
-
-    result = response.text.strip()
-
-    if not result.startswith("https://"):
-        raise RuntimeError(
-            f"Unexpected Catbox response: {result!r}"
-        )
-
-    return result
-
+    except CatboxError as exc:
+        LOGS.error("Catbox Library Error: %s", exc)
+        raise
+    except Exception:
+        LOGS.exception("Unexpected Catbox Error")
+        raise
 
 
 def resize_image(image):
