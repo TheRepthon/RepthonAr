@@ -1,4 +1,5 @@
 import os
+import user_agent
 import asyncio
 import random
 import requests
@@ -27,46 +28,55 @@ auth_url = r["auth_url"]
 def upload_catbox(file_path):
     url = "https://catbox.moe/user/api.php"
 
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/131.0.0.0 Safari/537.36"
+        ),
+        "Accept": "*/*",
+    }
+
     with open(file_path, "rb") as file:
         response = requests.post(
             url,
+            data={
+                "reqtype": "fileupload",
+            },
             files={
                 "fileToUpload": (
                     os.path.basename(file_path),
-                    file
-                )
+                    file,
+                    "application/octet-stream",
+                ),
             },
-            data={"reqtype": "fileupload"},
-            timeout=300
+            headers=headers,
+            timeout=300,
         )
 
     LOGS.info(
         "Catbox Diagnostic | HTTP=%s | "
-        "Length=%s | Headers=%r | Body=%r",
+        "Length=%s | Body=%r",
         response.status_code,
         len(response.content),
-        dict(response.headers),
-        response.content[:1000]
+        response.content[:1000],
     )
 
     if response.status_code != 200:
         raise RuntimeError(
-            f"Catbox HTTP {response.status_code}"
-        )
-
-    if not response.content:
-        raise RuntimeError(
-            "Catbox returned HTTP 200 with zero bytes."
+            f"Catbox HTTP {response.status_code}: "
+            f"{response.text[:500]}"
         )
 
     result = response.text.strip()
 
     if not result.startswith("https://"):
         raise RuntimeError(
-            f"Unexpected Catbox response: {result[:1000]!r}"
+            f"Unexpected Catbox response: {result!r}"
         )
 
     return result
+
 
 
 def resize_image(image):
