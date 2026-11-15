@@ -16,6 +16,7 @@ import wget
 import yt_dlp
 from yt_dlp import YoutubeDL
 from youtube_search import YoutubeSearch
+from youtubesearchpython import VideosSearch
 from ShazamAPI import Shazam
 from validators.url import url
 
