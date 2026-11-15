@@ -21,6 +21,7 @@ from ShazamAPI import Shazam
 from validators.url import url
 
 from urlextract import URLExtract
+from urllib.parse import urlparse, parse_qs
 from wget import download
 from yt_dlp import YoutubeDL
 from yt_dlp.utils import (
@@ -835,6 +836,7 @@ async def _(event):
 @zq_lo.rep_cmd(pattern="فيديو(?: |$)(.*)")
 async def _(event):
     reply = await event.get_reply_message()
+
     if event.pattern_match.group(1):
         query = event.pattern_match.group(1)
     elif reply and reply.message:
@@ -855,17 +857,35 @@ async def _(event):
     thumb_name = None
 
     try:
-        results = await asyncio.to_thread(
-            lambda: YoutubeSearch(query, max_results=1).to_dict()
-        )
+        def search_youtube():
+            search = VideosSearch(query, limit=1)
+            return search.result()
+
+        search_data = await asyncio.to_thread(search_youtube)
+        results = search_data.get("result") or []
 
         if not results:
             return await revent.edit(
                 "**• لم يتم العثور على أي نتيجة ✖️**"
             )
 
-        link = f"https://youtube.com{results[0]['url_suffix']}"
-        title = results[0].get("title", "Video")[:40]
+        result = results[0]
+        link = result.get("link")
+
+        if not link:
+            return await revent.edit(
+                "**• تعذر الحصول على رابط الفيديو ✖️**"
+            )
+
+        parsed = urlparse(link)
+        video_id = parse_qs(parsed.query).get("v", [None])[0]
+
+        if not video_id:
+            video_id = parsed.path.rstrip("/").split("/")[-1]
+
+        link = f"https://www.youtube.com/watch?v={video_id}"
+
+        title = result.get("title", "Video")[:40]
 
     except Exception as e:
         return await revent.edit(
@@ -873,19 +893,45 @@ async def _(event):
         )
 
     try:
-        await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
+        await revent.edit(
+            "**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**"
+        )
 
         api_url = "https://api-abztech.zone.id/download/omdown"
 
-        response = await asyncio.to_thread(
-            lambda: requests.get(
-                api_url,
-                params={"url": link},
-                timeout=60
+        data = None
+
+        for attempt in range(3):
+            try:
+                response = await asyncio.to_thread(
+                    lambda: requests.get(
+                        api_url,
+                        params={"url": link},
+                        timeout=120
+                    )
+                )
+
+                response.raise_for_status()
+                data = response.json()
+                break
+
+            except requests.exceptions.HTTPError as e:
+                status = (
+                    e.response.status_code
+                    if e.response is not None
+                    else None
+                )
+
+                if status in (502, 503, 504) and attempt < 2:
+                    await asyncio.sleep(3 * (attempt + 1))
+                    continue
+
+                raise
+
+        if not data:
+            return await revent.edit(
+                "**• تعذر الحصول على بيانات الفيديو من API ✖️**"
             )
-        )
-        response.raise_for_status()
-        data = response.json()
 
         if not data.get("success"):
             return await revent.edit(
@@ -893,7 +939,6 @@ async def _(event):
             )
 
         formats = data.get("formats") or []
-
         video_formats = []
 
         for fmt in formats:
@@ -917,7 +962,11 @@ async def _(event):
                 "**• لم يتم العثور على صيغة فيديو MP4 متاحة ✖️**"
             )
 
-        video_formats.sort(key=lambda item: item[0], reverse=True)
+        video_formats.sort(
+            key=lambda item: item[0],
+            reverse=True
+        )
+
         quality, video_url = video_formats[0]
         title = (data.get("title") or title)[:40]
         thumbnail = data.get("cover")
@@ -925,8 +974,12 @@ async def _(event):
         if thumbnail:
             try:
                 thumb_response = await asyncio.to_thread(
-                    lambda: requests.get(thumbnail, timeout=20)
+                    lambda: requests.get(
+                        thumbnail,
+                        timeout=20
+                    )
                 )
+
                 thumb_response.raise_for_status()
 
                 thumb_name = f"rep_video_thumb_{event.id}.jpg"
@@ -964,7 +1017,9 @@ async def _(event):
                 "**• فشل تحميل الفيديو أو أن الملف فارغ ✖️**"
             )
 
-        await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
+        await revent.edit(
+            "**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**"
+        )
 
         await event.client.send_file(
             event.chat_id,
