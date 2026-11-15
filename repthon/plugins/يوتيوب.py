@@ -491,38 +491,91 @@ def remove_if_exists(path):
         os.remove(path)
 
 
+def parse_audio_duration(value):
+    """Convert YouTube duration into seconds."""
+    if not value:
+        return 0
+
+    if isinstance(value, dict):
+        value = (
+            value.get("simpleText")
+            or value.get("text")
+            or "0:00"
+        )
+
+    value = str(value).strip()
+
+    try:
+        if ":" in value:
+            duration = 0
+            for part in value.split(":"):
+                duration = duration * 60 + int(part)
+            return duration
+
+        match = re.search(
+            r"(\d+(?:\.\d+)?)\s*(h|hr|hours?|m|min|minutes?|s|sec|seconds?)",
+            value,
+            re.IGNORECASE
+        )
+
+        if match:
+            number = float(match.group(1))
+            unit = match.group(2).lower()
+
+            if unit.startswith("h"):
+                return int(number * 3600)
+            elif unit.startswith("m"):
+                return int(number * 60)
+            else:
+                return int(number)
+
+    except (ValueError, TypeError):
+        pass
+
+    return 0
+
 #R
 @zq_lo.rep_cmd(pattern="بحث(?: |$)(.*)")
 async def _(event): #Code by T.me/RR0RT
     reply = await event.get_reply_message()
     if event.pattern_match.group(1):
-        query = event.pattern_match.group(1)
+        query = event.pattern_match.group(1).strip()
     elif reply and reply.message:
-        query = reply.message
+        query = reply.message.strip()
     else:
-        return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
+        await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
     revent = await edit_or_reply(event, "** ╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰ **")
     
     audio_file = None
     thumb_name = None
 
     try:
-        results = await asyncio.to_thread(
-            lambda: YoutubeSearch(query, max_results=1).to_dict()
-        )
-
+        def search_youtube():
+            search = VideosSearch(query, limit=1)
+            return search.result()
+            
+        search_data = await asyncio.to_thread(search_youtube)
+        results = search_data.get("result") or []
         if not results:
-            return await revent.edit("**• لم يتم العثور على أي نتيجة ✖️**")
+            return await revent.edit(
+                "**• لم يتم العثور على أي نتيجة ✖️**"
+            )
 
         result = results[0]
-        link = f"https://youtube.com{result['url_suffix']}"
-        title = result.get("title", "Audio")[:40]
-        performer = (
-    result.get("channel")
-    or result.get("channel_name")
-    or result.get("uploader")
-    or "Unknown"
-        )
+        link = result.get("link")
+        if not link:
+            video_id = result.get("id")
+            if not video_id:
+                return await revent.edit(
+                    "**• لم يتم العثور على رابط المقطع ✖️**"
+                )
+            link = f"https://www.youtube.com/watch?v={video_id}"
+        title = (result.get("title") or "Audio")[:40]
+        channel = result.get("channel") or {}
+        if isinstance(channel, dict):
+            performer = channel.get("name") or "Unknown"
+        else:
+            performer = str(channel) if channel else "Unknown"
         duration_text = result.get("duration") or "0:00"
 
     except Exception as e:
@@ -530,7 +583,9 @@ async def _(event): #Code by T.me/RR0RT
             f"**• فشـل في البحث**\n**• الخطـأ :** `{str(e)}`"
         )
 
-    await revent.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
+    await revent.edit(
+        "**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**"
+    )
 
     try:
         api_url = "https://api-abztech.zone.id/download/ytmp3"
@@ -542,6 +597,7 @@ async def _(event): #Code by T.me/RR0RT
                 timeout=60
             )
         )
+
         response.raise_for_status()
         data = response.json()
 
@@ -551,29 +607,48 @@ async def _(event): #Code by T.me/RR0RT
             )
 
         download = data.get("download") or {}
-        audio_url = download.get("downloadUrl")
+
+        audio_url = (
+            download.get("downloadUrl")
+            or download.get("url")
+            or data.get("downloadUrl")
+            or data.get("url")
+        )
 
         if not audio_url:
             return await revent.edit(
                 "**• لم يتم العثور على رابط تحميل الصوت ✖️**"
             )
 
-        title = (download.get("title") or title)[:40]
-        thumbnail = download.get("thumbnail")
+        title = (
+            download.get("title")
+            or data.get("title")
+            or title
+        )[:40]
+
+        thumbnail = (
+            download.get("thumbnail")
+            or data.get("thumbnail")
+        )
 
         if thumbnail:
             try:
                 thumb_response = await asyncio.to_thread(
-                    lambda: requests.get(thumbnail, timeout=20)
+                    lambda: requests.get(
+                        thumbnail,
+                        timeout=20
+                    )
                 )
+
                 thumb_response.raise_for_status()
 
                 thumb_name = f"rep_thumb_{event.id}.jpg"
+
                 with open(thumb_name, "wb") as f:
                     f.write(thumb_response.content)
+
             except Exception:
                 thumb_name = None
-
 
         audio_file = f"rep_search_{event.id}.mp3"
 
@@ -583,7 +658,9 @@ async def _(event): #Code by T.me/RR0RT
                 stream=True,
                 timeout=(20, 120)
             ) as audio_response:
+
                 audio_response.raise_for_status()
+
                 with open(audio_file, "wb") as f:
                     for chunk in audio_response.iter_content(
                         chunk_size=256 * 1024
@@ -593,18 +670,25 @@ async def _(event): #Code by T.me/RR0RT
 
         await asyncio.to_thread(download_audio)
 
-        if not os.path.isfile(audio_file) or os.path.getsize(audio_file) == 0:
-            return await revent.edit("**• ملف الصوت فارغ أو لم يكتمل تحميله ✖️**")
+        if (
+            not os.path.isfile(audio_file)
+            or os.path.getsize(audio_file) == 0
+        ):
+            return await revent.edit(
+                "**• ملف الصوت فارغ أو لم يكتمل تحميله ✖️**"
+            )
 
-        duration_parts = duration_text.split(":")
-        try:
-            duration = 0
-            for part in duration_parts:
-                duration = duration * 60 + int(part)
-        except (ValueError, TypeError):
-            duration = 0
+        duration = parse_audio_duration(duration_text)
 
-        await revent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
+        if not duration:
+            duration = parse_audio_duration(
+                download.get("duration")
+                or data.get("duration")
+            )
+
+        await revent.edit(
+            "**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**"
+        )
 
         await event.client.send_file(
             event.chat_id,
@@ -624,7 +708,9 @@ async def _(event): #Code by T.me/RR0RT
         await revent.delete()
 
     except ChatSendMediaForbiddenError:
-        await revent.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
+        await revent.edit(
+            "**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**"
+        )
 
     except Exception as e:
         await revent.edit(
@@ -638,9 +724,8 @@ async def _(event): #Code by T.me/RR0RT
                     os.remove(file_path)
             except OSError as e:
                 print(f"Error cleaning up: {e}")
-    
-        
-        
+
+
 """@zq_lo.rep_cmd(pattern="s(?: |$)(.*)")
 async def _(event):
     query = event.pattern_match.group(1)
