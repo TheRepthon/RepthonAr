@@ -590,7 +590,7 @@ async def _(event): #Code by T.me/RR0RT
     )
 
     try:
-        api_url = "https://api-abztech.zone.id/download/ytmp3"
+        api_url = "https://api-abztech.apps.mistral.run/download/ytmp3"
 
         response = await asyncio.to_thread(
             lambda: requests.get(
@@ -897,7 +897,7 @@ async def _(event):
             "**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**"
         )
 
-        api_url = "https://api-abztech.zone.id/download/omdown"
+        api_url = "https://api-abztech.apps.mistral.run/download/ytdl"
 
         data = None
 
