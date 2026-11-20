@@ -929,61 +929,45 @@ async def _(event):
                 raise
 
         if not data:
-    return await revent.edit(
-        "**• تعذر الحصول على بيانات الفيديو من API ✖️**"
-    )
+            return await revent.edit(
+                "**• تعذر الحصول على بيانات الفيديو من API ✖️**"
+            )
 
-if not data.get("status"):
-    return await revent.edit(
-        "**• فشل الـ API في جلب الفيديو ✖️**"
-    )
+        if not data.get("success"):
+            return await revent.edit(
+                "**• فشل الـ API في جلب الفيديو ✖️**"
+            )
 
-title = (data.get("title") or title)[:40]
-thumbnail = data.get("thumbnail")
-
-video_formats = []
-videos = data.get("video") or []
-
-for fmt in videos:
-    quality_text = fmt.get("quality", "")
-    video_url = fmt.get("url")
-
-    match = re.search(
-        r"(\d+)\s*p",
-        quality_text,
-        re.IGNORECASE
-    )
-
-    if match and video_url:
-        quality = int(match.group(1))
-        video_formats.append((quality, video_url))
-
-if not video_formats:
-    fallback_url = data.get("downloadUrl") or data.get("url")
-    quality_text = data.get("quality", "720p")
-
-    match = re.search(
-        r"(\d+)\s*p",
-        quality_text,
-        re.IGNORECASE
-    )
-
-    if fallback_url:
-        quality = int(match.group(1)).group(1) if match else 720
-        video_formats.append((quality, fallback_url))
-
-if not video_formats:
-    return await revent.edit(
-        "**• لم يتم العثور على رابط فيديو متاح ✖️**"
-    )
-
-video_formats.sort(
-    key=lambda item: item[0],
-    reverse=True
-)
-        quality, video_url = video_formats[0]
         title = (data.get("title") or title)[:40]
-        thumbnail = data.get("cover")
+        thumbnail = data.get("thumbnail")
+        video_formats = []
+
+        videos = data.get("video") or []
+        
+        for fmt in videos:
+            quality_text = fmt.get("quality", "")
+            video_url = fmt.get("url")
+            
+            match = re.search(
+                r"(\d+)\s*p",
+                quality_text,
+                re.IGNORECASE
+            )
+                if match and video_url:
+                    quality = int(match.group(1)) if match else 720
+                    video_formats.append((quality, video_url))
+
+        if not video_formats:
+            return await revent.edit(
+                "**• لم يتم العثور على صيغة فيديو MP4 متاحة ✖️**"
+            )
+
+        video_formats.sort(
+            key=lambda item: item[0],
+            reverse=True
+        )
+
+        quality, video_url = video_formats[0]
 
         if thumbnail:
             try:
