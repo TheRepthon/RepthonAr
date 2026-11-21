@@ -953,9 +953,10 @@ async def _(event):
                 quality_text,
                 re.IGNORECASE
             )
-                if match and video_url:
-                    quality = int(match.group(1)) if match else 720
-                    video_formats.append((quality, video_url))
+            
+        if match and video_url:
+            quality = int(match.group(1)) if match else 720
+            video_formats.append((quality, video_url))
 
         if not video_formats:
             return await revent.edit(
