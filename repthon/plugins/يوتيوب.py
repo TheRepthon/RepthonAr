@@ -933,7 +933,7 @@ async def _(event):
                 "**• تعذر الحصول على بيانات الفيديو من API ✖️**"
             )
 
-        if not data.get("success"):
+        if not data.get("status"):
             return await revent.edit(
                 "**• فشل الـ API في جلب الفيديو ✖️**"
             )
